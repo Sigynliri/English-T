@@ -5,35 +5,37 @@
 }
 
 body {
-    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
-    background: #fef9f4;
-    color: #2d2a24;
-    padding: 2rem 1.5rem;
+    font-family: 'Roboto', 'Segoe UI', sans-serif;
+    background: #f0f2f5;
+    color: #202124;
+    padding: 2rem;
 }
 
 header {
-    text-align: center;
-    padding: 2.5rem 1.5rem;
-    background: #fdf3ea;
-    border-radius: 40px 40px 20px 20px;
-    margin-bottom: 2.5rem;
-    border-bottom: 6px solid #e8d5c4;
+    max-width: 1000px;
+    margin: 0 auto 2rem;
+    padding: 2rem 2.5rem;
+    background: white;
+    border-radius: 28px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
 header h1 {
-    font-size: 2.3rem;
-    font-weight: 600;
-    color: #4a3728;
+    font-size: 2.2rem;
+    font-weight: 500;
+    color: #1a1a2e;
+    letter-spacing: -0.5px;
 }
 
 header p {
-    font-size: 1.1rem;
-    color: #7a6858;
+    color: #5f6368;
+    font-size: 1.05rem;
+    margin-top: 0.25rem;
 }
 
 main {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 1.5rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -41,57 +43,63 @@ main {
 
 section {
     background: white;
-    padding: 1.8rem;
-    border-radius: 24px;
-    box-shadow: 0 4px 12px rgba(180, 140, 110, 0.10);
-    transition: all 0.3s;
+    padding: 1.8rem 1.8rem 2rem;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    transition: box-shadow 0.3s, transform 0.2s;
+    display: flex;
+    flex-direction: column;
 }
 
 section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 12px 28px rgba(180, 140, 110, 0.15);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+    transform: translateY(-3px);
 }
 
 section h2 {
-    font-size: 1.25rem;
-    color: #3d2c1e;
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #202124;
     margin-bottom: 0.3rem;
 }
 
 section p {
-    color: #7a6858;
+    color: #5f6368;
     font-size: 0.95rem;
+    line-height: 1.5;
+    flex: 1;
     margin-bottom: 1rem;
 }
 
 section a {
-    display: inline-block;
-    background: #f6ede7;
-    color: #4a3728;
-    padding: 0.4rem 1.2rem;
-    border-radius: 40px;
+    align-self: flex-start;
+    color: #1a73e8;
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.9rem;
-    transition: background 0.25s, color 0.25s;
+    font-size: 0.95rem;
+    padding: 0.4rem 0;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.25s, color 0.25s;
 }
 
 section a:hover {
-    background: #4a3728;
-    color: white;
+    border-bottom-color: #1a73e8;
+    color: #1557b0;
 }
 
 audio {
     display: block;
-    margin: 2rem auto 0;
+    margin: 2.5rem auto 0;
     width: 100%;
     max-width: 400px;
 }
 
 footer {
+    max-width: 1000px;
+    margin: 2.5rem auto 0;
     text-align: center;
-    margin-top: 3rem;
     padding-top: 1.5rem;
-    color: #b8a392;
+    color: #9aa0a6;
     font-size: 0.9rem;
+    border-top: 1px solid #e8eaed;
 }
