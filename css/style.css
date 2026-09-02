@@ -19,6 +19,109 @@ body {
     line-height: 1.6;
 }
 
+```css
+/* ========================================
+   INTERACTIVE TASKS
+======================================== */
+
+.task {
+    margin-top: 20px;
+}
+
+
+/* Text input */
+
+input[type="text"] {
+    width: 180px;
+
+    padding: 8px 10px;
+
+    margin: 0 5px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: #fafafa;
+}
+
+input[type="text"]:focus {
+    outline: none;
+
+    border-color: #6366f1;
+
+    background: white;
+}
+
+
+/* Text area */
+
+textarea {
+    width: 100%;
+
+    padding: 12px;
+
+    margin-top: 10px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    resize: vertical;
+
+    background: #fafafa;
+}
+
+textarea:focus {
+    outline: none;
+
+    border-color: #6366f1;
+
+    background: white;
+}
+
+
+/* Select */
+
+select {
+    padding: 8px 30px 8px 10px;
+
+    margin: 0 5px;
+
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+
+    font-size: 16px;
+
+    background: white;
+
+    cursor: pointer;
+}
+
+select:focus {
+    outline: none;
+
+    border-color: #6366f1;
+}
+
+
+/* Mobile */
+
+@media (max-width: 600px) {
+
+    input[type="text"] {
+        width: 140px;
+    }
+
+    select {
+        max-width: 100%;
+    }
+}
+```
+
 
 /* ========================================
    MAIN CONTAINER
