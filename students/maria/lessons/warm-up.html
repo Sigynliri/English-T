@@ -252,11 +252,38 @@
 <div class="container">
 
     <!-- Шапка -->
-    <h1>🎲 Two Truths and a Lie</h1>
-    <div class="subhead">B2 · Grammar &amp; Speaking · Warm-up / Icebreaker</div>
+    <h1>🎲 Two Truths and a Lie</h1> 
+
+    <!-- ВАШИ УТВЕРЖДЕНИЯ -->
+    <div class="section-title">✍️ Your Statements</div>
+
+    <div class="my-statements">
+        <p style="color: #5f6a7a; font-size: 0.95rem; margin-bottom: 12px;">
+            Write your <strong>three statements</strong> below. Use different tenses and advanced vocabulary.
+        </p>
+
+        <div class="field">
+            <label>📌 Statement 1 (Truth)</label>
+            <input type="text" placeholder="Write your first truth here..." aria-label="Truth 1">
+        </div>
+
+        <div class="field">
+            <label>📌 Statement 2 (Truth)</label>
+            <input type="text" placeholder="Write your second truth here..." aria-label="Truth 2">
+        </div>
+
+        <div class="field">
+            <label>📌 Statement 3 (Lie)</label>
+            <input type="text" placeholder="Write your lie here (make it believable!)..." aria-label="Lie">
+        </div>
+
+        <div style="margin-top: 10px; font-size: 0.85rem; color: #5f6a7a;">
+            💡 <strong>Tip:</strong> Use a mix of tenses — Present Perfect, Past Simple, Used to, Present Continuous for future, etc.
+        </div>
+    </div>
 
     <!-- ПОЛЕЗНЫЕ ФРАЗЫ -->
-    <div class="section-title">🗣️ Useful Phrases for B2</div>
+    <div class="section-title"> Useful Phrases for B2</div>
 
     <div class="discussion-box">
         <h4>🔹 Asking questions to discover the lie:</h4>
@@ -290,36 +317,8 @@
         </ul>
     </div>
 
-    <!-- ВАШИ УТВЕРЖДЕНИЯ -->
-    <div class="section-title">✍️ Your Statements</div>
-
-    <div class="my-statements">
-        <p style="color: #5f6a7a; font-size: 0.95rem; margin-bottom: 12px;">
-            Write your <strong>three statements</strong> below. Use different tenses and advanced vocabulary.
-        </p>
-
-        <div class="field">
-            <label>📌 Statement 1 (Truth)</label>
-            <input type="text" placeholder="Write your first truth here..." aria-label="Truth 1">
-        </div>
-
-        <div class="field">
-            <label>📌 Statement 2 (Truth)</label>
-            <input type="text" placeholder="Write your second truth here..." aria-label="Truth 2">
-        </div>
-
-        <div class="field">
-            <label>📌 Statement 3 (Lie)</label>
-            <input type="text" placeholder="Write your lie here (make it believable!)..." aria-label="Lie">
-        </div>
-
-        <div style="margin-top: 10px; font-size: 0.85rem; color: #5f6a7a;">
-            💡 <strong>Tip:</strong> Use a mix of tenses — Present Perfect, Past Simple, Used to, Present Continuous for future, etc.
-        </div>
-    </div>
-
     <!-- УГАДЫВАНИЕ -->
-    <div class="section-title">🔍 Guess the Lie</div>
+  <div class="section-title">🔍 Guess the Lie</div>
 
     <p style="color: #5f6a7a; font-size: 0.95rem; margin-bottom: 8px;">
         Listen to your partner's statements. Ask questions, then decide which one is the lie.
@@ -330,8 +329,8 @@
             <div class="number">#1</div>
             <div class="text">[Your partner's first statement]</div>
             <div class="guess">
-                <label><input type="radio" name="guess" value="1"> Truth</label>
-                <label><input type="radio" name="guess" value="1-lie"> Lie</label>
+                <label><input type="radio" name="guess1" value="truth"> Truth</label>
+                <label><input type="radio" name="guess1" value="lie"> Lie</label>
             </div>
         </div>
 
@@ -339,8 +338,8 @@
             <div class="number">#2</div>
             <div class="text">[Your partner's second statement]</div>
             <div class="guess">
-                <label><input type="radio" name="guess" value="2"> Truth</label>
-                <label><input type="radio" name="guess" value="2-lie"> Lie</label>
+                <label><input type="radio" name="guess2" value="truth"> Truth</label>
+                <label><input type="radio" name="guess2" value="lie"> Lie</label>
             </div>
         </div>
 
@@ -348,8 +347,8 @@
             <div class="number">#3</div>
             <div class="text">[Your partner's third statement]</div>
             <div class="guess">
-                <label><input type="radio" name="guess" value="3"> Truth</label>
-                <label><input type="radio" name="guess" value="3-lie"> Lie</label>
+                <label><input type="radio" name="guess3" value="truth"> Truth</label>
+                <label><input type="radio" name="guess3" value="lie"> Lie</label>
             </div>
         </div>
     </div>
