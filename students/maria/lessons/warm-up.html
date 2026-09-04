@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎲 Two Truths and a Lie — B2</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #f8f4f0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            padding: 30px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+            padding: 36px 44px;
+            border: 1px solid #e8e0d8;
+        }
+
+        h1 {
+            font-size: 2.0rem;
+            font-weight: 700;
+            color: #2c3e50;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.2rem;
+        }
+
+        .subhead {
+            font-size: 1rem;
+            color: #5f6a7a;
+            border-bottom: 2px solid #eae3dc;
+            padding-bottom: 14px;
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 24px 0 12px 0;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #eae3dc;
+        }
+
+        .discussion-box {
+            background: #f0ece6;
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 1px solid #e6ddd4;
+            margin-top: 10px;
+        }
+
+        .discussion-box h4 {
+            color: #2c3e50;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .discussion-box ul {
+            padding-left: 20px;
+            color: #5f6a7a;
+            font-size: 0.92rem;
+            line-height: 1.8;
+        }
+
+        .my-statements {
+            background: #fcf9f6;
+            border-radius: 14px;
+            padding: 16px 20px;
+            border: 1px solid #e6ddd4;
+            margin-top: 10px;
+        }
+
+        .my-statements .field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin: 6px 0;
+        }
+
+        .my-statements .field label {
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        .my-statements .field input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ddd6ce;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            background: #ffffff;
+            transition: border-color 0.15s;
+        }
+
+        .my-statements .field input[type="text"]:focus {
+            outline: none;
+            border-color: #b85a1a;
+        }
+
+        .statements-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin: 12px 0 16px 0;
+        }
+
+        .statement-card {
+            background: #fcf9f6;
+            border-radius: 14px;
+            padding: 14px 16px;
+            border: 1px solid #e6ddd4;
+            text-align: center;
+            transition: background 0.1s;
+        }
+
+        .statement-card:hover {
+            background: #f8f2ec;
+        }
+
+        .statement-card .number {
+            font-weight: 700;
+            color: #b85a1a;
+            font-size: 1.2rem;
+        }
+
+        .statement-card .text {
+            font-size: 0.95rem;
+            color: #1e2a3a;
+            margin: 4px 0 8px 0;
+            min-height: 2.8em;
+        }
+
+        .statement-card .guess {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            font-size: 0.85rem;
+        }
+
+        .statement-card .guess label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            color: #5f6a7a;
+        }
+
+        .statement-card .guess input[type="radio"] {
+            accent-color: #b85a1a;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .tg-footer {
+            margin-top: 28px;
+            padding-top: 14px;
+            border-top: 2px solid #e8e0d8;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #5f6a7a;
+        }
+
+        .tg-footer a {
+            color: #b85a1a;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .tg-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-pdf {
+            background: #b85a1a;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 10px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 18px;
+            box-shadow: 0 4px 14px rgba(184, 90, 26, 0.25);
+            transition: background 0.15s;
+        }
+
+        .btn-pdf:hover {
+            background: #9e4a14;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0.1in;
+            }
+            .container {
+                box-shadow: none;
+                border: 1px solid #ccc;
+                padding: 24px 28px;
+            }
+            .btn-pdf {
+                display: none;
+            }
+            .statement-card {
+                background: #faf8f6;
+                border: 1px solid #ccc;
+            }
+            .my-statements .field input[type="text"] {
+                border: 1px solid #999;
+                background: #faf8f6;
+            }
+            .discussion-box {
+                background: #f0ece6;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 20px 16px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .statements-grid {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .statement-card .text {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- Шапка -->
+    <h1>🎲 Two Truths and a Lie</h1>
+    <div class="subhead">B2 · Grammar &amp; Speaking · Warm-up / Icebreaker</div>
+
+    <!-- ПОЛЕЗНЫЕ ФРАЗЫ -->
+    <div class="section-title">🗣️ Useful Phrases for B2</div>
+
+    <div class="discussion-box">
+        <h4>🔹 Asking questions to discover the lie:</h4>
+        <ul>
+            <li><strong>Could you elaborate on that?</strong> — Расскажите подробнее об этом.</li>
+            <li><strong>What makes you say that?</strong> — Почему вы так говорите?</li>
+            <li><strong>How come you decided to...?</strong> — Как так получилось, что вы решили...?</li>
+            <li><strong>I find that hard to believe.</strong> — Мне в это трудно поверить.</li>
+            <li><strong>That doesn't quite add up.</strong> — Это не совсем сходится / логично.</li>
+        </ul>
+    </div>
+
+    <div class="discussion-box" style="margin-top: 10px;">
+        <h4>🔹 Expressing doubt or certainty:</h4>
+        <ul>
+            <li><strong>I'm pretty sure that's not true.</strong> — Я почти уверен, что это неправда.</li>
+            <li><strong>I have a strong feeling that #2 is the lie.</strong> — У меня сильное ощущение, что #2 — ложь.</li>
+            <li><strong>That sounds suspiciously specific.</strong> — Это звучит подозрительно конкретно.</li>
+            <li><strong>I'm leaning towards #3 being the lie.</strong> — Я склоняюсь к тому, что #3 — ложь.</li>
+            <li><strong>I'm torn between #1 and #2.</strong> — Я колеблюсь между #1 и #2.</li>
+        </ul>
+    </div>
+
+    <div class="discussion-box" style="margin-top: 10px;">
+        <h4>🔹 Revealing the truth:</h4>
+        <ul>
+            <li><strong>The lie was #3 — I've actually been to...</strong></li>
+            <li><strong>You got it! The lie was #1 because...</strong></li>
+            <li><strong>Surprisingly, #2 was the lie!</strong></li>
+            <li><strong>I bet you thought #1 was the lie, but it's actually true!</strong></li>
+        </ul>
+    </div>
+
+    <!-- ВАШИ УТВЕРЖДЕНИЯ -->
+    <div class="section-title">✍️ Your Statements</div>
+
+    <div class="my-statements">
+        <p style="color: #5f6a7a; font-size: 0.95rem; margin-bottom: 12px;">
+            Write your <strong>three statements</strong> below. Use different tenses and advanced vocabulary.
+        </p>
+
+        <div class="field">
+            <label>📌 Statement 1 (Truth)</label>
+            <input type="text" placeholder="Write your first truth here..." aria-label="Truth 1">
+        </div>
+
+        <div class="field">
+            <label>📌 Statement 2 (Truth)</label>
+            <input type="text" placeholder="Write your second truth here..." aria-label="Truth 2">
+        </div>
+
+        <div class="field">
+            <label>📌 Statement 3 (Lie)</label>
+            <input type="text" placeholder="Write your lie here (make it believable!)..." aria-label="Lie">
+        </div>
+
+        <div style="margin-top: 10px; font-size: 0.85rem; color: #5f6a7a;">
+            💡 <strong>Tip:</strong> Use a mix of tenses — Present Perfect, Past Simple, Used to, Present Continuous for future, etc.
+        </div>
+    </div>
+
+    <!-- УГАДЫВАНИЕ -->
+    <div class="section-title">🔍 Guess the Lie</div>
+
+    <p style="color: #5f6a7a; font-size: 0.95rem; margin-bottom: 8px;">
+        Listen to your partner's statements. Ask questions, then decide which one is the lie.
+    </p>
+
+    <div class="statements-grid">
+        <div class="statement-card">
+            <div class="number">#1</div>
+            <div class="text">[Your partner's first statement]</div>
+            <div class="guess">
+                <label><input type="radio" name="guess" value="1"> Truth</label>
+                <label><input type="radio" name="guess" value="1-lie"> Lie</label>
+            </div>
+        </div>
+
+        <div class="statement-card">
+            <div class="number">#2</div>
+            <div class="text">[Your partner's second statement]</div>
+            <div class="guess">
+                <label><input type="radio" name="guess" value="2"> Truth</label>
+                <label><input type="radio" name="guess" value="2-lie"> Lie</label>
+            </div>
+        </div>
+
+        <div class="statement-card">
+            <div class="number">#3</div>
+            <div class="text">[Your partner's third statement]</div>
+            <div class="guess">
+                <label><input type="radio" name="guess" value="3"> Truth</label>
+                <label><input type="radio" name="guess" value="3-lie"> Lie</label>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOLLOW-UP DISCUSSION -->
+    <div class="section-title">💬 Follow-up Discussion</div>
+
+    <div class="discussion-box">
+        <h4>After revealing the lie, discuss:</h4>
+        <ul>
+            <li><strong>What made you suspect that statement?</strong></li>
+            <li><strong>Did you use any specific strategies to detect the lie?</strong></li>
+            <li><strong>Which statement surprised you the most? Why?</strong></li>
+            <li><strong>Would you like to share more details about any of your truths?</strong></li>
+        </ul>
+    </div>
+
+    <!-- Футер -->
+    <div class="tg-footer">
+        <span style="opacity:0.6;">📱</span>
+        <strong>Связь с преподавателем:</strong>
+        <a href="#" onclick="return false;">@commander_cotty</a> (Telegram)
+    </div>
+
+</div>
+
+<!-- Кнопка PDF -->
+<div style="text-align: center; margin-top: 6px;">
+    <button class="btn-pdf" onclick="window.print()">📄 Сохранить как PDF</button>
+    <p style="margin-top: 4px; font-size: 0.8rem; color: #7f8c8d;">Нажмите, затем выберите «Сохранить как PDF»</p>
+</div>
+
+</body>
+</html>
