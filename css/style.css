@@ -18,6 +18,18 @@ body {
     line-height: 1.6;
 }
 
+.frame {
+    padding: 15px 18px;
+    margin: 12px 0;
+
+    background: #f5f6fa;
+
+    border-left: 4px solid #6366f1;
+
+    border-radius: 8px;
+
+    font-size: 17px;
+}
 
 /* ========================================
    MAIN CONTAINER
