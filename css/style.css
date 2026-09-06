@@ -308,4 +308,26 @@ footer a {
     select {
         max-width: 100%;
     }
+
+   /* ========================================
+   Download button
+======================================== */
+
+    .btn-pdf {
+            background: #b85a1a;
+            color: white;
+            border: none;
+            border-radius: 60px;
+            padding: 10px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 18px;
+            box-shadow: 0 4px 14px rgba(184, 90, 26, 0.25);
+            transition: background 0.15s;
+        }
+
+        .btn-pdf:hover {
+            background: #9e4a14;
+        }
 }
