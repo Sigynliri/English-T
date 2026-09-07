@@ -1,821 +1,249 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My First English Lesson</title>
-
-<style>
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        font-family: Arial, Helvetica, sans-serif;
-        background: #f5f6fa;
-        color: #30343b;
-        overflow: hidden;
-    }
-
-    /* =========================
-       PRESENTATION
-    ========================= */
-
-    .presentation {
-        width: 100vw;
-        height: 100vh;
-        position: relative;
-    }
-
-    .slide {
-        display: none;
-        width: 100%;
-        height: 100%;
-        padding: 45px 70px 80px;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .slide.active {
-        display: flex;
-    }
-
-    .slide h1 {
-        font-size: clamp(42px, 6vw, 76px);
-        margin: 0 0 20px;
-    }
-
-    .slide h2 {
-        font-size: clamp(34px, 5vw, 58px);
-        margin: 0 0 35px;
-    }
-
-    .subtitle {
-        font-size: clamp(22px, 3vw, 34px);
-        margin-bottom: 35px;
-    }
-
-    /* =========================
-       WELCOME
-    ========================= */
-
-    .hello {
-        font-size: clamp(80px, 15vw, 160px);
-        margin-bottom: 20px;
-    }
-
-    .speech {
-        background: white;
-        border-radius: 30px;
-        padding: 22px 35px;
-        font-size: clamp(25px, 3.5vw, 42px);
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-        margin: 12px;
-    }
-
-    /* =========================
-       CARDS
-    ========================= */
-
-    .cards {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 20px;
-        max-width: 1000px;
-    }
-
-    .card {
-        background: white;
-        border: none;
-        border-radius: 25px;
-        min-width: 150px;
-        min-height: 150px;
-        padding: 20px;
-        font-size: 70px;
-        cursor: pointer;
-        box-shadow: 0 7px 18px rgba(0,0,0,0.08);
-        transition: transform 0.15s ease;
-    }
-
-    .card:hover {
-        transform: translateY(-5px);
-    }
-
-    .card:active {
-        transform: scale(0.94);
-    }
-
-    .card-label {
-        display: block;
-        font-size: 22px;
-        margin-top: 8px;
-        font-weight: bold;
-    }
-
-    /* =========================
-       COLOURS
-    ========================= */
-
-    .colour-card {
-        width: 145px;
-        height: 145px;
-        border-radius: 25px;
-        border: 5px solid white;
-        box-shadow: 0 7px 18px rgba(0,0,0,0.12);
-        cursor: pointer;
-        transition: transform 0.15s;
-    }
-
-    .colour-card:hover {
-        transform: scale(1.06);
-    }
-
-    .colour-card span {
-        display: block;
-        background: white;
-        border-radius: 12px;
-        padding: 6px 10px;
-        margin: 88px auto 0;
-        width: fit-content;
-        font-weight: bold;
-        font-size: 20px;
-    }
-
-    .red { background: #ef5350; }
-    .blue { background: #42a5f5; }
-    .yellow { background: #ffca28; }
-    .green { background: #66bb6a; }
-    .black { background: #30343b; }
-    .white {
-        background: white;
-        border-color: #ddd;
-    }
-
-    /* =========================
-       NUMBERS
-    ========================= */
-
-    .numbers {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 18px;
-        max-width: 850px;
-    }
-
-    .number {
-        width: 130px;
-        height: 110px;
-        background: white;
-        border: none;
-        border-radius: 22px;
-        font-size: 48px;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 7px 18px rgba(0,0,0,0.08);
-        transition: transform .15s;
-    }
-
-    .number:hover {
-        transform: translateY(-4px);
-    }
-
-    /* =========================
-       ANIMALS
-    ========================= */
-
-    .animal {
-        width: 160px;
-        min-height: 175px;
-    }
-
-    /* =========================
-       INSTRUCTIONS
-    ========================= */
-
-    .instruction-list {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 20px;
-        max-width: 850px;
-        width: 100%;
-    }
-
-    .instruction {
-        background: white;
-        border: none;
-        border-radius: 25px;
-        padding: 28px 20px;
-        font-size: 30px;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 7px 18px rgba(0,0,0,0.08);
-        transition: transform .15s;
-    }
-
-    .instruction:hover {
-        transform: scale(1.03);
-    }
-
-    .instruction .emoji {
-        display: block;
-        font-size: 55px;
-        margin-bottom: 10px;
-    }
-
-    /* =========================
-       MINI GAME
-    ========================= */
-
-    .game-box {
-        background: white;
-        border-radius: 30px;
-        padding: 35px 45px;
-        max-width: 850px;
-        width: 100%;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
-    }
-
-    .game-question {
-        font-size: 38px;
-        font-weight: bold;
-        margin-bottom: 25px;
-    }
-
-    .game-options {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 18px;
-    }
-
-    .game-option {
-        background: #f5f6fa;
-        border: 3px solid transparent;
-        border-radius: 20px;
-        padding: 20px 30px;
-        font-size: 30px;
-        cursor: pointer;
-    }
-
-    .game-option:hover {
-        border-color: #30343b;
-    }
-
-    .game-feedback {
-        min-height: 45px;
-        margin-top: 25px;
-        font-size: 30px;
-        font-weight: bold;
-    }
-
-    /* =========================
-       FINAL
-    ========================= */
-
-    .star {
-        font-size: clamp(90px, 15vw, 160px);
-        margin-bottom: 20px;
-    }
-
-    .great {
-        font-size: clamp(40px, 6vw, 70px);
-        font-weight: bold;
-    }
-
-    /* =========================
-       NAVIGATION
-    ========================= */
-
-    .navigation {
-        position: fixed;
-        bottom: 22px;
-        left: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 18px;
-        z-index: 100;
-    }
-
-    .nav-button {
-        border: none;
-        background: white;
-        border-radius: 50%;
-        width: 55px;
-        height: 55px;
-        font-size: 27px;
-        cursor: pointer;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.12);
-    }
-
-    .nav-button:hover {
-        transform: scale(1.05);
-    }
-
-    .counter {
-        background: white;
-        padding: 12px 18px;
-        border-radius: 20px;
-        font-weight: bold;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
-    }
-
-    /* =========================
-       TEACHER PANEL
-    ========================= */
-
-    .teacher-note {
-        position: fixed;
-        top: 15px;
-        right: 15px;
-        background: rgba(255,255,255,.92);
-        border-radius: 15px;
-        padding: 10px 14px;
-        font-size: 13px;
-        color: #777;
-        z-index: 100;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 700px) {
-        .slide {
-            padding: 30px 20px 80px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Trial Lesson for Kids</title>
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #45a049;
+            --bg-color: #f0f8ff;
+            --card-bg: #ffffff;
+            --text-color: #333;
         }
 
-        .numbers {
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            user-select: none;
         }
 
-        .number {
-            width: 60px;
-            height: 70px;
-            font-size: 30px;
-        }
-
-        .colour-card {
-            width: 95px;
-            height: 95px;
-        }
-
-        .colour-card span {
-            margin-top: 55px;
-            font-size: 14px;
-        }
-
-        .instruction-list {
-            grid-template-columns: 1fr;
+        /* Навигация по этапам */
+        .navigation {
+            display: flex;
             gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        .instruction {
-            padding: 15px;
-            font-size: 23px;
+        .nav-btn {
+            background-color: #ddd;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
         }
 
-        .instruction .emoji {
-            display: inline;
-            margin-right: 10px;
-            font-size: 35px;
+        .nav-btn.active {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        /* Контейнер для слайдов */
+        .slide-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 800px;
+            min-height: 450px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .slide-container.active {
+            display: flex;
+        }
+
+        h1 { font-size: 2.5rem; margin-top: 0; color: #2c3e50; }
+        p { font-size: 1.5rem; color: #7f8c8d; }
+
+        /* Стили для карточек животных */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
         }
 
         .card {
-            min-width: 110px;
-            min-height: 110px;
-            font-size: 50px;
+            background: #f9f9f9;
+            border: 4px solid #e0e0e0;
+            border-radius: 15px;
+            padding: 20px;
+            cursor: pointer;
+            transition: transform 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-    }
-</style>
-</head>
 
+        .card:hover {
+            transform: scale(1.03);
+            border-color: var(--primary);
+        }
+
+        .card img {
+            width: 120px;
+            height: 120px;
+            object-fit: contain;
+        }
+
+        .card .word {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #2c3e50;
+        }
+
+        /* Специальные анимации и кнопки */
+        .btn-action {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+
+        .btn-action:hover { transform: scale(1.05); }
+
+        .hidden-card {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        /* Анимация для заморозки (Freeze) */
+        .freeze-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 188, 212, 0.8);
+            color: white;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 5rem;
+            font-weight: bold;
+            z-index: 1000;
+        }
+    </style>
+</head>
 <body>
 
-<div class="presentation">
-
-    <!-- SLIDE 1 -->
-    <section class="slide active">
-        <div class="hello">👋</div>
-
-        <h1>Hello!</h1>
-
-        <div class="subtitle">
-            My First English Lesson
-        </div>
-
-        <div class="speech">
-            Hello!
-        </div>
-    </section>
-
-
-    <!-- SLIDE 2 -->
-    <section class="slide">
-        <h2>What's your name?</h2>
-
-        <div class="speech">
-            My name is...
-        </div>
-
-        <div class="speech">
-            😊
-        </div>
-
-        <div class="subtitle">
-            Teacher asks → child answers
-        </div>
-    </section>
-
-
-    <!-- SLIDE 3 -->
-    <section class="slide">
-        <h2>How old are you?</h2>
-
-        <div class="speech">
-            I'm six!
-        </div>
-
-        <div class="cards">
-            <button class="card" onclick="speak('six')">
-                6
-                <span class="card-label">six</span>
-            </button>
-
-            <button class="card" onclick="speak('seven')">
-                7
-                <span class="card-label">seven</span>
-            </button>
-
-            <button class="card" onclick="speak('eight')">
-                8
-                <span class="card-label">eight</span>
-            </button>
-        </div>
-    </section>
-
-
-    <!-- SLIDE 4 -->
-    <section class="slide">
-        <h2>Colours</h2>
-
-        <div class="subtitle">
-            Click and say the colour!
-        </div>
-
-        <div class="cards">
-
-            <div class="colour-card red" onclick="speak('red')">
-                <span>red</span>
-            </div>
-
-            <div class="colour-card blue" onclick="speak('blue')">
-                <span>blue</span>
-            </div>
-
-            <div class="colour-card yellow" onclick="speak('yellow')">
-                <span>yellow</span>
-            </div>
-
-            <div class="colour-card green" onclick="speak('green')">
-                <span>green</span>
-            </div>
-
-            <div class="colour-card black" onclick="speak('black')">
-                <span>black</span>
-            </div>
-
-            <div class="colour-card white" onclick="speak('white')">
-                <span>white</span>
-            </div>
-
-        </div>
-    </section>
-
-
-    <!-- SLIDE 5 -->
-    <section class="slide">
-        <h2>Numbers!</h2>
-
-        <div class="subtitle">
-            Let's count!
-        </div>
-
-        <div class="numbers">
-
-            <button class="number" onclick="speak('one')">1</button>
-            <button class="number" onclick="speak('two')">2</button>
-            <button class="number" onclick="speak('three')">3</button>
-            <button class="number" onclick="speak('four')">4</button>
-            <button class="number" onclick="speak('five')">5</button>
-
-            <button class="number" onclick="speak('six')">6</button>
-            <button class="number" onclick="speak('seven')">7</button>
-            <button class="number" onclick="speak('eight')">8</button>
-            <button class="number" onclick="speak('nine')">9</button>
-            <button class="number" onclick="speak('ten')">10</button>
-
-        </div>
-    </section>
-
-
-    <!-- SLIDE 6 -->
-    <section class="slide">
-        <h2>Animals</h2>
-
-        <div class="subtitle">
-            What's this?
-        </div>
-
-        <div class="cards">
-
-            <button class="card animal" onclick="speak('cat')">
-                🐱
-                <span class="card-label">cat</span>
-            </button>
-
-            <button class="card animal" onclick="speak('dog')">
-                🐶
-                <span class="card-label">dog</span>
-            </button>
-
-            <button class="card animal" onclick="speak('rabbit')">
-                🐰
-                <span class="card-label">rabbit</span>
-            </button>
-
-            <button class="card animal" onclick="speak('bear')">
-                🐻
-                <span class="card-label">bear</span>
-            </button>
-
-        </div>
-    </section>
-
-
-    <!-- SLIDE 7 -->
-    <section class="slide">
-        <h2>Can you understand me?</h2>
-
-        <div class="instruction-list">
-
-            <button class="instruction" onclick="speak('Stand up')">
-                <span class="emoji">🧍</span>
-                Stand up
-            </button>
-
-            <button class="instruction" onclick="speak('Sit down')">
-                <span class="emoji">🪑</span>
-                Sit down
-            </button>
-
-            <button class="instruction" onclick="speak('Clap your hands')">
-                <span class="emoji">👏</span>
-                Clap your hands
-            </button>
-
-            <button class="instruction" onclick="speak('Touch your nose')">
-                <span class="emoji">👃</span>
-                Touch your nose
-            </button>
-
-        </div>
-    </section>
-
-
-    <!-- SLIDE 8 -->
-    <section class="slide">
-        <h2>Let's play!</h2>
-
-        <div class="game-box">
-
-            <div class="game-question" id="question">
-                Find the red colour!
-            </div>
-
-            <div class="game-options">
-
-                <button class="game-option"
-                        onclick="checkAnswer(this, true)">
-                    🔴
-                </button>
-
-                <button class="game-option"
-                        onclick="checkAnswer(this, false)">
-                    🔵
-                </button>
-
-                <button class="game-option"
-                        onclick="checkAnswer(this, false)">
-                    🟢
-                </button>
-
-            </div>
-
-            <div class="game-feedback" id="feedback"></div>
-
-        </div>
-    </section>
-
-
-    <!-- SLIDE 9 -->
-    <section class="slide">
-        <h2>One more!</h2>
-
-        <div class="game-box">
-
-            <div class="game-question">
-                Find the dog!
-            </div>
-
-            <div class="game-options">
-
-                <button class="game-option"
-                        onclick="checkAnswer(this, false)">
-                    🐱
-                </button>
-
-                <button class="game-option"
-                        onclick="checkAnswer(this, true)">
-                    🐶
-                </button>
-
-                <button class="game-option"
-                        onclick="checkAnswer(this, false)">
-                    🐰
-                </button>
-
-            </div>
-
-            <div class="game-feedback" id="feedback"></div>
-
-        </div>
-    </section>
-
-
-    <!-- SLIDE 10 -->
-    <section class="slide">
-        <div class="star">⭐</div>
-
-        <div class="great">
-            Great job!
-        </div>
-
-        <div class="speech">
-            Goodbye! 👋
-        </div>
-
-        <div class="subtitle">
-            See you next time!
-        </div>
-    </section>
-
-</div>
-
-
-<!-- TEACHER NOTE -->
-<div class="teacher-note">
-    Trial lesson · 6 years old
-</div>
-
-
-<!-- NAVIGATION -->
-<div class="navigation">
-
-    <button class="nav-button" onclick="previousSlide()">
-        ←
-    </button>
-
-    <div class="counter" id="counter">
-        1 / 10
+    <!-- Навигация для преподавателя -->
+    <div class="navigation">
+        <button class="nav-btn active" onclick="switchSlide(1)">1. Hello</button>
+        <button class="nav-btn" onclick="switchSlide(2)">2. Animals</button>
+        <button class="nav-btn" onclick="switchSlide(3)">3. TPR Game</button>
+        <button class="nav-btn" onclick="switchSlide(4)">4. What's Missing?</button>
+        <button class="nav-btn" onclick="switchSlide(5)">5. Well Done!</button>
     </div>
 
-    <button class="nav-button" onclick="nextSlide()">
-        →
-    </button>
+    <!-- СЛАЙД 1: Приветствие -->
+    <div id="slide1" class="slide-container active">
+        <h1>Hello! 👋</h1>
+        <p>What's your name?</p>
+        <div style="font-size: 5rem; margin: 20px;">🧸</div>
+        <button class="btn-action" onclick="speak('Hello! What is your name?')">🔊 Listen</button>
+    </div>
 
-</div>
+    <!-- СЛАЙД 2: Изучение слов -->
+    <div id="slide2" class="slide-container">
+        <h1>Listen and Repeat! 🐾</h1>
+        <div class="grid">
+            <div class="card" onclick="speak('Cat')">
+                <img src="https://icons8.com" alt="cat">
+                <div class="word">a cat</div>
+            </div>
+            <div class="card" onclick="speak('Dog')">
+                <img src="https://icons8.com" alt="dog">
+                <div class="word">a dog</div>
+            </div>
+            <div class="card" onclick="speak('Lion')">
+                <img src="https://icons8.com" alt="lion">
+                <div class="word">a lion</div>
+            </div>
+            <div class="card" onclick="speak('Frog')">
+                <img src="https://icons8.com" alt="frog">
+                <div class="word">a frog</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- СЛАЙД 3: Физкультминутка -->
+    <div id="slide3" class="slide-container">
+        <h1>Let's Move! 🏃‍♂️</h1>
+        <p>Listen and do actions!</p>
+        <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+            <button class="btn-action" style="background:#4caf50;" onclick="speak('Jump like a frog')">🐸 Jump!</button>
+            <button class="btn-action" style="background:#2196f3;" onclick="speak('Run like a lion')">🦁 Run!</button>
+        </div>
+        <button class="btn-action" style="background:#f44336; width: 80%;" onclick="triggerFreeze()">🥶 FREEZE!</button>
+    </div>
 
-<script>
+    <!-- СЛАЙД 4: Игра "What's missing?" -->
+    <div id="slide4" class="slide-container">
+        <h1>What's Missing? 🤔</h1>
+        <p>Закрой глаза, а учитель спрячет животное!</p>
+        <button class="btn-action" style="background:#9c27b0; margin-bottom: 20px;" onclick="hideRandomCard()">🙈 Hide Animal</button>
+        <div class="grid" id="missing-grid">
+            <div class="card game-card" data-name="a cat">
+                <img src="https://icons8.com" alt="cat">
+                <div class="word">a cat</div>
+            </div>
+            <div class="card game-card" data-name="a dog">
+                <img src="https://icons8.com" alt="dog">
+                <div class="word">a dog</div>
+            </div>
+            <div class="card game-card" data-name="a lion">
+                <img src="https://icons8.com" alt="lion">
+                <div class="word">a lion</div>
+            </div>
+            <div class="card game-card" data-name="a frog">
+                <img src="https://icons8.com" alt="frog">
+                <div class="word">a frog</div>
+            </div>
+        </div>
+    </div>
 
-    /* =========================
-       SLIDES
-    ========================= */
+    <!-- СЛАЙД 5: Финал -->
+    <div id="slide5" class="slide-container">
+        <h1>Super Job! 🎉</h1>
+        <p>You get a star!</p>
+        <div style="font-size: 7rem; animation: pulse 1s infinite alternate; margin: 20px;">⭐</div>
+        <button class="btn-action" onclick="speak('Goodbye! See you next time!')">👋 Goodbye!</button>
+    </div>
 
-    const slides = document.querySelectorAll('.slide');
+    <!-- Эффект заморозки -->
+    <div id="freezeOverlay" class="freeze-overlay" onclick="this.style.display='none'">🥶 FREEZE!</div>
 
-    let currentSlide = 0;
+    <script>
+        // Функция переключения слайдов
+        function switchSlide(slideNumber) {
+            document.querySelectorAll('.slide-container').forEach(slide => slide.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById('slide' + slideNumber).classList.add('active');
+            event.target.classList.add('active');
 
-    function showSlide(index) {
-
-        if (index < 0) {
-            index = 0;
-        }
-
-        if (index >= slides.length) {
-            index = slides.length - 1;
-        }
-
-        slides.forEach(slide => {
-            slide.classList.remove('active');
-        });
-
-        slides[index].classList.add('active');
-
-        currentSlide = index;
-
-        document.getElementById('counter').textContent =
-            `${currentSlide + 1} / ${slides.length}`;
-    }
-
-
-    function nextSlide() {
-        showSlide(currentSlide + 1);
-    }
-
-
-    function previousSlide() {
-        showSlide(currentSlide - 1);
-    }
-
-
-    /* =========================
-       KEYBOARD
-    ========================= */
-
-    document.addEventListener('keydown', function(event) {
-
-        if (event.key === 'ArrowRight' ||
-            event.key === ' ') {
-
-            nextSlide();
-        }
-
-        if (event.key === 'ArrowLeft') {
-            previousSlide();
-        }
-
-    });
-
-
-    /* =========================
-       TEXT TO SPEECH
-    ========================= */
-
-    function speak(text) {
-
-        if (!('speechSynthesis' in window)) {
-            return;
-        }
-
-        window.speechSynthesis.cancel();
-
-        const utterance =
-            new SpeechSynthesisUtterance(text);
-
-        utterance.lang = 'en-US';
-        utterance.rate = 0.8;
-        utterance.pitch = 1.1;
-
-        window.speechSynthesis.speak(utterance);
-    }
-
-
-    /* =========================
-       GAME
-    ========================= */
-
-    function checkAnswer(button, correct) {
-
-        const feedback =
-            button.parentElement.parentElement
-            .querySelector('.game-feedback');
-
-        if (correct) {
-
-            feedback.textContent = '🎉 Great job!';
-
-            speak('Great job!');
-
-        } else {
-
-            feedback.textContent = '😊 Try again!';
-
-            speak('Try again!');
-
-        }
-
-    }
-
-</script>
-
-</body>
-</html>
-
+            // Сброс спрятанных карт при переходе на 4 слайд
