@@ -1,164 +1,12 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Trial Lesson for Kids</title>
-    <style>
-        :root {
-            --primary: #4CAF50;
-            --primary-dark: #45a049;
-            --bg-color: #f0f8ff;
-            --card-bg: #ffffff;
-            --text-color: #333;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            user-select: none;
-        }
-
-        /* Навигация по этапам */
-        .navigation {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .nav-btn {
-            background-color: #ddd;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn.active {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
-        }
-
-        /* Контейнер для слайдов */
-        .slide-container {
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            padding: 30px;
-            width: 90%;
-            max-width: 800px;
-            min-height: 450px;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .slide-container.active {
-            display: flex;
-        }
-
-        h1 { font-size: 2.5rem; margin-top: 0; color: #2c3e50; }
-        p { font-size: 1.5rem; color: #7f8c8d; }
-
-        /* Стили для карточек животных */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .card {
-            background: #f9f9f9;
-            border: 4px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .card:hover {
-            transform: scale(1.03);
-            border-color: var(--primary);
-        }
-
-        .card img {
-            width: 120px;
-            height: 120px;
-            object-fit: contain;
-        }
-
-        .card .word {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-top: 10px;
-            color: #2c3e50;
-        }
-
-        /* Специальные анимации и кнопки */
-        .btn-action {
-            background-color: #ff9800;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        .btn-action:hover { transform: scale(1.05); }
-
-        .hidden-card {
-            visibility: hidden;
-            opacity: 0;
-        }
-
-        /* Анимация для заморозки (Freeze) */
-        .freeze-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 188, 212, 0.8);
-            color: white;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-size: 5rem;
-            font-weight: bold;
-            z-index: 1000;
-        }
-    </style>
-
-    <script>if(slideNumber === 4) {document.querySelectorAll('.game-card').forEach(card => card.classList.remove('hidden-card'));}}// Озвучка текста браузером (SpeechSynthesis)function speak(text) {const utterance = new SpeechSynthesisUtterance(text);utterance.lang = 'en-US';utterance.rate = 0.8; // Чуть медленнее для ребенкаwindow.speechSynthesis.speak(utterance);}// Логика игры "What's missing?"function hideRandomCard() {const cards = document.querySelectorAll('.game-card');// Сначала возвращаем все картыcards.forEach(card => card.classList.remove('hidden-card'));// Выбираем случайную и прячем ееconst randomIndex = Math.floor(Math.random() * cards.length);setTimeout(() => {cards[randomIndex].classList.add('hidden-card');speak("Open your eyes! What's missing?");}, 100);}// Эффект кнопки Freezefunction triggerFreeze() {const overlay = document.getElementById('freezeOverlay');overlay.style.display = 'flex';speak("Freeze!");setTimeout(() => { overlay.style.display = 'none'; }, 2500);}</script>
-</head>
 <body>
 
-    <!-- Навигация для преподавателя -->
+    <!-- НАВИГАЦИЯ: Теперь мы передаем 'this' (саму кнопку) внутрь функции -->
     <div class="navigation">
-        <button class="nav-btn active" onclick="switchSlide(1)">1. Hello</button>
-        <button class="nav-btn" onclick="switchSlide(2)">2. Animals</button>
-        <button class="nav-btn" onclick="switchSlide(3)">3. TPR Game</button>
-        <button class="nav-btn" onclick="switchSlide(4)">4. What's Missing?</button>
-        <button class="nav-btn" onclick="switchSlide(5)">5. Well Done!</button>
+        <button class="nav-btn active" onclick="switchSlide(1, this)">1. Hello</button>
+        <button class="nav-btn" onclick="switchSlide(2, this)">2. Animals</button>
+        <button class="nav-btn" onclick="switchSlide(3, this)">3. TPR Game</button>
+        <button class="nav-btn" onclick="switchSlide(4, this)">4. What's Missing?</button>
+        <button class="nav-btn" onclick="switchSlide(5, this)">5. Well Done!</button>
     </div>
 
     <!-- СЛАЙД 1: Приветствие -->
@@ -232,20 +80,61 @@
     <div id="slide5" class="slide-container">
         <h1>Super Job! 🎉</h1>
         <p>You get a star!</p>
-        <div style="font-size: 7rem; animation: pulse 1s infinite alternate; margin: 20px;">⭐</div>
+        <div style="font-size: 7rem; margin: 20px;">⭐</div>
         <button class="btn-action" onclick="speak('Goodbye! See you next time!')">👋 Goodbye!</button>
     </div>
 
     <!-- Эффект заморозки -->
     <div id="freezeOverlay" class="freeze-overlay" onclick="this.style.display='none'">🥶 FREEZE!</div>
 
+    <!-- ИСПРАВЛЕННЫЙ СКРИПТ -->
     <script>
-        // Функция переключения слайдов
-        function switchSlide(slideNumber) {
+        function switchSlide(slideNumber, buttonElement) {
+            // 1. Скрываем все слайды и убираем подсветку со всех кнопок
             document.querySelectorAll('.slide-container').forEach(slide => slide.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             
-            document.getElementById('slide' + slideNumber).classList.add('active');
-            event.target.classList.add('active');
+            // 2. Показываем нужный слайд
+            const targetSlide = document.getElementById('slide' + slideNumber);
+            if (targetSlide) {
+                targetSlide.classList.add('active');
+            }
+            
+            // 3. Подсвечиваем активную кнопку
+            if (buttonElement) {
+                buttonElement.classList.add('active');
+            }
 
-            // Сброс спрятанных карт при переходе на 4 слайд
+            // 4. Сброс игры "What's missing", если зашли на 4 вкладку
+            if(slideNumber === 4) {
+                document.querySelectorAll('.game-card').forEach(card => card.classList.remove('hidden-card'));
+            }
+        }
+
+        function speak(text) {
+            window.speechSynthesis.cancel(); // Сбрасываем старую озвучку, если кликнули быстро
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 0.8; 
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function hideRandomCard() {
+            const cards = document.querySelectorAll('.game-card');
+            cards.forEach(card => card.classList.remove('hidden-card'));
+            
+            const randomIndex = Math.floor(Math.random() * cards.length);
+            setTimeout(() => {
+                cards[randomIndex].classList.add('hidden-card');
+                speak("Open your eyes! What's missing?");
+            }, 100);
+        }
+
+        function triggerFreeze() {
+            const overlay = document.getElementById('freezeOverlay');
+            overlay.style.display = 'flex';
+            speak("Freeze!");
+            setTimeout(() => { overlay.style.display = 'none'; }, 2500);
+        }
+    </script>
+</body>
