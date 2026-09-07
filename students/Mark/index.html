@@ -147,6 +147,8 @@
             z-index: 1000;
         }
     </style>
+
+    <script>if(slideNumber === 4) {document.querySelectorAll('.game-card').forEach(card => card.classList.remove('hidden-card'));}}// Озвучка текста браузером (SpeechSynthesis)function speak(text) {const utterance = new SpeechSynthesisUtterance(text);utterance.lang = 'en-US';utterance.rate = 0.8; // Чуть медленнее для ребенкаwindow.speechSynthesis.speak(utterance);}// Логика игры "What's missing?"function hideRandomCard() {const cards = document.querySelectorAll('.game-card');// Сначала возвращаем все картыcards.forEach(card => card.classList.remove('hidden-card'));// Выбираем случайную и прячем ееconst randomIndex = Math.floor(Math.random() * cards.length);setTimeout(() => {cards[randomIndex].classList.add('hidden-card');speak("Open your eyes! What's missing?");}, 100);}// Эффект кнопки Freezefunction triggerFreeze() {const overlay = document.getElementById('freezeOverlay');overlay.style.display = 'flex';speak("Freeze!");setTimeout(() => { overlay.style.display = 'none'; }, 2500);}</script>
 </head>
 <body>
 
