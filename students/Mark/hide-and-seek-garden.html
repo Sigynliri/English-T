@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Прятки в саду</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700&display=swap');
+
+:root{
+  --sky-top:#8fd6ea;
+  --sky-bottom:#cdeffb;
+  --grass-1:#7bc95e;
+  --grass-2:#5fae47;
+  --bush-1:#3f9e4d;
+  --bush-2:#2f7d3b;
+  --bush-leaf:#57b862;
+  --sun:#ffd35c;
+  --wood:#a9723e;
+  --card:#ffffff;
+  --ink:#28452b;
+  --accent:#ff8a5b;
+  --accent-2:#ffb648;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Nunito', sans-serif;
+  min-height:100vh;
+  background:linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bottom) 42%, var(--grass-1) 42%, var(--grass-2) 100%);
+  overflow-x:hidden;
+  color:var(--ink);
+  position:relative;
+  padding-bottom:40px;
+}
+
+/* decorative sky */
+.sun{
+  position:absolute; top:26px; right:8%;
+  width:86px; height:86px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #fff2c4, var(--sun) 60%, #ffb845 100%);
+  box-shadow:0 0 40px 10px rgba(255,211,92,0.55);
+}
+.cloud{
+  position:absolute; top:60px;
+  width:120px; height:44px;
+  background:#fff; border-radius:60px;
+  opacity:0.9;
+  filter:drop-shadow(0 4px 0 rgba(0,0,0,0.03));
+}
+.cloud::before, .cloud::after{
+  content:''; position:absolute; background:#fff; border-radius:50%;
+}
+.cloud::before{ width:56px; height:56px; top:-26px; left:14px; }
+.cloud::after{ width:44px; height:44px; top:-18px; left:60px; }
+.cloud.c1{ left:6%; top:40px; transform:scale(0.8); }
+.cloud.c2{ left:70%; top:96px; transform:scale(0.6); }
+.cloud.c3{ left:38%; top:24px; transform:scale(0.5); }
+
+/* header */
+header{
+  position:relative;
+  text-align:center;
+  padding:34px 20px 10px;
+  z-index:3;
+}
+h1{
+  font-family:'Baloo 2', sans-serif;
+  font-weight:800;
+  font-size:clamp(28px, 5vw, 44px);
+  color:#1f5c2c;
+  margin:0 0 6px;
+  text-shadow:2px 3px 0 rgba(255,255,255,0.55);
+}
+.subtitle{
+  font-size:16px;
+  font-weight:700;
+  color:#2b5230;
+  background:rgba(255,255,255,0.6);
+  display:inline-block;
+  padding:6px 16px;
+  border-radius:30px;
+  margin-top:4px;
+}
+
+/* scoreboard */
+.scoreboard{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:16px;
+  margin:18px auto 6px;
+  position:relative;
+  z-index:3;
+}
+.score-pill{
+  background:var(--card);
+  border-radius:40px;
+  padding:10px 22px;
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:18px;
+  color:var(--ink);
+  box-shadow:0 6px 0 rgba(0,0,0,0.08);
+}
+.score-pill span{ color:var(--accent); }
+button.restart{
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:16px;
+  border:none;
+  background:var(--accent);
+  color:#fff;
+  padding:10px 22px;
+  border-radius:40px;
+  cursor:pointer;
+  box-shadow:0 6px 0 #d9612f;
+  transition:transform 0.08s ease;
+}
+button.restart:active{ transform:translateY(4px); box-shadow:0 2px 0 #d9612f; }
+
+/* garden grid */
+.garden{
+  position:relative;
+  z-index:2;
+  max-width:920px;
+  margin:26px auto 0;
+  padding:20px clamp(14px,4vw,40px) 40px;
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:40px 18px;
+}
+@media (max-width:700px){
+  .garden{ grid-template-columns:repeat(2, 1fr); }
+}
+
+.spot{
+  position:relative;
+  height:210px;
+  border-radius:16px;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  overflow:visible;
+  align-self:start;
+}
+/* checkerboard: every other spot sits lower, like alternating chess squares */
+.spot:nth-child(even){
+  margin-top:46px;
+}
+@media (max-width:700px){
+  .garden{ row-gap:44px; }
+  .spot:nth-child(even){ margin-top:44px; }
+}
+
+/* patch of dirt under each spot for grounding */
+.patch{
+  position:absolute;
+  bottom:2px; left:50%; transform:translateX(-50%);
+  width:88%; height:22px;
+  background:rgba(40,60,25,0.18);
+  border-radius:50%;
+  filter:blur(1px);
+}
+
+.animal{
+  position:absolute;
+  bottom:14px; left:50%;
+  transform:translateX(-50%);
+  font-size:58px;
+  line-height:1;
+  user-select:none;
+  filter:drop-shadow(0 4px 2px rgba(0,0,0,0.18));
+  transition:transform 0.25s ease;
+}
+.spot.found .animal{ transform:translateX(-50%) scale(1.08); }
+
+.bubble{
+  position:absolute;
+  bottom:100%;
+  left:50%;
+  transform:translateX(-50%) translateY(10px) scale(0.7);
+  background:#fff;
+  border-radius:14px;
+  padding:6px 12px;
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:15px;
+  color:var(--ink);
+  white-space:nowrap;
+  box-shadow:0 4px 0 rgba(0,0,0,0.1);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.25s ease, transform 0.25s ease;
+}
+.bubble::after{
+  content:'';
+  position:absolute;
+  top:100%; left:50%; transform:translateX(-50%);
+  border:7px solid transparent;
+  border-top-color:#fff;
+}
+.spot.found .bubble{
+  opacity:1;
+  transform:translateX(-50%) translateY(0) scale(1);
+}
+.bubble button{
+  border:none;
+  background:var(--accent-2);
+  color:#5a3200;
+  border-radius:50%;
+  width:22px; height:22px;
+  font-size:12px;
+  margin-left:6px;
+  cursor:pointer;
+  vertical-align:middle;
+  line-height:22px;
+  padding:0;
+}
+
+/* the hider (box / house / tree) */
+.bush{
+  position:absolute;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  cursor:grab;
+  touch-action:none;
+  transition:transform 0.35s cubic-bezier(.34,1.56,.64,1), opacity 0.3s ease;
+  z-index:4;
+}
+.bush:active{ cursor:grabbing; }
+.bush svg{ width:100%; height:100%; display:block; filter:drop-shadow(0 6px 3px rgba(0,0,0,0.2)); }
+
+.bush.box{ width:104px; height:100px; }
+.bush.house{ width:138px; height:158px; }
+.bush.tree{ width:120px; height:180px; }
+
+.spot.found .bush{
+  pointer-events:none;
+}
+
+.spot .hint{
+  position:absolute;
+  bottom:-22px;
+  font-size:11px;
+  font-weight:700;
+  color:#2b5230;
+  opacity:0.65;
+}
+
+/* celebration overlay */
+.celebration{
+  position:fixed;
+  inset:0;
+  background:rgba(20,60,30,0.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s ease;
+}
+.celebration.show{ opacity:1; pointer-events:auto; }
+.celebration .card{
+  background:#fff;
+  border-radius:24px;
+  padding:34px 40px;
+  text-align:center;
+  max-width:340px;
+  transform:scale(0.85);
+  transition:transform 0.3s ease;
+  box-shadow:0 12px 0 rgba(0,0,0,0.15);
+}
+.celebration.show .card{ transform:scale(1); }
+.celebration h2{
+  font-family:'Baloo 2', sans-serif;
+  color:#1f5c2c;
+  font-size:28px;
+  margin:6px 0;
+}
+.celebration p{ font-weight:700; color:#456b49; margin:0 0 18px;}
+.celebration .emojis{ font-size:34px; margin-bottom:8px; }
+
+footer.instructions{
+  max-width:700px;
+  margin:30px auto 0;
+  text-align:center;
+  padding:0 20px;
+  position:relative;
+  z-index:2;
+  font-weight:700;
+  color:#2b5230;
+  font-size:14px;
+  opacity:0.85;
+}
+</style>
+</head>
+<body>
+
+<div class="sun"></div>
+<div class="cloud c1"></div>
+<div class="cloud c2"></div>
+<div class="cloud c3"></div>
+
+<header>
+  <h1>🌿 Прятки в саду</h1>
+  <div class="subtitle">Отодвинь коробку, домик или дерево — и назови животное по-английски!</div>
+</header>
+
+<div class="scoreboard">
+  <div class="score-pill">Найдено: <span id="scoreCount">0</span> / <span id="scoreTotal">8</span></div>
+  <button class="restart" id="restartBtn">🔄 Играть заново</button>
+</div>
+
+<div class="garden" id="garden"></div>
+
+<footer class="instructions">Нажми на пузырёк с именем животного, чтобы услышать его произношение 🔊</footer>
+
+<div class="celebration" id="celebration">
+  <div class="card">
+    <div class="emojis">🎉🐾🎉</div>
+    <h2>Отлично!</h2>
+    <p>Ты нашёл всех животных в саду!</p>
+    <button class="restart" id="playAgainBtn">Играть снова</button>
+  </div>
+</div>
+
+<script>
+const ANIMAL_POOL = [
+  {en:"cat", ru:"кошка", emoji:"🐱"},
+  {en:"dog", ru:"собака", emoji:"🐶"},
+  {en:"rabbit", ru:"кролик", emoji:"🐰"},
+  {en:"fox", ru:"лиса", emoji:"🦊"},
+  {en:"bear", ru:"медведь", emoji:"🐻"},
+  {en:"owl", ru:"сова", emoji:"🦉"},
+  {en:"frog", ru:"лягушка", emoji:"🐸"},
+  {en:"duck", ru:"утка", emoji:"🦆"},
+  {en:"mouse", ru:"мышь", emoji:"🐭"},
+  {en:"lion", ru:"лев", emoji:"🦁"},
+  {en:"tiger", ru:"тигр", emoji:"🐯"},
+  {en:"monkey", ru:"обезьяна", emoji:"🐵"},
+  {en:"pig", ru:"свинья", emoji:"🐷"},
+  {en:"sheep", ru:"овца", emoji:"🐑"},
+  {en:"cow", ru:"корова", emoji:"🐮"},
+  {en:"hedgehog", ru:"ёжик", emoji:"🦔"},
+  {en:"chicken", ru:"курица", emoji:"🐔"},
+  {en:"bee", ru:"пчела", emoji:"🐝"}
+];
+
+const SPOTS_COUNT = 8;
+const garden = document.getElementById('garden');
+const scoreCountEl = document.getElementById('scoreCount');
+const scoreTotalEl = document.getElementById('scoreTotal');
+const celebration = document.getElementById('celebration');
+
+scoreTotalEl.textContent = SPOTS_COUNT;
+
+let foundCount = 0;
+
+function shuffledPool(){
+  const arr = [...ANIMAL_POOL];
+  for(let i=arr.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [arr[i],arr[j]] = [arr[j],arr[i]];
+  }
+  return arr.slice(0, SPOTS_COUNT);
+}
+
+function boxSVG(shade){
+  const palettes = [
+    ['#c9873f','#a9723e','#7a4f26'],
+    ['#d1934a','#b47c43','#82562b']
+  ];
+  const [light, base, dark] = palettes[shade % palettes.length];
+  return `
+  <svg viewBox="0 0 104 100" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="52" cy="94" rx="42" ry="6" fill="rgba(0,0,0,0.15)"/>
+    <rect x="10" y="30" width="84" height="58" rx="4" fill="${base}"/>
+    <rect x="10" y="30" width="84" height="14" fill="${light}"/>
+    <rect x="10" y="30" width="84" height="58" rx="4" fill="none" stroke="${dark}" stroke-width="3"/>
+    <line x1="10" y1="59" x2="94" y2="59" stroke="${dark}" stroke-width="3"/>
+    <line x1="52" y1="30" x2="52" y2="88" stroke="${dark}" stroke-width="3"/>
+    <path d="M8 30 L52 8 L96 30" fill="none" stroke="${dark}" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M8 30 L52 8 L96 30 L94 34 L52 14 L10 34 Z" fill="${light}"/>
+  </svg>`;
+}
+
+function houseSVG(shade){
+  const palettes = [
+    ['#f3e3c4','#e07a5f','#8c4a34'],
+    ['#f6ead0','#d96b52','#7d422e']
+  ];
+  const [wall, roof, roofDark] = palettes[shade % palettes.length];
+  return `
+  <svg viewBox="0 0 138 158" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="69" cy="152" rx="54" ry="7" fill="rgba(0,0,0,0.15)"/>
+    <rect x="20" y="70" width="98" height="76" rx="3" fill="${wall}"/>
+    <polygon points="12,74 69,18 126,74" fill="${roof}" stroke="${roofDark}" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="60" y="14" width="12" height="18" fill="${roofDark}"/>
+    <rect x="52" y="106" width="34" height="40" rx="2" fill="${roofDark}"/>
+    <circle cx="80" cy="126" r="2.5" fill="${wall}"/>
+    <rect x="28" y="84" width="24" height="24" rx="2" fill="#bfe6f2" stroke="${roofDark}" stroke-width="3"/>
+    <rect x="86" y="84" width="24" height="24" rx="2" fill="#bfe6f2" stroke="${roofDark}" stroke-width="3"/>
+    <line x1="40" y1="84" x2="40" y2="108" stroke="${roofDark}" stroke-width="2"/>
+    <line x1="28" y1="96" x2="52" y2="96" stroke="${roofDark}" stroke-width="2"/>
+    <line x1="98" y1="84" x2="98" y2="108" stroke="${roofDark}" stroke-width="2"/>
+    <line x1="86" y1="96" x2="110" y2="96" stroke="${roofDark}" stroke-width="2"/>
+  </svg>`;
+}
+
+function treeSVG(shade){
+  const palettes = [
+    ['#3f9e4d','#57b862','#2f7d3b'],
+    ['#4aa957','#63c46d','#358045']
+  ];
+  const [base, light, dark] = palettes[shade % palettes.length];
+  return `
+  <svg viewBox="0 0 120 180" xmlns="http://www.w3.org/2000/svg">
+    <ellipse cx="60" cy="172" rx="40" ry="7" fill="rgba(0,0,0,0.15)"/>
+    <rect x="50" y="110" width="20" height="60" rx="4" fill="#8a5a34"/>
+    <rect x="50" y="110" width="7" height="60" fill="#a9723e"/>
+    <circle cx="34" cy="80" r="34" fill="${dark}"/>
+    <circle cx="86" cy="76" r="32" fill="${dark}"/>
+    <circle cx="60" cy="52" r="42" fill="${base}"/>
+    <circle cx="42" cy="44" r="22" fill="${light}"/>
+    <circle cx="82" cy="50" r="18" fill="${light}"/>
+    <circle cx="60" cy="78" r="24" fill="${base}"/>
+  </svg>`;
+}
+
+const HIDER_TYPES = [
+  { cls: 'box', svg: boxSVG, slideDist: 150 },
+  { cls: 'house', svg: houseSVG, slideDist: 190 },
+  { cls: 'tree', svg: treeSVG, slideDist: 180 }
+];
+
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance("A " + text);
+  utter.lang = "en-US";
+  utter.rate = 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
+function buildGarden(){
+  garden.innerHTML = '';
+  foundCount = 0;
+  scoreCountEl.textContent = foundCount;
+  celebration.classList.remove('show');
+
+  const animals = shuffledPool();
+
+  animals.forEach((animal, idx) => {
+    const spot = document.createElement('div');
+    spot.className = 'spot';
+
+    const patch = document.createElement('div');
+    patch.className = 'patch';
+    spot.appendChild(patch);
+
+    const animalEl = document.createElement('div');
+    animalEl.className = 'animal';
+    animalEl.textContent = animal.emoji;
+    spot.appendChild(animalEl);
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.innerHTML = `A ${animal.en}! <button title="Слушать">🔊</button>`;
+    bubble.querySelector('button').addEventListener('click', (e) => {
+      e.stopPropagation();
+      speak(animal.en);
+    });
+    spot.appendChild(bubble);
+
+    const hiderType = HIDER_TYPES[idx % HIDER_TYPES.length];
+    const bush = document.createElement('div');
+    bush.className = 'bush ' + hiderType.cls;
+    bush.innerHTML = hiderType.svg(Math.floor(idx / HIDER_TYPES.length));
+    spot.appendChild(bush);
+
+    const hint = document.createElement('div');
+    hint.className = 'hint';
+    hint.textContent = '👉 подвинь';
+    spot.appendChild(hint);
+
+    let startX = 0;
+    let dragging = false;
+    let moved = false;
+
+    function pointerDown(e){
+      if(spot.classList.contains('found')) return;
+      dragging = true;
+      moved = false;
+      startX = (e.touches ? e.touches[0].clientX : e.clientX);
+      bush.style.transition = 'none';
+    }
+    function pointerMove(e){
+      if(!dragging) return;
+      const clientX = (e.touches ? e.touches[0].clientX : e.clientX);
+      const dx = clientX - startX;
+      if(Math.abs(dx) > 4) moved = true;
+      const maxDrag = hiderType.slideDist;
+      const clamped = Math.max(-maxDrag, Math.min(maxDrag, dx));
+      bush.style.transform = `translateX(calc(-50% + ${clamped}px)) rotate(${clamped/14}deg)`;
+      if(Math.abs(clamped) > maxDrag * 0.45){
+        reveal();
+      }
+    }
+    function pointerUp(){
+      if(!dragging) return;
+      dragging = false;
+      bush.style.transition = '';
+      if(!spot.classList.contains('found')){
+        bush.style.transform = '';
+        if(!moved){
+          // treat plain click/tap as reveal too
+          reveal();
+        }
+      }
+    }
+
+    function reveal(){
+      if(spot.classList.contains('found')) return;
+      spot.classList.add('found');
+      const dir = (Math.random() > 0.5) ? 1 : -1;
+      const dist = hiderType.slideDist + 30;
+      bush.style.transform = `translateX(calc(-50% + ${dir*dist}px)) rotate(${dir*18}deg)`;
+      bush.style.opacity = '0';
+      foundCount++;
+      scoreCountEl.textContent = foundCount;
+      speak(animal.en);
+      if(foundCount === SPOTS_COUNT){
+        setTimeout(() => celebration.classList.add('show'), 500);
+      }
+    }
+
+    bush.addEventListener('mousedown', pointerDown);
+    window.addEventListener('mousemove', pointerMove);
+    window.addEventListener('mouseup', pointerUp);
+    bush.addEventListener('touchstart', pointerDown, {passive:true});
+    window.addEventListener('touchmove', pointerMove, {passive:true});
+    window.addEventListener('touchend', pointerUp);
+
+    garden.appendChild(spot);
+  });
+}
+
+document.getElementById('restartBtn').addEventListener('click', buildGarden);
+document.getElementById('playAgainBtn').addEventListener('click', buildGarden);
+
+buildGarden();
+</script>
+</body>
+</html>
