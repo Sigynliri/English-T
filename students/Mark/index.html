@@ -330,3 +330,27 @@
         }
     </script>
 </body>
+
+       <script>     // Функция для управления маскотом (озвучка + смена эмоций)
+        function mascotAction(text, mode) {
+            const imgElement = document.getElementById('main-character-img');
+            
+            if (mode === 1) {
+                // Включаем картинку вопроса
+                imgElement.src = 'character-ask.png';
+                imgElement.style.transform = 'scale(1)';
+            } else if (mode === 2) {
+                // Включаем картинку реакции и добавляем эффект прыжка
+                imgElement.src = 'character-react.png';
+                imgElement.style.transform = 'scale(1.25)';
+                
+                // Через секунду возвращаем в нормальный размер, но оставляем радостное лицо
+                setTimeout(() => {
+                    imgElement.style.transform = 'scale(1.1)';
+                }, 300);
+            }
+            
+            // Запускаем озвучку текста
+            speak(text);
+        }
+       </script>
