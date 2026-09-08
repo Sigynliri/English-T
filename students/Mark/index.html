@@ -165,7 +165,7 @@
         <p>Let's talk and sing together!</p>
         
         <!-- КАРТИНКА ПЕРСОНАЖА (по умолчанию стоит картинка вопроса) -->
-        <img src="../../character-ask.png" alt="Mascot" id="main-character-img" style="width: 150px; height: 150px; object-fit: contain; margin: 15px 0; filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15)); transition: transform 0.2s, filter 0.2s;">
+        <img src="/English-T/images/character-ask.png" alt="Mascot" id="main-character-img" style="width: 150px; height: 150px; object-fit: contain; margin: 15px 0; filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15)); transition: transform 0.2s, filter 0.2s;">
 
 
         <div style="position: relative; width: 100%; max-width: 480px; padding-bottom: 56.25%; height: 0; margin: 15px 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
@@ -328,11 +328,11 @@
             
             if (mode === 1) {
                 // Включаем картинку вопроса
-                imgElement.src = '../../character-ask.';
+                imgElement.src = '/English-T/images/character-ask.png';
                 imgElement.style.transform = 'scale(1)';
             } else if (mode === 2) {
                 // Включаем картинку реакции и добавляем эффект прыжка
-                imgElement.src = '../../character-react.png';
+                imgElement.src = '/English-T/images/character-react.png';
                 imgElement.style.transform = 'scale(1.25)';
                 
                 // Через секунду возвращаем в нормальный размер, но оставляем радостное лицо
