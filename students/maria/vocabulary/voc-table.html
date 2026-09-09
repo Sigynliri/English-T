@@ -232,46 +232,11 @@
 
             <h2>🔄 Review</h2>
 
-            <div class="quiz-container">
-    <div id="quiz-game">
-        <div class="quiz-header">
-            <span>📝 Проверка знаний</span>
-            <span class="progress-text" id="progress">Вопрос 1 из 5</span>
-        </div>
-        <div class="question-text" id="question">Загрузка вопроса...</div>
-        <ul class="options-list" id="options"></ul>
-        <div class="feedback-box" id="feedback"></div>
-        <div class="clearfix">
-            <button class="btn-next" id="btn-next" onclick="nextQuestion()">Дальше →</button>
-        </div>
-    </div>
-
-    <div class="quiz-results" id="quiz-results">
-        <h2>🎉 Тест завершен!</h2>
-        <div class="results-score" id="score-text">0 / 0</div>
-        <p id="results-comment">Отличный результат!</p>
-        <button class="btn-restart" onclick="restartQuiz()">Пройти еще раз</button>
-    </div>
-</div>
-
-        </section>
-
-    </main>
-
-
-    <footer>
-
-        <a href="../index.html">
-            ← Back to your classroom
-        </a>
-
-    </footer>
-<script>
- <!-- ========================================== -->
+           <!-- ========================================== -->
 <!-- НАДЕЖНЫЙ ИНТЕРАКТИВНЫЙ КВИЗ (БЕЗ CSS БЛОКОВ) -->
 <!-- ========================================== -->
 <div id="quiz-wrapper" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 40px auto; padding: 25px; background: #ffffff; border: 1px solid #eaecef; border-radius: 6px; color: #333333; line-height: 1.6; box-sizing: border-box;">
-    
+
     <!-- Игровой экран -->
     <div id="q-game" style="display: block;">
         <div style="font-size: 1.5rem; font-weight: 600; border-bottom: 2px solid #eaecef; padding-bottom: 10px; margin-bottom: 20px; color: #24292e; display: flex; justify-content: space-between; align-items: center;">
@@ -338,8 +303,9 @@
         const gameBlock = document.getElementById('q-game');
         const resultsBlock = document.getElementById('q-results');
         if (gameBlock && resultsBlock) {
-            gameBlock.style.display = 'block';
+            // явно фиксируем, какой экран показан — никакой "мигающий" результат
             resultsBlock.style.display = 'none';
+            gameBlock.style.display = 'block';
             renderQuestion();
         }
     }
@@ -347,20 +313,19 @@
     function renderQuestion() {
         isAnswered = false;
         const current = data[currentIdx];
-        
+
         document.getElementById('q-progress').textContent = `Вопрос ${currentIdx + 1} из ${data.length}`;
         document.getElementById('q-question').textContent = current.q;
         document.getElementById('q-feedback').style.display = 'none';
         document.getElementById('q-next').style.display = 'none';
-        
+
         const optionsContainer = document.getElementById('q-options');
         optionsContainer.innerHTML = '';
-        
+
         current.opts.forEach((option, index) => {
             const li = document.createElement('li');
             li.textContent = option;
-            
-            // Базовые инлайновые стили вариантов
+
             li.style.padding = '14px 18px';
             li.style.border = '1px solid #dcdcdc';
             li.style.borderRadius = '6px';
@@ -369,8 +334,8 @@
             li.style.backgroundColor = '#f6f8fa';
             li.style.color = '#24292e';
             li.style.transition = 'all 0.15s ease-in-out';
-            
-            // ✨ НАДЕЖНАЯ ПОДСВЕТКА НАВЕДЕНИЯ ЧЕРЕЗ JS СОВЫТИЯ
+
+            // ✨ НАДЕЖНАЯ ПОДСВЕТКА НАВЕДЕНИЯ ЧЕРЕЗ JS СОБЫТИЯ
             li.onmouseover = function() {
                 if (!isAnswered) {
                     this.style.backgroundColor = '#0366d6';
@@ -379,7 +344,7 @@
                     this.style.transform = 'translateX(4px)';
                 }
             };
-            
+
             li.onmouseout = function() {
                 if (!isAnswered) {
                     this.style.backgroundColor = '#f6f8fa';
@@ -388,7 +353,7 @@
                     this.style.transform = 'none';
                 }
             };
-            
+
             li.onclick = function() { handleSelect(index, this); };
             optionsContainer.appendChild(li);
         });
@@ -397,15 +362,15 @@
     function handleSelect(selectedIndex, element) {
         if (isAnswered) return;
         isAnswered = true;
-        
+
         const current = data[currentIdx];
         const allItems = document.getElementById('q-options').getElementsByTagName('li');
-        
+
         for (let li of allItems) {
             li.style.cursor = 'default';
             li.style.transform = 'none';
         }
-        
+
         if (selectedIndex === current.correct) {
             element.style.backgroundColor = '#dcffe4';
             element.style.borderColor = '#28a745';
@@ -417,7 +382,7 @@
             element.style.backgroundColor = '#ffdce0';
             element.style.borderColor = '#cb2431';
             element.style.color = '#721c24';
-            
+
             const correctLi = allItems[current.correct];
             correctLi.style.backgroundColor = '#dcffe4';
             correctLi.style.borderColor = '#28a745';
@@ -425,7 +390,7 @@
             correctLi.style.fontWeight = '600';
             document.getElementById('q-feedback').innerHTML = `<strong>❌ Ошибка</strong><br>${current.hint}`;
         }
-        
+
         document.getElementById('q-feedback').style.display = 'block';
         document.getElementById('q-next').style.display = 'block';
     }
@@ -438,7 +403,7 @@
             document.getElementById('q-game').style.display = 'none';
             document.getElementById('q-results').style.display = 'block';
             document.getElementById('q-score-text').textContent = `${currentScore} / ${data.length}`;
-            
+
             const comment = document.getElementById('q-comment');
             if (currentScore === data.length) {
                 comment.textContent = "Великолепно! Вы идеально усвоили весь материал этого урока. Смело применяйте на практике! 🚀";
@@ -456,16 +421,33 @@
         start();
     };
 
-    // Моментальный запуск
-    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    // Один надёжный запуск — без дублирующих таймеров и обработчиков,
+    // которые могли повторно вызывать start() и сбрасывать прогресс.
+    function init() {
+        currentIdx = 0;
+        currentScore = 0;
         start();
-    } else {
-        document.addEventListener('DOMContentLoaded', start);
     }
-    setTimeout(start, 100);
-    })();
-
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init, { once: true });
+    } else {
+        init();
+    }
+})();
 </script>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <a href="../index.html">
+            ← Back to your classroom
+        </a>
+
+    </footer>
 </body>
 
 </html>
