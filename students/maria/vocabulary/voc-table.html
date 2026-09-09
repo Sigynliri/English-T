@@ -295,142 +295,204 @@
 
     </footer>
 <script>
-    // База вопросов по вашему вокабуляру
-    const quizData = [
+ <!-- ========================================== -->
+<!-- НАДЕЖНЫЙ ИНТЕРАКТИВНЫЙ КВИЗ (БЕЗ CSS БЛОКОВ) -->
+<!-- ========================================== -->
+<div id="quiz-wrapper" style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 40px auto; padding: 25px; background: #ffffff; border: 1px solid #eaecef; border-radius: 6px; color: #333333; line-height: 1.6; box-sizing: border-box;">
+    
+    <!-- Игровой экран -->
+    <div id="q-game" style="display: block;">
+        <div style="font-size: 1.5rem; font-weight: 600; border-bottom: 2px solid #eaecef; padding-bottom: 10px; margin-bottom: 20px; color: #24292e; display: flex; justify-content: space-between; align-items: center;">
+            <span>📝 Проверка знаний</span>
+            <span id="q-progress" style="font-size: 0.9rem; color: #586069; font-weight: normal;">Вопрос 1 из 5</span>
+        </div>
+        <div id="q-question" style="font-size: 1.25rem; font-weight: 600; margin-bottom: 20px; color: #24292e;">Загрузка...</div>
+        <ul id="q-options" style="list-style: none; padding: 0; margin: 0 0 20px 0;"></ul>
+        <div id="q-feedback" style="padding: 15px 20px; background-color: #f1f8ff; border-left: 4px solid #0366d6; border-radius: 0 4px 4px 0; margin-bottom: 25px; display: none; font-size: 0.95rem;"></div>
+        <div style="display: table; content: ''; clear: both; width: 100%;">
+            <button id="q-next" onclick="goNextQuestion()" style="background-color: #2ea44f; color: white; border: 1px solid rgba(27, 31, 35, 0.15); padding: 10px 24px; font-size: 1rem; font-weight: 500; border-radius: 6px; cursor: pointer; display: none; float: right;">Дальше →</button>
+        </div>
+    </div>
+
+    <!-- Экран результатов -->
+    <div id="q-results" style="display: none; text-align: center; padding: 30px 0;">
+        <h2 style="font-size: 1.8rem; color: #24292e; margin-bottom: 10px;">🎉 Тест завершен!</h2>
+        <div id="q-score-text" style="font-size: 2.5rem; font-weight: bold; color: #2ea44f; margin-bottom: 15px;">0 / 0</div>
+        <p id="q-comment" style="margin-bottom: 20px;">Отличный результат!</p>
+        <button onclick="restartQuizGame()" style="background-color: #0366d6; color: white; border: 1px solid rgba(27, 31, 35, 0.15); padding: 10px 24px; font-size: 1rem; font-weight: 500; border-radius: 6px; cursor: pointer;">Пройти еще раз</button>
+    </div>
+</div>
+
+<script>
+(function() {
+    const data = [
         {
-            question: "Какое выражение лучше всего переводит на английский язык «критерии оценки»?",
-            options: ["Candidate profiles", "Evaluation criteria", "Interview approaches", "Talent mapping"],
+            q: "Какое выражение лучше всего переводит на английский язык «критерии оценки»?",
+            opts: ["Candidate profiles", "Evaluation criteria", "Interview approaches", "Talent mapping"],
             correct: 1,
             hint: "Правильно! Evaluation criteria — это стандарты и параметры, по которым оценивают кандидатов."
         },
         {
-            question: "Заполните пропуск: «An experienced manager can handle different positions _________ the industry.»",
-            options: ["align with", "regardless of", "in spite to", "accordingly"],
+            q: "Заполните пропуск: «An experienced manager can handle different positions _________ the industry.»",
+            opts: ["align with", "regardless of", "in spite to", "accordingly"],
             correct: 1,
             hint: "Верно! Фраза «regardless of the industry» переводится как «независимо от отрасли»."
         },
         {
-            question: "Что означает предложение: «It is hard to sustain high quality without constant testing.»?",
-            options: ["Сложно поднять качество без тестирования.", "Сложно поддерживать/сохранять высокое качество без постоянного тестирования.", "Тестирование ухудшает качество продукта.", "Мы должны изменить критерии оценки качества."],
+            q: "Что означает предложение: «It is hard to sustain high quality without constant testing.»?",
+            opts: ["Сложно поднять качество без тестирования.", "Сложно поддерживать/сохранять высокое качество без постоянного тестирования.", "Тестирование ухудшает качество продукта.", "Мы должны изменить критерии оценки качества."],
             correct: 1,
             hint: "Точно! Глагол 'Sustain' означает поддерживать, сохранять или удерживать показатели на высоком уровне."
         },
         {
-            question: "Как корректно сказать на английском: «Пожалуйста, посмотри этот документ, он мой (принадлежит мне)»?",
-            options: ["Please review this doc of me.", "Please review this doc of mine.", "Please review this my doc.", "Please review this document mine."],
+            q: "Как корректно сказать на английском: «Пожалуйста, посмотри этот документ, он мой (принадлежит мне)»?",
+            opts: ["Please review this doc of me.", "Please review this doc of mine.", "Please review this my doc.", "Please review this document mine."],
             correct: 1,
             hint: "Правильно! Конструкция «the doc of mine» используется для выражения принадлежности и авторства."
         },
         {
-            question: "В каком предложении фраза «step up» переведена как «взять на себя роль / занять должность»?",
-            options: ["He always steps up when needed.", "She will step up to the role of team lead next week.", "We managed to step up to the challenge.", "It's time to step up and take responsibility."],
+            q: "В каком предложении фраза «step up» переведена как «взять на себя роль / занять должность»?",
+            opts: ["He always steps up when needed.", "She will step up to the role of team lead next week.", "We managed to step up to the challenge.", "It's time to step up and take responsibility."],
             correct: 1,
             hint: "Верно! «Step up to the role / position» означает занять позицию или пойти на повышение, приняв новые обязанности."
         }
     ];
 
-    let currentQuestionIdx = 0;
-    let score = 0;
+    let currentIdx = 0;
+    let currentScore = 0;
+    let isAnswered = false;
 
-    // Объявляем переменные для элементов
-    let questionEl, optionsEl, feedbackEl, nextBtn, progressEl, quizGameEl, quizResultsEl, scoreTextEl, commentEl;
-
-    // Функция инициализации DOM-элементов и старта квиза
-    function initQuiz() {
-        questionEl = document.getElementById('question');
-        optionsEl = document.getElementById('options');
-        feedbackEl = document.getElementById('feedback');
-        nextBtn = document.getElementById('btn-next');
-        progressEl = document.getElementById('progress');
-        quizGameEl = document.getElementById('quiz-game');
-        quizResultsEl = document.getElementById('quiz-results');
-        scoreTextEl = document.getElementById('score-text');
-        commentEl = document.getElementById('results-comment');
-
-        // Проверяем, что все элементы найдены на странице, чтобы избежать ошибок
-        if (questionEl && optionsEl && feedbackEl && progressEl) {
-            loadQuestion();
-        } else {
-            console.error("Quiz Error: Некоторые HTML-элементы квиза не найдены на странице.");
+    function start() {
+        const gameBlock = document.getElementById('q-game');
+        const resultsBlock = document.getElementById('q-results');
+        if (gameBlock && resultsBlock) {
+            gameBlock.style.display = 'block';
+            resultsBlock.style.display = 'none';
+            renderQuestion();
         }
     }
 
-    function loadQuestion() {
-        const currentQuestion = quizData[currentQuestionIdx];
+    function renderQuestion() {
+        isAnswered = false;
+        const current = data[currentIdx];
         
-        feedbackEl.style.display = 'none';
-        nextBtn.style.display = 'none';
-        optionsEl.innerHTML = '';
+        document.getElementById('q-progress').textContent = `Вопрос ${currentIdx + 1} из ${data.length}`;
+        document.getElementById('q-question').textContent = current.q;
+        document.getElementById('q-feedback').style.display = 'none';
+        document.getElementById('q-next').style.display = 'none';
         
-        progressEl.textContent = `Вопрос ${currentQuestionIdx + 1} из ${quizData.length}`;
-        questionEl.textContent = currentQuestion.question;
+        const optionsContainer = document.getElementById('q-options');
+        optionsContainer.innerHTML = '';
         
-        currentQuestion.options.forEach((option, index) => {
+        current.opts.forEach((option, index) => {
             const li = document.createElement('li');
-            li.classList.add('option-item');
             li.textContent = option;
-            li.addEventListener('click', () => selectOption(index, li));
-            optionsEl.appendChild(li);
+            
+            // Базовые инлайновые стили вариантов
+            li.style.padding = '14px 18px';
+            li.style.border = '1px solid #dcdcdc';
+            li.style.borderRadius = '6px';
+            li.style.marginBottom = '12px';
+            li.style.cursor = 'pointer';
+            li.style.backgroundColor = '#f6f8fa';
+            li.style.color = '#24292e';
+            li.style.transition = 'all 0.15s ease-in-out';
+            
+            // ✨ НАДЕЖНАЯ ПОДСВЕТКА НАВЕДЕНИЯ ЧЕРЕЗ JS СОВЫТИЯ
+            li.onmouseover = function() {
+                if (!isAnswered) {
+                    this.style.backgroundColor = '#0366d6';
+                    this.style.borderColor = '#0366d6';
+                    this.style.color = '#ffffff';
+                    this.style.transform = 'translateX(4px)';
+                }
+            };
+            
+            li.onmouseout = function() {
+                if (!isAnswered) {
+                    this.style.backgroundColor = '#f6f8fa';
+                    this.style.borderColor = '#dcdcdc';
+                    this.style.color = '#24292e';
+                    this.style.transform = 'none';
+                }
+            };
+            
+            li.onclick = function() { handleSelect(index, this); };
+            optionsContainer.appendChild(li);
         });
     }
 
-    function selectOption(selectedIndex, selectedElement) {
-        const currentQuestion = quizData[currentQuestionIdx];
-        const allOptions = optionsEl.querySelectorAll('.option-item');
+    function handleSelect(selectedIndex, element) {
+        if (isAnswered) return;
+        isAnswered = true;
         
-        allOptions.forEach(opt => opt.classList.add('disabled'));
+        const current = data[currentIdx];
+        const allItems = document.getElementById('q-options').getElementsByTagName('li');
         
-        if (selectedIndex === currentQuestion.correct) {
-            selectedElement.classList.add('correct');
-            score++;
-            feedbackEl.innerHTML = `<strong>✨ Правильно!</strong><br>${currentQuestion.hint}`;
-        } else {
-            selectedElement.classList.add('incorrect');
-            allOptions[currentQuestion.correct].classList.add('correct');
-            feedbackEl.innerHTML = `<strong>❌ Ошибка</strong><br>${currentQuestion.hint}`;
+        for (let li of allItems) {
+            li.style.cursor = 'default';
+            li.style.transform = 'none';
         }
         
-        feedbackEl.style.display = 'block';
-        nextBtn.style.display = 'block';
-    }
-
-    function nextQuestion() {
-        currentQuestionIdx++;
-        if (currentQuestionIdx < quizData.length) {
-            loadQuestion();
+        if (selectedIndex === current.correct) {
+            element.style.backgroundColor = '#dcffe4';
+            element.style.borderColor = '#28a745';
+            element.style.color = '#155724';
+            element.style.fontWeight = '600';
+            currentScore++;
+            document.getElementById('q-feedback').innerHTML = `<strong>✨ Правильно!</strong><br>${current.hint}`;
         } else {
-            showResults();
+            element.style.backgroundColor = '#ffdce0';
+            element.style.borderColor = '#cb2431';
+            element.style.color = '#721c24';
+            
+            const correctLi = allItems[current.correct];
+            correctLi.style.backgroundColor = '#dcffe4';
+            correctLi.style.borderColor = '#28a745';
+            correctLi.style.color = '#155724';
+            correctLi.style.fontWeight = '600';
+            document.getElementById('q-feedback').innerHTML = `<strong>❌ Ошибка</strong><br>${current.hint}`;
         }
-    }
-
-    function showResults() {
-        quizGameEl.style.display = 'none';
-        quizResultsEl.style.display = 'block';
-        scoreTextEl.textContent = `${score} / ${quizData.length}`;
         
-        if (score === quizData.length) {
-            commentEl.textContent = "Великолепно! Вы идеально усвоили весь материал этого урока. Смело применяйте на практике! 🚀";
-        } else if (score >= quizData.length * 0.7) {
-            commentEl.textContent = "Хороший результат! Вы отлично ориентируетесь в бизнес-лексике, но пару фраз стоит повторить. 👍";
+        document.getElementById('q-feedback').style.display = 'block';
+        document.getElementById('q-next').style.display = 'block';
+    }
+
+    window.goNextQuestion = function() {
+        currentIdx++;
+        if (currentIdx < data.length) {
+            renderQuestion();
         } else {
-            commentEl.textContent = "Неплохая попытка! Рекомендуем еще раз заглянуть в таблицу со словарем и пройти тест снова. 📚";
+            document.getElementById('q-game').style.display = 'none';
+            document.getElementById('q-results').style.display = 'block';
+            document.getElementById('q-score-text').textContent = `${currentScore} / ${data.length}`;
+            
+            const comment = document.getElementById('q-comment');
+            if (currentScore === data.length) {
+                comment.textContent = "Великолепно! Вы идеально усвоили весь материал этого урока. Смело применяйте на практике! 🚀";
+            } else if (currentScore >= data.length * 0.7) {
+                comment.textContent = "Хороший результат! Вы отлично ориентируетесь в бизнес-лексике, но пару фраз стоит повторить. 👍";
+            } else {
+                comment.textContent = "Неплохая попытка! Рекомендуем еще раз заглянуть в таблицу со словарем и пройти тест снова. 📚";
+            }
         }
-    }
+    };
 
-    function restartQuiz() {
-        currentQuestionIdx = 0;
-        score = 0;
-        quizResultsEl.style.display = 'none';
-        quizGameEl.style.display = 'block';
-        loadQuestion();
-    }
+    window.restartQuizGame = function() {
+        currentIdx = 0;
+        currentScore = 0;
+        start();
+    };
 
-    // Безопасный запуск строго после полной загрузки HTML
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initQuiz);
+    // Моментальный запуск
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        start();
     } else {
-        initQuiz();
+        document.addEventListener('DOMContentLoaded', start);
     }
+    setTimeout(start, 100);
+    })();
+
 </script>
 </body>
 
