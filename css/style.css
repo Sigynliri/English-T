@@ -466,4 +466,40 @@ footer a {
             clear: both;
             display: table;
         }
+   /* Базовый стиль для вариантов ответов */
+.option-item {
+    padding: 12px 15px;
+    border: 1px solid #dcdcdc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    background-color: #f6f8fa;
+    transition: all 0.2s ease;
+}
+
+/* Эффект подсветки при наведении курсора (только для активных кнопок) */
+.option-item:not(.disabled):hover {
+    background-color: #0366d6; /* Фирменный синий цвет из вашего урока */
+    border-color: #0366d6;
+    color: #ffffff; /* Белый текст для контраста */
+}
+
+/* Состояния после выбора ответа */
+.option-item.correct {
+    background-color: #dcffe4 !important;
+    border-color: #28a745 !important;
+    color: #155724 !important;
+    font-weight: 600;
+}
+
+.option-item.incorrect {
+    background-color: #ffdce0 !important;
+    border-color: #cb2431 !important;
+    color: #721c24 !important;
+}
+
+.option-item.disabled {
+    pointer-events: none; /* Запрещает наведение и клики после того, как ответ дан */
+}
+
 }
