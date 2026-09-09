@@ -296,8 +296,7 @@
     </footer>
 
 </body>
-
-    <script>
+<script>
     // База вопросов по вашему вокабуляру
     const quizData = [
         {
@@ -335,29 +334,39 @@
     let currentQuestionIdx = 0;
     let score = 0;
 
-    const questionEl = document.getElementById('question');
-    const optionsEl = document.getElementById('options');
-    const feedbackEl = document.getElementById('feedback');
-    const nextBtn = document.getElementById('btn-next');
-    const progressEl = document.getElementById('progress');
-    const quizGameEl = document.getElementById('quiz-game');
-    const quizResultsEl = document.getElementById('quiz-results');
-    const scoreTextEl = document.getElementById('score-text');
-    const commentEl = document.getElementById('results-comment');
+    // Объявляем переменные для элементов
+    let questionEl, optionsEl, feedbackEl, nextBtn, progressEl, quizGameEl, quizResultsEl, scoreTextEl, commentEl;
+
+    // Функция инициализации DOM-элементов и старта квиза
+    function initQuiz() {
+        questionEl = document.getElementById('question');
+        optionsEl = document.getElementById('options');
+        feedbackEl = document.getElementById('feedback');
+        nextBtn = document.getElementById('btn-next');
+        progressEl = document.getElementById('progress');
+        quizGameEl = document.getElementById('quiz-game');
+        quizResultsEl = document.getElementById('quiz-results');
+        scoreTextEl = document.getElementById('score-text');
+        commentEl = document.getElementById('results-comment');
+
+        // Проверяем, что все элементы найдены на странице, чтобы избежать ошибок
+        if (questionEl && optionsEl && feedbackEl && progressEl) {
+            loadQuestion();
+        } else {
+            console.error("Quiz Error: Некоторые HTML-элементы квиза не найдены на странице.");
+        }
+    }
 
     function loadQuestion() {
         const currentQuestion = quizData[currentQuestionIdx];
         
-        // Сброс состояния элементов
         feedbackEl.style.display = 'none';
         nextBtn.style.display = 'none';
         optionsEl.innerHTML = '';
         
-        // Обновление текстов
         progressEl.textContent = `Вопрос ${currentQuestionIdx + 1} из ${quizData.length}`;
         questionEl.textContent = currentQuestion.question;
         
-        // Рендер вариантов ответов
         currentQuestion.options.forEach((option, index) => {
             const li = document.createElement('li');
             li.classList.add('option-item');
@@ -371,7 +380,6 @@
         const currentQuestion = quizData[currentQuestionIdx];
         const allOptions = optionsEl.querySelectorAll('.option-item');
         
-        // Отключаем возможность повторного клика
         allOptions.forEach(opt => opt.classList.add('disabled'));
         
         if (selectedIndex === currentQuestion.correct) {
@@ -404,6 +412,27 @@
         
         if (score === quizData.length) {
             commentEl.textContent = "Великолепно! Вы идеально усвоили весь материал этого урока. Смело применяйте на практике! 🚀";
-        } else if (score >= quizData.length * 0.7) {commentEl.textContent = "Хороший результат! Вы отлично ориентируетесь в бизнес-лексике, но пару фраз стоит повторить. 👍";} else {commentEl.textContent = "Неплохая попытка! Рекомендуем еще раз заглянуть в таблицу со словарем и пройти тест снова. 📚";}}function restartQuiz() {currentQuestionIdx = 0;score = 0;quizResultsEl.style.display = 'none';quizGameEl.style.display = 'block';loadQuestion();}// Инициализация при загрузкеloadQuestion();
+        } else if (score >= quizData.length * 0.7) {
+            commentEl.textContent = "Хороший результат! Вы отлично ориентируетесь в бизнес-лексике, но пару фраз стоит повторить. 👍";
+        } else {
+            commentEl.textContent = "Неплохая попытка! Рекомендуем еще раз заглянуть в таблицу со словарем и пройти тест снова. 📚";
+        }
+    }
+
+    function restartQuiz() {
+        currentQuestionIdx = 0;
+        score = 0;
+        quizResultsEl.style.display = 'none';
+        quizGameEl.style.display = 'block';
+        loadQuestion();
+    }
+
+    // Безопасный запуск строго после полной загрузки HTML
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initQuiz);
+    } else {
+        initQuiz();
+    }
+</script>
 
 </html>
