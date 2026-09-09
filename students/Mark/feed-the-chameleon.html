@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Покорми голодного хамелеона</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@600;700&display=swap');
+
+:root{
+  --sky-top:#bfe6a8;
+  --sky-bottom:#e9f7d9;
+  --leaf-1:#5fae47;
+  --leaf-2:#3f8f34;
+  --branch:#8a5a34;
+  --branch-dark:#6e4526;
+  --card:#ffffff;
+  --ink:#2b4a2e;
+  --accent:#ff8a5b;
+  --accent-2:#ffb648;
+  --wrong:#e63946;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Nunito', sans-serif;
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 15% 8%, rgba(255,255,255,0.35), transparent 40%),
+    linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bottom) 55%, var(--leaf-1) 55%, var(--leaf-2) 100%);
+  color:var(--ink);
+  overflow-x:hidden;
+  padding-bottom:30px;
+  position:relative;
+}
+
+/* leafy decor */
+.leaf-decor{
+  position:absolute;
+  font-size:34px;
+  opacity:0.5;
+  pointer-events:none;
+  filter:blur(0.2px);
+}
+
+header{
+  text-align:center;
+  padding:30px 20px 6px;
+  position:relative;
+  z-index:3;
+}
+h1{
+  font-family:'Baloo 2', sans-serif;
+  font-weight:800;
+  font-size:clamp(26px, 4.6vw, 42px);
+  color:#1f5c2c;
+  margin:0 0 6px;
+  text-shadow:2px 3px 0 rgba(255,255,255,0.55);
+}
+.subtitle{
+  font-size:15px;
+  font-weight:700;
+  color:#2b5230;
+  background:rgba(255,255,255,0.65);
+  display:inline-block;
+  padding:6px 16px;
+  border-radius:30px;
+}
+
+.scoreboard{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:14px;
+  margin:16px auto 4px;
+  position:relative;
+  z-index:3;
+  flex-wrap:wrap;
+}
+.score-pill{
+  background:var(--card);
+  border-radius:40px;
+  padding:9px 20px;
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:17px;
+  box-shadow:0 6px 0 rgba(0,0,0,0.08);
+}
+.score-pill span{ color:var(--accent); }
+button.action{
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:15px;
+  border:none;
+  color:#fff;
+  padding:9px 20px;
+  border-radius:40px;
+  cursor:pointer;
+  transition:transform 0.08s ease;
+}
+button.action:active{ transform:translateY(3px); }
+.restart{ background:var(--accent); box-shadow:0 6px 0 #d9612f; }
+.restart:active{ box-shadow:0 2px 0 #d9612f; }
+.repeat{ background:#457b9d; box-shadow:0 6px 0 #2e5a78; }
+.repeat:active{ box-shadow:0 2px 0 #2e5a78; }
+
+/* prompt bubble */
+.prompt-wrap{
+  display:flex;
+  justify-content:center;
+  margin:16px auto 0;
+  position:relative;
+  z-index:5;
+  padding:0 16px;
+}
+.prompt-bubble{
+  background:#fff;
+  border-radius:20px;
+  padding:12px 22px;
+  text-align:center;
+  box-shadow:0 6px 0 rgba(0,0,0,0.1);
+  max-width:460px;
+}
+.prompt-bubble .en{
+  font-family:'Baloo 2', sans-serif;
+  font-weight:700;
+  font-size:19px;
+  color:var(--ink);
+}
+.prompt-bubble .en .target-letter{
+  color:var(--accent);
+  font-size:22px;
+}
+.prompt-bubble .ru{
+  font-size:13px;
+  font-weight:600;
+  color:#5c7a5f;
+  margin-top:2px;
+}
+.feedback{
+  position:absolute;
+  left:50%; top:-14px;
+  transform:translateX(-50%);
+  font-family:'Baloo 2', sans-serif;
+  font-weight:800;
+  font-size:16px;
+  padding:4px 14px;
+  border-radius:14px;
+  opacity:0;
+  transition:opacity 0.2s ease, transform 0.2s ease;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.feedback.show{ opacity:1; transform:translateX(-50%) translateY(-10px); }
+.feedback.good{ background:#d9f2d0; color:#2f7d3b; }
+.feedback.bad{ background:#fbd7da; color:var(--wrong); }
+
+/* stage */
+.stage{
+  position:relative;
+  max-width:760px;
+  height:min(72vw, 520px);
+  min-height:400px;
+  margin:24px auto 0;
+  z-index:2;
+}
+
+.branch{
+  position:absolute;
+  left:4%;
+  right:4%;
+  bottom:14%;
+  height:26px;
+  background:linear-gradient(180deg, var(--branch), var(--branch-dark));
+  border-radius:16px;
+  box-shadow:0 6px 0 rgba(0,0,0,0.12);
+}
+.branch::before, .branch::after{
+  content:'';
+  position:absolute;
+  bottom:100%;
+  width:16px; height:26px;
+  background:var(--branch);
+  border-radius:8px 8px 0 0;
+}
+.branch::before{ left:12%; transform:rotate(-14deg); }
+.branch::after{ right:16%; transform:rotate(12deg); }
+
+.chameleon{
+  position:absolute;
+  left:50%;
+  bottom:16%;
+  width:min(52vw, 300px);
+  transform:translateX(-50%);
+  z-index:3;
+  transition:transform 0.12s ease;
+}
+.chameleon.chomp{ transform:translateX(-50%) scale(0.96, 1.05); }
+.chameleon svg{ width:100%; display:block; overflow:visible; }
+
+.eye{ transform-origin:center; animation:eyeLook 5s ease-in-out infinite; }
+.eye.right{ animation-delay:1.2s; animation-direction:alternate-reverse; }
+@keyframes eyeLook{
+  0%,100%{ transform:rotate(0deg); }
+  30%{ transform:rotate(-8deg); }
+  60%{ transform:rotate(10deg); }
+}
+
+.mouth-target{
+  position:absolute;
+  width:14%;
+  height:14%;
+  left:50%;
+  top:56%;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+}
+
+/* flies */
+.fly{
+  position:absolute;
+  width:64px;
+  height:64px;
+  margin-left:-32px;
+  margin-top:-32px;
+  cursor:grab;
+  touch-action:none;
+  z-index:6;
+  animation:floaty 3.4s ease-in-out infinite;
+}
+.fly:active{ cursor:grabbing; }
+.fly.dragging{ animation:none; z-index:20; }
+@keyframes floaty{
+  0%,100%{ margin-top:-32px; }
+  50%{ margin-top:-42px; }
+}
+.fly-inner{
+  position:relative;
+  width:100%;
+  height:100%;
+  transition:transform 0.18s ease;
+}
+.fly.shake .fly-inner{ animation:shake 0.4s ease; }
+@keyframes shake{
+  0%,100%{ transform:translateX(0); }
+  20%{ transform:translateX(-8px) rotate(-6deg); }
+  40%{ transform:translateX(8px) rotate(6deg); }
+  60%{ transform:translateX(-6px) rotate(-4deg); }
+  80%{ transform:translateX(6px) rotate(4deg); }
+}
+.fly.eaten{
+  transition:transform 0.32s ease, opacity 0.32s ease;
+  opacity:0;
+}
+.fly svg{ width:100%; height:100%; overflow:visible; filter:drop-shadow(0 4px 3px rgba(0,0,0,0.18)); }
+.fly .wing{ animation:flutter 0.5s ease-in-out infinite alternate; transform-origin:center; }
+@keyframes flutter{
+  0%{ transform:scaleX(1); }
+  100%{ transform:scaleX(0.75); }
+}
+.fly-letter{
+  position:absolute;
+  inset:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-family:'Baloo 2', sans-serif;
+  font-weight:800;
+  font-size:22px;
+  color:#fff;
+  text-shadow:0 2px 0 rgba(0,0,0,0.18);
+  pointer-events:none;
+}
+
+/* celebration overlay (shared style) */
+.celebration{
+  position:fixed;
+  inset:0;
+  background:rgba(20,60,30,0.55);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity 0.3s ease;
+}
+.celebration.show{ opacity:1; pointer-events:auto; }
+.celebration .card{
+  background:#fff;
+  border-radius:24px;
+  padding:34px 40px;
+  text-align:center;
+  max-width:340px;
+  transform:scale(0.85);
+  transition:transform 0.3s ease;
+  box-shadow:0 12px 0 rgba(0,0,0,0.15);
+}
+.celebration.show .card{ transform:scale(1); }
+.celebration h2{
+  font-family:'Baloo 2', sans-serif;
+  color:#1f5c2c;
+  font-size:28px;
+  margin:6px 0;
+}
+.celebration p{ font-weight:700; color:#456b49; margin:0 0 18px;}
+.celebration .emojis{ font-size:34px; margin-bottom:8px; }
+
+footer.instructions{
+  max-width:640px;
+  margin:18px auto 0;
+  text-align:center;
+  padding:0 20px;
+  position:relative;
+  z-index:2;
+  font-weight:700;
+  color:#2b5230;
+  font-size:13px;
+  opacity:0.85;
+  line-height:1.5;
+}
+</style>
+</head>
+<body>
+
+<div class="leaf-decor" style="left:4%; top:70px;">🍃</div>
+<div class="leaf-decor" style="right:6%; top:120px; transform:rotate(30deg);">🌿</div>
+<div class="leaf-decor" style="left:10%; top:220px; transform:rotate(-20deg);">🍃</div>
+
+<header>
+  <h1>🦎 Покорми голодного хамелеона</h1>
+  <div class="subtitle">Найди муху с нужной буквой и накорми хамелеона!</div>
+</header>
+
+<div class="scoreboard">
+  <div class="score-pill">Съедено: <span id="scoreCount">0</span> / <span id="scoreTotal">6</span></div>
+  <button class="action repeat" id="repeatBtn">🔊 Повторить</button>
+  <button class="action restart" id="restartBtn">🔄 Играть заново</button>
+</div>
+
+<div class="prompt-wrap">
+  <div class="prompt-bubble">
+    <div class="feedback" id="feedback"></div>
+    <div class="en" id="promptEn">He wants to eat letter <span class="target-letter" id="targetLetter">B</span>!</div>
+    <div class="ru" id="promptRu">🪰 Найди муху с этой буквой</div>
+  </div>
+</div>
+
+<div class="stage" id="stage">
+  <div class="branch"></div>
+  <div class="chameleon" id="chameleon">
+    <svg viewBox="0 0 300 240" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="150" cy="180" rx="18" ry="8" fill="rgba(0,0,0,0.12)"/>
+      <path d="M235 150 C 270 150, 275 120, 258 108 C 272 108, 270 90, 250 92 C 258 78, 240 68, 232 82"
+            fill="none" stroke="#3f9e4d" stroke-width="14" stroke-linecap="round"/>
+      <ellipse cx="90" cy="205" rx="14" ry="8" fill="#2f7d3b"/>
+      <ellipse cx="130" cy="212" rx="14" ry="8" fill="#2f7d3b"/>
+      <ellipse cx="180" cy="212" rx="14" ry="8" fill="#2f7d3b"/>
+      <ellipse cx="215" cy="205" rx="14" ry="8" fill="#2f7d3b"/>
+      <ellipse cx="150" cy="150" rx="105" ry="66" fill="#4aa957"/>
+      <ellipse cx="150" cy="165" rx="62" ry="34" fill="#bfe6a8"/>
+      <circle cx="105" cy="100" r="52" fill="#57c46d"/>
+      <g class="eye left">
+        <rect x="86" y="46" width="14" height="30" rx="7" fill="#3f9e4d"/>
+        <circle cx="93" cy="46" r="24" fill="#eafff0"/>
+        <circle cx="93" cy="46" r="24" fill="none" stroke="#3f9e4d" stroke-width="4"/>
+        <circle cx="97" cy="42" r="10" fill="#213b23"/>
+        <circle cx="101" cy="38" r="3" fill="#fff"/>
+      </g>
+      <g class="eye right">
+        <rect x="122" y="40" width="14" height="30" rx="7" fill="#3f9e4d"/>
+        <circle cx="129" cy="38" r="24" fill="#eafff0"/>
+        <circle cx="129" cy="38" r="24" fill="none" stroke="#3f9e4d" stroke-width="4"/>
+        <circle cx="133" cy="34" r="10" fill="#213b23"/>
+        <circle cx="137" cy="30" r="3" fill="#fff"/>
+      </g>
+      <g class="mouth">
+        <ellipse cx="107" cy="132" rx="26" ry="20" fill="#7a2f3a"/>
+        <ellipse cx="107" cy="138" rx="17" ry="10" fill="#ff8fa3"/>
+      </g>
+      <ellipse cx="70" cy="118" rx="5" ry="7" fill="#3f9e4d"/>
+    </svg>
+  </div>
+  <div class="mouth-target" id="mouthTarget"></div>
+</div>
+
+<footer class="instructions">
+  Перетащи муху с нужной буквой в рот хамелеону, или просто нажми на неё.<br>
+  Хотите поиграть вместе без мышки? Назовите цвет нужной мухи вслух — например, «Red fly!» — а ребёнок пусть её найдёт и покажет пальцем.
+</footer>
+
+<div class="celebration" id="celebration">
+  <div class="card">
+    <div class="emojis">🦎🪰🎉</div>
+    <h2>Ням-ням!</h2>
+    <p>Хамелеон съел все буквы и наелся!</p>
+    <button class="action restart" id="playAgainBtn">Играть снова</button>
+  </div>
+</div>
+
+<script>
+const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+const COLORS = [
+  { name:"red",    ru:"красную",     hex:"#e63946" },
+  { name:"blue",   ru:"синюю",       hex:"#457b9d" },
+  { name:"yellow", ru:"жёлтую",      hex:"#f4a300" },
+  { name:"purple", ru:"фиолетовую",  hex:"#8e44ad" },
+  { name:"orange", ru:"оранжевую",   hex:"#ff7f11" },
+  { name:"teal",   ru:"бирюзовую",   hex:"#118ab2" },
+  { name:"pink",   ru:"розовую",     hex:"#ff6fa5" },
+  { name:"green",  ru:"зелёную",     hex:"#2a9d8f" }
+];
+// slots as percentages within the stage, avoiding the center mouth area
+const SLOTS = [
+  { left:"10%", top:"6%" },
+  { left:"84%", top:"4%" },
+  { left:"4%",  top:"40%" },
+  { left:"90%", top:"38%" },
+  { left:"14%", top:"66%" },
+  { left:"80%", top:"68%" }
+];
+
+const ROUND_SIZE = 6;
+const stage = document.getElementById('stage');
+const scoreCountEl = document.getElementById('scoreCount');
+const scoreTotalEl = document.getElementById('scoreTotal');
+const chameleon = document.getElementById('chameleon');
+const mouthTarget = document.getElementById('mouthTarget');
+const promptEn = document.getElementById('promptEn');
+const promptRu = document.getElementById('promptRu');
+const targetLetterEl = document.getElementById('targetLetter');
+const feedbackEl = document.getElementById('feedback');
+const celebration = document.getElementById('celebration');
+
+scoreTotalEl.textContent = ROUND_SIZE;
+
+let flies = [];
+let eatenCount = 0;
+let currentTarget = null;
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function speak(text){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = "en-US";
+  utter.rate = 0.85;
+  window.speechSynthesis.speak(utter);
+}
+
+function flySVG(color){
+  return `
+  <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+    <ellipse class="wing" cx="18" cy="22" rx="14" ry="9" fill="rgba(255,255,255,0.55)" transform="rotate(-18 18 22)"/>
+    <ellipse class="wing" cx="46" cy="22" rx="14" ry="9" fill="rgba(255,255,255,0.55)" transform="rotate(18 46 22)"/>
+    <circle cx="32" cy="34" r="22" fill="${color}"/>
+    <circle cx="24" cy="26" r="3" fill="#20301f"/>
+    <circle cx="40" cy="26" r="3" fill="#20301f"/>
+  </svg>`;
+}
+
+function buildRound(){
+  stage.querySelectorAll('.fly').forEach(f => f.remove());
+  flies = [];
+  eatenCount = 0;
+  scoreCountEl.textContent = 0;
+  celebration.classList.remove('show');
+
+  const chosenLetters = shuffle(LETTERS).slice(0, ROUND_SIZE);
+  const chosenColors = shuffle(COLORS).slice(0, ROUND_SIZE);
+  const chosenSlots = shuffle(SLOTS);
+
+  chosenLetters.forEach((letter, i) => {
+    const color = chosenColors[i];
+    const slot = chosenSlots[i];
+    const fly = document.createElement('div');
+    fly.className = 'fly';
+    fly.style.left = slot.left;
+    fly.style.top = slot.top;
+    fly.style.animationDelay = (i * 0.35) + 's';
+    fly.innerHTML = `<div class="fly-inner">${flySVG(color.hex)}<div class="fly-letter">${letter}</div></div>`;
+    stage.appendChild(fly);
+
+    const flyObj = { id:i, letter, color, el:fly, eaten:false, baseLeft:slot.left, baseTop:slot.top };
+    attachDrag(flyObj);
+    flies.push(flyObj);
+  });
+
+  pickNextTarget();
+}
+
+function remainingFlies(){
+  return flies.filter(f => !f.eaten);
+}
+
+function pickNextTarget(){
+  const rem = remainingFlies();
+  if(rem.length === 0){
+    setTimeout(() => celebration.classList.add('show'), 400);
+    return;
+  }
+  currentTarget = rem[Math.floor(Math.random() * rem.length)];
+  targetLetterEl.textContent = currentTarget.letter;
+  promptRu.textContent = `🪰 Найди ${currentTarget.color.ru} муху с буквой ${currentTarget.letter}`;
+  speak(currentTarget.letter);
+}
+
+function showFeedback(text, good){
+  feedbackEl.textContent = text;
+  feedbackEl.className = 'feedback show ' + (good ? 'good' : 'bad');
+  setTimeout(() => { feedbackEl.classList.remove('show'); }, 700);
+}
+
+function chomp(){
+  chameleon.classList.add('chomp');
+  setTimeout(() => chameleon.classList.remove('chomp'), 220);
+}
+
+function eatFly(flyObj){
+  flyObj.eaten = true;
+  const mouthRect = mouthTarget.getBoundingClientRect();
+  const stageRect = stage.getBoundingClientRect();
+  const targetX = mouthRect.left + mouthRect.width/2 - stageRect.left;
+  const targetY = mouthRect.top + mouthRect.height/2 - stageRect.top;
+  const flyLeftPx = flyObj.el.offsetLeft;
+  const flyTopPx = flyObj.el.offsetTop;
+  flyObj.el.style.transition = 'left 0.28s ease, top 0.28s ease, transform 0.28s ease, opacity 0.28s ease';
+  flyObj.el.style.left = targetX + 'px';
+  flyObj.el.style.top = targetY + 'px';
+  flyObj.el.style.transform = 'scale(0.2)';
+  flyObj.el.classList.add('eaten');
+  chomp();
+  eatenCount++;
+  scoreCountEl.textContent = eatenCount;
+  showFeedback('Yum! 🎉', true);
+  setTimeout(() => { flyObj.el.remove(); }, 300);
+  setTimeout(pickNextTarget, 850);
+}
+
+function rejectFly(flyObj){
+  flyObj.el.classList.add('shake');
+  showFeedback('Не эта! Попробуй ещё 🙂', false);
+  setTimeout(() => flyObj.el.classList.remove('shake'), 400);
+}
+
+function attachDrag(flyObj){
+  const el = flyObj.el;
+  let dragging = false;
+  let moved = false;
+  let startX = 0, startY = 0;
+  let origLeftPx = 0, origTopPx = 0;
+
+  function pointerPos(e){
+    return e.touches ? { x:e.touches[0].clientX, y:e.touches[0].clientY } : { x:e.clientX, y:e.clientY };
+  }
+
+  function down(e){
+    if(flyObj.eaten) return;
+    dragging = true;
+    moved = false;
+    const p = pointerPos(e);
+    startX = p.x; startY = p.y;
+    origLeftPx = el.offsetLeft;
+    origTopPx = el.offsetTop;
+    el.classList.add('dragging');
+  }
+
+  function move(e){
+    if(!dragging) return;
+    const p = pointerPos(e);
+    const dx = p.x - startX;
+    const dy = p.y - startY;
+    if(Math.abs(dx) > 5 || Math.abs(dy) > 5) moved = true;
+    el.style.left = (origLeftPx + dx) + 'px';
+    el.style.top = (origTopPx + dy) + 'px';
+  }
+
+  function up(e){
+    if(!dragging) return;
+    dragging = false;
+    el.classList.remove('dragging');
+    if(flyObj.eaten) return;
+
+    if(!moved){
+      resolveAttempt(flyObj);
+      return;
+    }
+
+    const flyRect = el.getBoundingClientRect();
+    const mouthRect = mouthTarget.getBoundingClientRect();
+    const flyCx = flyRect.left + flyRect.width/2;
+    const flyCy = flyRect.top + flyRect.height/2;
+    const mouthCx = mouthRect.left + mouthRect.width/2;
+    const mouthCy = mouthRect.top + mouthRect.height/2;
+    const dist = Math.hypot(flyCx - mouthCx, flyCy - mouthCy);
+
+    if(dist < Math.max(mouthRect.width, 60)){
+      resolveAttempt(flyObj);
+    } else {
+      el.style.transition = 'left 0.3s ease, top 0.3s ease';
+      el.style.left = flyObj.baseLeft;
+      el.style.top = flyObj.baseTop;
+      setTimeout(() => { el.style.transition = ''; }, 300);
+    }
+  }
+
+  function resolveAttempt(flyObj){
+    if(flyObj.letter === currentTarget.letter){
+      eatFly(flyObj);
+    } else {
+      rejectFly(flyObj);
+      el.style.transition = 'left 0.25s ease, top 0.25s ease';
+      el.style.left = flyObj.baseLeft;
+      el.style.top = flyObj.baseTop;
+      setTimeout(() => { el.style.transition = ''; }, 300);
+    }
+  }
+
+  el.addEventListener('mousedown', down);
+  window.addEventListener('mousemove', move);
+  window.addEventListener('mouseup', up);
+  el.addEventListener('touchstart', down, { passive:true });
+  window.addEventListener('touchmove', move, { passive:true });
+  window.addEventListener('touchend', up);
+}
+
+document.getElementById('restartBtn').addEventListener('click', buildRound);
+document.getElementById('playAgainBtn').addEventListener('click', buildRound);
+document.getElementById('repeatBtn').addEventListener('click', () => {
+  if(currentTarget) speak(currentTarget.letter);
+});
+
+buildRound();
+</script>
+</body>
+</html>
