@@ -260,9 +260,27 @@
 
             <h2>🔄 Review</h2>
 
-            <p>
-                Try to use these words in your next speaking task.
-            </p>
+            <div class="quiz-container">
+    <div id="quiz-game">
+        <div class="quiz-header">
+            <span>📝 Проверка знаний</span>
+            <span class="progress-text" id="progress">Вопрос 1 из 5</span>
+        </div>
+        <div class="question-text" id="question">Загрузка вопроса...</div>
+        <ul class="options-list" id="options"></ul>
+        <div class="feedback-box" id="feedback"></div>
+        <div class="clearfix">
+            <button class="btn-next" id="btn-next" onclick="nextQuestion()">Дальше →</button>
+        </div>
+    </div>
+
+    <div class="quiz-results" id="quiz-results">
+        <h2>🎉 Тест завершен!</h2>
+        <div class="results-score" id="score-text">0 / 0</div>
+        <p id="results-comment">Отличный результат!</p>
+        <button class="btn-restart" onclick="restartQuiz()">Пройти еще раз</button>
+    </div>
+</div>
 
         </section>
 
@@ -278,5 +296,114 @@
     </footer>
 
 </body>
+
+    <script>
+    // База вопросов по вашему вокабуляру
+    const quizData = [
+        {
+            question: "Какое выражение лучше всего переводит на английский язык «критерии оценки»?",
+            options: ["Candidate profiles", "Evaluation criteria", "Interview approaches", "Talent mapping"],
+            correct: 1,
+            hint: "Правильно! Evaluation criteria — это стандарты и параметры, по которым оценивают кандидатов."
+        },
+        {
+            question: "Заполните пропуск: «An experienced manager can handle different positions _________ the industry.»",
+            options: ["align with", "regardless of", "in spite to", "accordingly"],
+            correct: 1,
+            hint: "Верно! Фраза «regardless of the industry» переводится как «независимо от отрасли»."
+        },
+        {
+            question: "Что означает предложение: «It is hard to sustain high quality without constant testing.»?",
+            options: ["Сложно поднять качество без тестирования.", "Сложно поддерживать/сохранять высокое качество без постоянного тестирования.", "Тестирование ухудшает качество продукта.", "Мы должны изменить критерии оценки качества."],
+            correct: 1,
+            hint: "Точно! Глагол 'Sustain' означает поддерживать, сохранять или удерживать показатели на высоком уровне."
+        },
+        {
+            question: "Как корректно сказать на английском: «Пожалуйста, посмотри этот документ, он мой (принадлежит мне)»?",
+            options: ["Please review this doc of me.", "Please review this doc of mine.", "Please review this my doc.", "Please review this document mine."],
+            correct: 1,
+            hint: "Правильно! Конструкция «the doc of mine» используется для выражения принадлежности и авторства."
+        },
+        {
+            question: "В каком предложении фраза «step up» переведена как «взять на себя роль / занять должность»?",
+            options: ["He always steps up when needed.", "She will step up to the role of team lead next week.", "We managed to step up to the challenge.", "It's time to step up and take responsibility."],
+            correct: 1,
+            hint: "Верно! «Step up to the role / position» означает занять позицию или пойти на повышение, приняв новые обязанности."
+        }
+    ];
+
+    let currentQuestionIdx = 0;
+    let score = 0;
+
+    const questionEl = document.getElementById('question');
+    const optionsEl = document.getElementById('options');
+    const feedbackEl = document.getElementById('feedback');
+    const nextBtn = document.getElementById('btn-next');
+    const progressEl = document.getElementById('progress');
+    const quizGameEl = document.getElementById('quiz-game');
+    const quizResultsEl = document.getElementById('quiz-results');
+    const scoreTextEl = document.getElementById('score-text');
+    const commentEl = document.getElementById('results-comment');
+
+    function loadQuestion() {
+        const currentQuestion = quizData[currentQuestionIdx];
+        
+        // Сброс состояния элементов
+        feedbackEl.style.display = 'none';
+        nextBtn.style.display = 'none';
+        optionsEl.innerHTML = '';
+        
+        // Обновление текстов
+        progressEl.textContent = `Вопрос ${currentQuestionIdx + 1} из ${quizData.length}`;
+        questionEl.textContent = currentQuestion.question;
+        
+        // Рендер вариантов ответов
+        currentQuestion.options.forEach((option, index) => {
+            const li = document.createElement('li');
+            li.classList.add('option-item');
+            li.textContent = option;
+            li.addEventListener('click', () => selectOption(index, li));
+            optionsEl.appendChild(li);
+        });
+    }
+
+    function selectOption(selectedIndex, selectedElement) {
+        const currentQuestion = quizData[currentQuestionIdx];
+        const allOptions = optionsEl.querySelectorAll('.option-item');
+        
+        // Отключаем возможность повторного клика
+        allOptions.forEach(opt => opt.classList.add('disabled'));
+        
+        if (selectedIndex === currentQuestion.correct) {
+            selectedElement.classList.add('correct');
+            score++;
+            feedbackEl.innerHTML = `<strong>✨ Правильно!</strong><br>${currentQuestion.hint}`;
+        } else {
+            selectedElement.classList.add('incorrect');
+            allOptions[currentQuestion.correct].classList.add('correct');
+            feedbackEl.innerHTML = `<strong>❌ Ошибка</strong><br>${currentQuestion.hint}`;
+        }
+        
+        feedbackEl.style.display = 'block';
+        nextBtn.style.display = 'block';
+    }
+
+    function nextQuestion() {
+        currentQuestionIdx++;
+        if (currentQuestionIdx < quizData.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        quizGameEl.style.display = 'none';
+        quizResultsEl.style.display = 'block';
+        scoreTextEl.textContent = `${score} / ${quizData.length}`;
+        
+        if (score === quizData.length) {
+            commentEl.textContent = "Великолепно! Вы идеально усвоили весь материал этого урока. Смело применяйте на практике! 🚀";
+        } else if (score >= quizData.length * 0.7) {commentEl.textContent = "Хороший результат! Вы отлично ориентируетесь в бизнес-лексике, но пару фраз стоит повторить. 👍";} else {commentEl.textContent = "Неплохая попытка! Рекомендуем еще раз заглянуть в таблицу со словарем и пройти тест снова. 📚";}}function restartQuiz() {currentQuestionIdx = 0;score = 0;quizResultsEl.style.display = 'none';quizGameEl.style.display = 'block';loadQuestion();}// Инициализация при загрузкеloadQuestion();
 
 </html>
