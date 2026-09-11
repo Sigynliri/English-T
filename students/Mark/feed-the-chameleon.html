@@ -219,10 +219,10 @@ button.action:active{ transform:translateY(3px); }
 /* flies */
 .fly{
   position:absolute;
-  width:64px;
-  height:64px;
-  margin-left:-32px;
-  margin-top:-32px;
+  width:92px;
+  height:92px;
+  margin-left:-46px;
+  margin-top:-46px;
   cursor:grab;
   touch-action:none;
   z-index:6;
@@ -231,8 +231,8 @@ button.action:active{ transform:translateY(3px); }
 .fly:active{ cursor:grabbing; }
 .fly.dragging{ animation:none; z-index:20; }
 @keyframes floaty{
-  0%,100%{ margin-top:-32px; }
-  50%{ margin-top:-42px; }
+  0%,100%{ margin-top:-46px; }
+  50%{ margin-top:-58px; }
 }
 .fly-inner{
   position:relative;
@@ -266,7 +266,7 @@ button.action:active{ transform:translateY(3px); }
   justify-content:center;
   font-family:'Baloo 2', sans-serif;
   font-weight:800;
-  font-size:22px;
+  font-size:32px;
   color:#fff;
   text-shadow:0 2px 0 rgba(0,0,0,0.18);
   pointer-events:none;
