@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>English Trial Lesson for Kids</title>
+
     <style>
         :root {
             --primary: #4CAF50;
@@ -25,7 +26,10 @@
             user-select: none;
         }
 
-        /* Навигация по этапам */
+        /* ================================
+           НАВИГАЦИЯ
+        ================================= */
+
         .navigation {
             display: flex;
             gap: 10px;
@@ -50,7 +54,10 @@
             box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
         }
 
-        /* Контейнер для слайдов */
+        /* ================================
+           КОНТЕЙНЕР СЛАЙДОВ
+        ================================= */
+
         .slide-container {
             background: var(--card-bg);
             border-radius: 20px;
@@ -70,10 +77,118 @@
             display: flex;
         }
 
-        h1 { font-size: 2.5rem; margin-top: 0; color: #2c3e50; }
-        p { font-size: 1.5rem; color: #7f8c8d; }
+        h1 {
+            font-size: 2.5rem;
+            margin-top: 0;
+            color: #2c3e50;
+        }
 
-        /* Стили для карточек животных */
+        p {
+            font-size: 1.5rem;
+            color: #7f8c8d;
+        }
+
+        /* ================================
+           ПЕРВЫЙ СЛАЙД
+        ================================= */
+
+        .hello-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .hello-character {
+            width: 420px;
+            height: 420px;
+            object-fit: contain;
+            margin: 0;
+            flex-shrink: 0;
+            filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15));
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        /* ================================
+           REVEAL BLOCK
+        ================================= */
+
+        .reveal-block {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+            margin: 0;
+        }
+
+        .reveal-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #e3f2fd;
+            border-radius: 16px;
+            padding: 14px 18px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .reveal-play-btn {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            background: #1565c0;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .reveal-play-btn:active {
+            transform: scale(0.9);
+        }
+
+        .reveal-text {
+            flex: 1;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1565c0;
+            text-align: left;
+            min-height: 1.8em;
+        }
+
+        .reveal-word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .reveal-word.shown {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-card.answer {
+            background: #e8f5e9;
+        }
+
+        .reveal-card.answer .reveal-play-btn {
+            background: #2e7d32;
+        }
+
+        .reveal-card.answer .reveal-text {
+            color: #2e7d32;
+        }
+
+        /* ================================
+           ЖИВОТНЫЕ
+        ================================= */
+
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -113,7 +228,10 @@
             color: #2c3e50;
         }
 
-        /* Специальные анимации и кнопки */
+        /* ================================
+           КНОПКИ
+        ================================= */
+
         .btn-action {
             background-color: #ff9800;
             color: white;
@@ -127,7 +245,13 @@
             transition: transform 0.2s;
         }
 
-        .btn-action:hover { transform: scale(1.05); }
+        .btn-action:hover {
+            transform: scale(1.05);
+        }
+
+        /* ================================
+           HIDE / SHOW
+        ================================= */
 
         .hidden-card {
             opacity: 0;
@@ -136,10 +260,16 @@
             transition: opacity 0.6s ease, transform 0.6s ease, visibility 0s linear 0.6s;
         }
 
-        /* Анимация для заморозки (Freeze) */
+        /* ================================
+           FREEZE
+        ================================= */
+
         .freeze-overlay {
             position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 188, 212, 0.8);
             color: white;
             display: none;
@@ -150,7 +280,10 @@
             z-index: 1000;
         }
 
-        /* Общий стиль для всех слайдов-игр (полноразмерный iframe) */
+        /* ================================
+           GAME SLIDES
+        ================================= */
+
         .slide-container.game-slide {
             padding: 0;
             width: 100%;
@@ -166,357 +299,777 @@
             display: block;
         }
 
-        /* Анимация появления вопросов слово за словом */
-        .reveal-block {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 500px;
-            margin: 10px auto;
+        /* ================================
+           АДАПТИВНОСТЬ
+        ================================= */
+
+        @media (max-width: 900px) {
+            .hello-content {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .hello-character {
+                width: 320px;
+                height: 320px;
+            }
+
+            .reveal-block {
+                max-width: 600px;
+            }
         }
 
-        .reveal-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #e3f2fd;
-            border-radius: 16px;
-            padding: 14px 18px;
-        }
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
 
-        .reveal-play-btn {
-            flex-shrink: 0;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            border: none;
-            background: #1565c0;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: transform 0.15s ease;
-        }
+            .slide-container {
+                width: 95%;
+                padding: 20px;
+            }
 
-        .reveal-play-btn:active { transform: scale(0.9); }
+            .hello-character {
+                width: 260px;
+                height: 260px;
+            }
 
-        .reveal-text {
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #1565c0;
-            text-align: left;
-            min-height: 1.8em;
-        }
+            h1 {
+                font-size: 2rem;
+            }
 
-        .reveal-word {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
-        }
+            p {
+                font-size: 1.2rem;
+            }
 
-        .reveal-word.shown {
-            opacity: 1;
-            transform: translateY(0);
-        }
+            .reveal-text {
+                font-size: 1.1rem;
+            }
 
-        .reveal-card.answer {
-            background: #e8f5e9;
-        }
-
-        .reveal-card.answer .reveal-play-btn {
-            background: #2e7d32;
-        }
-
-        .reveal-card.answer .reveal-text {
-            color: #2e7d32;
+            .reveal-play-btn {
+                width: 42px;
+                height: 42px;
+            }
         }
     </style>
 </head>
+
 <body>
 
-    <!-- НАВИГАЦИЯ: Теперь мы передаем 'this' (саму кнопку) внутрь функции -->
+    <!-- ================================
+         НАВИГАЦИЯ
+    ================================= -->
+
     <div class="navigation">
-        <button class="nav-btn active" onclick="switchSlide(1, this)">1. Hello</button>
-        <button class="nav-btn" onclick="switchSlide(2, this)">2. Animals</button>
-        <button class="nav-btn" onclick="switchSlide(3, this)">3. TPR Game</button>
-        <button class="nav-btn" onclick="switchSlide(4, this)">4. What's Missing?</button>
-        <button class="nav-btn" onclick="switchSlide(5, this)">5. Hide and Seek!</button>
-        <button class="nav-btn" onclick="switchSlide(6, this)">6. Feed the chameleon!</button>
+        <button class="nav-btn active" onclick="switchSlide(1, this)">
+            1. Hello
+        </button>
+
+        <button class="nav-btn" onclick="switchSlide(2, this)">
+            2. Animals
+        </button>
+
+        <button class="nav-btn" onclick="switchSlide(3, this)">
+            3. TPR Game
+        </button>
+
+        <button class="nav-btn" onclick="switchSlide(4, this)">
+            4. What's Missing?
+        </button>
+
+        <button class="nav-btn" onclick="switchSlide(5, this)">
+            5. Hide and Seek!
+        </button>
+
+        <button class="nav-btn" onclick="switchSlide(6, this)">
+            6. Feed the chameleon!
+        </button>
     </div>
 
-       <!-- СЛАЙД 1: Интерактивное приветствие со сменой эмоций -->
+
+    <!-- ================================
+         СЛАЙД 1: HELLO
+    ================================= -->
+
     <div id="slide1" class="slide-container active">
-        <h1>Hello! 👋</h1>
-        <p>Let's talk and sing together!</p>
-        
-        <!-- КАРТИНКА ПЕРСОНАЖА (по умолчанию стоит картинка вопроса) -->
-        <img src="/English-T/images/character-ask.png" alt="Mascot" id="main-character-img" style="width: 600px; height: 600px; object-fit: contain; margin: 15px 0; filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15)); transition: transform 0.2s, filter 0.2s;">
 
-        <div class="reveal-block">
-            <div class="reveal-card" data-audio="/English-T/sound/what's your name.MP3">
-                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
-                <div class="reveal-text" data-text="What is your name?"></div>
+        <h1>Hello! 👋</h1>
+
+        <p>Let's talk and sing together!</p>
+
+        <div class="hello-content">
+
+            <!-- ПЕРСОНАЖ -->
+
+            <img
+                src="/English-T/images/character-ask.png"
+                alt="Mascot"
+                id="main-character-img"
+                class="hello-character"
+            >
+
+
+            <!-- ВОПРОСЫ И ОТВЕТЫ -->
+
+            <div class="reveal-block">
+
+                <div
+                    class="reveal-card"
+                    data-audio="/English-T/sound/what's your name.MP3"
+                >
+                    <button
+                        class="reveal-play-btn"
+                        onclick="revealQuestion(this)"
+                    >
+                        ▶️
+                    </button>
+
+                    <div
+                        class="reveal-text"
+                        data-text="What is your name?"
+                    ></div>
+                </div>
+
+
+                <div
+                    class="reveal-card answer"
+                    data-audio="/English-T/sound/MyNameis.MP3"
+                >
+                    <button
+                        class="reveal-play-btn"
+                        onclick="revealQuestion(this)"
+                    >
+                        ▶️
+                    </button>
+
+                    <div
+                        class="reveal-text"
+                        data-text="My name is Mark"
+                    ></div>
+                </div>
+
+
+                <div
+                    class="reveal-card"
+                    data-audio="/English-T/sound/How old.MP3"
+                >
+                    <button
+                        class="reveal-play-btn"
+                        onclick="revealQuestion(this)"
+                    >
+                        ▶️
+                    </button>
+
+                    <div
+                        class="reveal-text"
+                        data-text="How old are you?"
+                    ></div>
+                </div>
+
+
+                <div
+                    class="reveal-card answer"
+                    data-audio="/English-T/sound/Iamsix.MP3"
+                >
+                    <button
+                        class="reveal-play-btn"
+                        onclick="revealQuestion(this)"
+                    >
+                        ▶️
+                    </button>
+
+                    <div
+                        class="reveal-text"
+                        data-text="I am six years old"
+                    ></div>
+                </div>
+
+
+                <div
+                    class="reveal-card"
+                    data-audio="/English-T/sound/its nice.MP3"
+                >
+                    <button
+                        class="reveal-play-btn"
+                        onclick="revealQuestion(this)"
+                    >
+                        ▶️
+                    </button>
+
+                    <div
+                        class="reveal-text"
+                        data-text="It's nice to meet you!"
+                    ></div>
+                </div>
+
+
+                <div
+                    class="reveal-card answer"
+                    data-audio="/English-T/sound/meet you too.MP3"
+                >
+                    <button
+                        class="reveal-play-btn"
+                        onclick="revealQuestion(this)"
+                    >
+                        ▶️
+                    </button>
+
+                    <div
+                        class="reveal-text"
+                        data-text="It's nice to meet you too!"
+                    ></div>
+                </div>
+
             </div>
-              <div class="reveal-card answer" data-audio="/English-T/sound/MyNameis.MP3">
-                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
-                <div class="reveal-text" data-text="My name is Mark"></div>
-            </div>
-            <div class="reveal-card" data-audio="/English-T/sound/How old.MP3">
-                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
-                <div class="reveal-text" data-text="How old are you?"></div>
-            </div>
-            <div class="reveal-card answer" data-audio="/English-T/sound/Iamsix.MP3">
-                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
-                <div class="reveal-text" data-text="I am six years old"></div>
-            </div>
-            <div class="reveal-card" data-audio="/English-T/sound/its nice.MP3">
-                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
-                <div class="reveal-text" data-text="It's nice to meet you!"></div>
-            </div>
-               <div class="reveal-card" data-audio="/English-T/sound/meet you too.MP3">
-                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
-                <div class="reveal-text" data-text="It's nice to meet you too!"></div>
-            </div>
+
         </div>
+
     </div>
 
 
-    <!-- СЛАЙД 2: Изучение слов -->
+    <!-- ================================
+         СЛАЙД 2: ANIMALS
+    ================================= -->
+
     <div id="slide2" class="slide-container">
+
         <h1>Listen and Repeat! 🐾</h1>
+
         <div class="grid">
+
             <div class="card" onclick="speak('Cat')">
                 <img src="/English-T/images/cat.png" alt="cat">
                 <div class="word">a cat</div>
             </div>
+
             <div class="card" onclick="speak('Dog')">
                 <img src="/English-T/images/dog.png" alt="dog">
                 <div class="word">a dog</div>
             </div>
+
             <div class="card" onclick="speak('Lion')">
                 <img src="/English-T/images/lion.png" alt="lion">
                 <div class="word">a lion</div>
             </div>
+
             <div class="card" onclick="speak('Frog')">
                 <img src="/English-T/images/frog.png" alt="frog">
                 <div class="word">a frog</div>
             </div>
+
         </div>
+
     </div>
 
-    <!-- СЛАЙД 3: Физкультминутка -->
+
+    <!-- ================================
+         СЛАЙД 3: TPR GAME
+    ================================= -->
+
     <div id="slide3" class="slide-container">
-        <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin: 15px 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
-            <iframe style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: 0;" src="https://www.youtube.com/embed/wKXXT244yFI?si=H1sWprKCzk_Gx_ik" allowfullscreen></iframe>
+
+        <div
+            style="
+                position: relative;
+                width: 100%;
+                padding-bottom: 56.25%;
+                height: 0;
+                margin: 15px 0;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            "
+        >
+
+            <iframe
+                style="
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border: 0;
+                "
+                src="https://www.youtube.com/embed/wKXXT244yFI?si=H1sWprKCzk_Gx_ik"
+                allowfullscreen>
+            </iframe>
+
         </div>
+
     </div>
 
-    <!-- СЛАЙД 4: Игра "What's missing?" -->
+
+    <!-- ================================
+         СЛАЙД 4: WHAT'S MISSING?
+    ================================= -->
+
     <div id="slide4" class="slide-container">
+
         <h1>What's Missing? 🤔</h1>
-        <p>Закрой глаза, а учитель спрячет животное!</p>
-        <button class="btn-action" style="background:#9c27b0; margin-bottom: 20px;" onclick="hideRandomCard()">🙈 Hide Animal</button>
+
+        <p>
+            Закрой глаза, а учитель спрячет животное!
+        </p>
+
+        <button
+            class="btn-action"
+            style="background:#9c27b0; margin-bottom: 20px;"
+            onclick="hideRandomCard()"
+        >
+            🙈 Hide Animal
+        </button>
+
         <div class="grid" id="missing-grid">
+
             <div class="card game-card" data-name="a cat">
                 <img src="/English-T/images/cat.png" alt="cat">
                 <div class="word">a cat</div>
             </div>
+
             <div class="card game-card" data-name="a dog">
                 <img src="/English-T/images/dog.png" alt="dog">
                 <div class="word">a dog</div>
             </div>
+
             <div class="card game-card" data-name="a lion">
                 <img src="/English-T/images/lion.png" alt="lion">
                 <div class="word">a lion</div>
             </div>
+
             <div class="card game-card" data-name="a frog">
                 <img src="/English-T/images/frog.png" alt="frog">
                 <div class="word">a frog</div>
             </div>
+
         </div>
+
     </div>
 
-    <!-- СЛАЙД 5: Прятки -->
+
+    <!-- ================================
+         СЛАЙД 5: HIDE AND SEEK
+    ================================= -->
+
     <div id="slide5" class="slide-container game-slide">
-        <iframe 
-            src="hide-and-seek-garden.html" 
+
+        <iframe
+            src="hide-and-seek-garden.html"
             title="Game"
             allowfullscreen>
         </iframe>
+
     </div>
 
-    <!-- СЛАЙД 6: Хамелеон -->
+
+    <!-- ================================
+         СЛАЙД 6: CHAMELEON
+    ================================= -->
+
     <div id="slide6" class="slide-container game-slide">
-        <iframe 
-            src="feed-the-chameleon.html" 
+
+        <iframe
+            src="feed-the-chameleon.html"
             title="Game"
             allowfullscreen>
         </iframe>
+
     </div>
+
+
+    <!-- ================================
+         JAVASCRIPT
+    ================================= -->
 
     <script>
-    function switchSlide(num, btn) {
-        document.querySelectorAll('.slide-container').forEach(s => s.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('slide' + num).classList.add('active');
-        if (btn) btn.classList.add('active');
-    }
 
-    function speak(text) {
-        if (!('speechSynthesis' in window)) return;
-        window.speechSynthesis.cancel();
-        const u = new SpeechSynthesisUtterance(text);
-        u.lang = 'en-US';
-        u.rate = 0.9;
-        window.speechSynthesis.speak(u);
-    }
+        /* -------------------------------
+           ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ
+        -------------------------------- */
 
-    function mascotAction(text, type) {
-        const img = document.getElementById('main-character-img');
-        // type 1 = вопрос, type 2 = реакция — меняем картинку персонажа
-        img.src = type === 1
-            ? '/English-T/images/character-ask.png'
-            : '/English-T/images/character-react.png';
-        speak(text);
-    }
+        function switchSlide(num, btn) {
 
-    // Настройки скорости анимации вопросов
-    const REVEAL_SPEEDS = {
-        slow:   { rate: 0.65, interval: 550 },
-        normal: { rate: 0.85, interval: 380 },
-        fast:   { rate: 1.15, interval: 230 }
-    };
-    let currentRevealSpeed = 'normal';
+            document
+                .querySelectorAll('.slide-container')
+                .forEach(s => s.classList.remove('active'));
 
-    function setRevealSpeed(speed, btn) {
-        currentRevealSpeed = speed;
-        btn.parentElement.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-    }
+            document
+                .querySelectorAll('.nav-btn')
+                .forEach(b => b.classList.remove('active'));
 
-    // Анимация появления вопроса слово за словом, синхронизированная со звуком
-    function revealQuestion(btn) {
-        const card = btn.closest('.reveal-card');
-        const textEl = card.querySelector('.reveal-text');
-        const fullText = textEl.dataset.text;
-        const customAudioSrc = card.dataset.audio; // впишите путь к своему mp3, например data-audio="sounds/my-name-is-mark.mp3"
-        const words = fullText.split(' ');
-        const speedSettings = REVEAL_SPEEDS[currentRevealSpeed];
+            document
+                .getElementById('slide' + num)
+                .classList.add('active');
 
-        // Переключаем картинку персонажа: вопрос — "спрашивающая" поза,
-        // ответ (карточка с классом .answer) — "реагирующая" поза
-        const isAnswer = card.classList.contains('answer');
-        const mascotImg = document.getElementById('main-character-img');
-        if (mascotImg) {
-            mascotImg.src = isAnswer
-                ? '/English-T/images/character-react.png'
-                : '/English-T/images/character-ask.png';
-        }
-
-        // Рисуем слова заново, все скрытые
-        textEl.innerHTML = words
-            .map(w => `<span class="reveal-word">${w}</span>`)
-            .join(' ');
-        const wordEls = textEl.querySelectorAll('.reveal-word');
-
-        btn.disabled = true;
-
-        // Если в data-audio указан свой mp3 — играем его вместо голоса браузера,
-        // а слова просто проявляются по таймеру с выбранной скоростью
-        if (customAudioSrc) {
-            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
-            const audio = new Audio(customAudioSrc);
-            audio.onended = () => { btn.disabled = false; };
-            audio.onerror = () => {
-                wordEls.forEach(w => w.classList.add('shown'));
-                btn.disabled = false;
-            };
-            audio.play().catch(() => {
-                wordEls.forEach(w => w.classList.add('shown'));
-                btn.disabled = false;
-            });
-            revealByTimer(wordEls, btn, speedSettings.interval, false);
-            return;
-        }
-
-        if (!('speechSynthesis' in window)) {
-            // Если синтез речи недоступен — просто показываем слова по таймеру
-            revealByTimer(wordEls, btn, speedSettings.interval);
-            return;
-        }
-
-        window.speechSynthesis.cancel();
-        const utter = new SpeechSynthesisUtterance(fullText);
-        utter.lang = 'en-US';
-        utter.rate = speedSettings.rate;
-
-        let wordIndex = 0;
-        let boundaryFired = false;
-
-        utter.onboundary = (e) => {
-            if (e.name === 'word' && wordIndex < wordEls.length) {
-                boundaryFired = true;
-                wordEls[wordIndex].classList.add('shown');
-                wordIndex++;
+            if (btn) {
+                btn.classList.add('active');
             }
+        }
+
+
+        /* -------------------------------
+           ОЗВУЧКА ЖИВОТНЫХ
+        -------------------------------- */
+
+        function speak(text) {
+
+            if (!('speechSynthesis' in window)) return;
+
+            window.speechSynthesis.cancel();
+
+            const u = new SpeechSynthesisUtterance(text);
+
+            u.lang = 'en-US';
+            u.rate = 0.9;
+
+            window.speechSynthesis.speak(u);
+        }
+
+
+        /* -------------------------------
+           ПЕРСОНАЖ
+        -------------------------------- */
+
+        function mascotAction(text, type) {
+
+            const img =
+                document.getElementById('main-character-img');
+
+            img.src = type === 1
+                ? '/English-T/images/character-ask.png'
+                : '/English-T/images/character-react.png';
+
+            speak(text);
+        }
+
+
+        /* -------------------------------
+           СКОРОСТЬ REVEAL
+        -------------------------------- */
+
+        const REVEAL_SPEEDS = {
+
+            slow: {
+                rate: 0.65,
+                interval: 550
+            },
+
+            normal: {
+                rate: 0.85,
+                interval: 380
+            },
+
+            fast: {
+                rate: 1.15,
+                interval: 230
+            }
+
         };
 
-        utter.onend = () => {
-            wordEls.forEach(w => w.classList.add('shown'));
-            btn.disabled = false;
-        };
+        let currentRevealSpeed = 'normal';
 
-        utter.onerror = () => {
-            wordEls.forEach(w => w.classList.add('shown'));
-            btn.disabled = false;
-        };
 
-        window.speechSynthesis.speak(utter);
+        function setRevealSpeed(speed, btn) {
 
-        // Запасной вариант: если браузер не поддерживает onboundary
-        // (например, некоторые версии Safari), показываем слова по таймеру
-        setTimeout(() => {
-            if (!boundaryFired) revealByTimer(wordEls, btn, speedSettings.interval);
-        }, 350);
-    }
+            currentRevealSpeed = speed;
 
-    // manageButton = false используется, когда кнопку разблокирует не таймер,
-    // а окончание своего аудиофайла (см. customAudioSrc выше)
-    function revealByTimer(wordEls, btn, interval, manageButton = true) {
-        let i = 0;
-        const timer = setInterval(() => {
-            if (i >= wordEls.length) {
-                clearInterval(timer);
-                if (manageButton) btn.disabled = false;
+            btn.parentElement
+                .querySelectorAll('.nav-btn')
+                .forEach(b => b.classList.remove('active'));
+
+            btn.classList.add('active');
+        }
+
+
+        /* -------------------------------
+           REVEAL QUESTION
+        -------------------------------- */
+
+        function revealQuestion(btn) {
+
+            const card =
+                btn.closest('.reveal-card');
+
+            const textEl =
+                card.querySelector('.reveal-text');
+
+            const fullText =
+                textEl.dataset.text;
+
+            const customAudioSrc =
+                card.dataset.audio;
+
+            const words =
+                fullText.split(' ');
+
+            const speedSettings =
+                REVEAL_SPEEDS[currentRevealSpeed];
+
+
+            /* Меняем персонажа */
+
+            const isAnswer =
+                card.classList.contains('answer');
+
+            const mascotImg =
+                document.getElementById('main-character-img');
+
+            if (mascotImg) {
+
+                mascotImg.src = isAnswer
+                    ? '/English-T/images/character-react.png'
+                    : '/English-T/images/character-ask.png';
+
+            }
+
+
+            /* Показываем слова по одному */
+
+            textEl.innerHTML = words
+                .map(w => `<span class="reveal-word">${w}</span>`)
+                .join(' ');
+
+            const wordEls =
+                textEl.querySelectorAll('.reveal-word');
+
+            btn.disabled = true;
+
+
+            /* Если есть MP3 */
+
+            if (customAudioSrc) {
+
+                if ('speechSynthesis' in window) {
+                    window.speechSynthesis.cancel();
+                }
+
+                const audio =
+                    new Audio(customAudioSrc);
+
+                audio.onended = () => {
+                    btn.disabled = false;
+                };
+
+                audio.onerror = () => {
+
+                    wordEls.forEach(w =>
+                        w.classList.add('shown')
+                    );
+
+                    btn.disabled = false;
+                };
+
+                audio.play().catch(() => {
+
+                    wordEls.forEach(w =>
+                        w.classList.add('shown')
+                    );
+
+                    btn.disabled = false;
+
+                });
+
+                revealByTimer(
+                    wordEls,
+                    btn,
+                    speedSettings.interval,
+                    false
+                );
+
                 return;
             }
-            wordEls[i].classList.add('shown');
-            i++;
-        }, interval);
-    }
 
-    function triggerFreeze() {
-        let overlay = document.getElementById('freeze-overlay');
-        if (!overlay) {
-            overlay = document.createElement('div');
-            overlay.id = 'freeze-overlay';
-            overlay.className = 'freeze-overlay';
-            overlay.textContent = 'FREEZE! ❄️';
-            document.body.appendChild(overlay);
+
+            /* Если Speech Synthesis недоступен */
+
+            if (!('speechSynthesis' in window)) {
+
+                revealByTimer(
+                    wordEls,
+                    btn,
+                    speedSettings.interval
+                );
+
+                return;
+            }
+
+
+            window.speechSynthesis.cancel();
+
+            const utter =
+                new SpeechSynthesisUtterance(fullText);
+
+            utter.lang = 'en-US';
+            utter.rate = speedSettings.rate;
+
+            let wordIndex = 0;
+            let boundaryFired = false;
+
+
+            utter.onboundary = (e) => {
+
+                if (
+                    e.name === 'word' &&
+                    wordIndex < wordEls.length
+                ) {
+
+                    boundaryFired = true;
+
+                    wordEls[wordIndex]
+                        .classList.add('shown');
+
+                    wordIndex++;
+                }
+
+            };
+
+
+            utter.onend = () => {
+
+                wordEls.forEach(w =>
+                    w.classList.add('shown')
+                );
+
+                btn.disabled = false;
+
+            };
+
+
+            utter.onerror = () => {
+
+                wordEls.forEach(w =>
+                    w.classList.add('shown')
+                );
+
+                btn.disabled = false;
+
+            };
+
+
+            window.speechSynthesis.speak(utter);
+
+
+            /* Запасной вариант */
+
+            setTimeout(() => {
+
+                if (!boundaryFired) {
+
+                    revealByTimer(
+                        wordEls,
+                        btn,
+                        speedSettings.interval
+                    );
+
+                }
+
+            }, 350);
+
         }
-        overlay.style.display = 'flex';
-        speak('Freeze!');
-        setTimeout(() => { overlay.style.display = 'none'; }, 2000);
-    }
 
-    function hideRandomCard() {
-        const cards = document.querySelectorAll('#missing-grid .game-card');
-        cards.forEach(c => c.classList.remove('hidden-card'));
-        const visible = Array.from(cards);
-        const target = visible[Math.floor(Math.random() * visible.length)];
-        target.classList.add('hidden-card');
-    }
+
+        /* -------------------------------
+           REVEAL BY TIMER
+        -------------------------------- */
+
+        function revealByTimer(
+            wordEls,
+            btn,
+            interval,
+            manageButton = true
+        ) {
+
+            let i = 0;
+
+            const timer =
+                setInterval(() => {
+
+                    if (i >= wordEls.length) {
+
+                        clearInterval(timer);
+
+                        if (manageButton) {
+                            btn.disabled = false;
+                        }
+
+                        return;
+                    }
+
+                    wordEls[i]
+                        .classList.add('shown');
+
+                    i++;
+
+                }, interval);
+
+        }
+
+
+        /* -------------------------------
+           FREEZE
+        -------------------------------- */
+
+        function triggerFreeze() {
+
+            let overlay =
+                document.getElementById('freeze-overlay');
+
+            if (!overlay) {
+
+                overlay =
+                    document.createElement('div');
+
+                overlay.id =
+                    'freeze-overlay';
+
+                overlay.className =
+                    'freeze-overlay';
+
+                overlay.textContent =
+                    'FREEZE! ❄️';
+
+                document.body.appendChild(overlay);
+            }
+
+            overlay.style.display = 'flex';
+
+            speak('Freeze!');
+
+            setTimeout(() => {
+
+                overlay.style.display = 'none';
+
+            }, 2000);
+        }
+
+
+        /* -------------------------------
+           WHAT'S MISSING
+        -------------------------------- */
+
+        function hideRandomCard() {
+
+            const cards =
+                document.querySelectorAll(
+                    '#missing-grid .game-card'
+                );
+
+            cards.forEach(c =>
+                c.classList.remove('hidden-card')
+            );
+
+            const visible =
+                Array.from(cards);
+
+            const target =
+                visible[
+                    Math.floor(
+                        Math.random() * visible.length
+                    )
+                ];
+
+            target.classList.add('hidden-card');
+        }
+
     </script>
 
 </body>
