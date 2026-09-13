@@ -165,6 +165,72 @@
             border-radius: 20px;
             display: block;
         }
+
+        /* Анимация появления вопросов слово за словом */
+        .reveal-block {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            max-width: 500px;
+            margin: 10px auto;
+        }
+
+        .reveal-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #e3f2fd;
+            border-radius: 16px;
+            padding: 14px 18px;
+        }
+
+        .reveal-play-btn {
+            flex-shrink: 0;
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            border: none;
+            background: #1565c0;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .reveal-play-btn:active { transform: scale(0.9); }
+
+        .reveal-text {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #1565c0;
+            text-align: left;
+            min-height: 1.8em;
+        }
+
+        .reveal-word {
+            display: inline-block;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .reveal-word.shown {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-card.answer {
+            background: #e8f5e9;
+        }
+
+        .reveal-card.answer .reveal-play-btn {
+            background: #2e7d32;
+        }
+
+        .reveal-card.answer .reveal-text {
+            color: #2e7d32;
+        }
     </style>
 </head>
 <body>
@@ -187,27 +253,37 @@
         <!-- КАРТИНКА ПЕРСОНАЖА (по умолчанию стоит картинка вопроса) -->
         <img src="/English-T/images/character-ask.png" alt="Mascot" id="main-character-img" style="width: 600px; height: 600px; object-fit: contain; margin: 15px 0; filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15)); transition: transform 0.2s, filter 0.2s;">
 
-        <!-- КНОПКИ ДИАЛОГА: Передают текст и меняют эмоцию (1 - вопрос, 2 - реакция) -->
-        <div style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 500px; margin: 15px auto;">
-            
-            <!-- Блок 1: Имя -->
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="nav-btn" style="background: #e3f2fd; color: #1565c0; flex: 1;" onclick="mascotAction('What is your name?', 1)">❓ Ask Name</button>
-                <button class="nav-btn" style="background: #e8f5e9; color: #2e7d32; flex: 1;" onclick="mascotAction('Wow! My name is Tom!', 2)">🗣️ React to Name</button>
+        <!-- ВОПРОСЫ: появляются слово за словом со звуком -->
+        <div style="display: flex; gap: 8px; justify-content: center; margin-bottom: 4px;">
+            <button class="nav-btn" style="background:#e0e0e0; padding: 6px 14px;" onclick="setRevealSpeed('slow', this)">🐢 Медленно</button>
+            <button class="nav-btn active" style="background:#e0e0e0; padding: 6px 14px;" onclick="setRevealSpeed('normal', this)">🚶 Обычно</button>
+            <button class="nav-btn" style="background:#e0e0e0; padding: 6px 14px;" onclick="setRevealSpeed('fast', this)">🐇 Быстро</button>
+        </div>
+        <div class="reveal-block">
+            <div class="reveal-card">
+                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+                <div class="reveal-text" data-text="What is your name?"></div>
             </div>
-
-            <!-- Блок 2: Возраст -->
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="nav-btn" style="background: #e3f2fd; color: #1565c0; flex: 1;" onclick="mascotAction('How old are you?', 1)">❓ Ask Age</button>
-                <button class="nav-btn" style="background: #e8f5e9; color: #2e7d32; flex: 1;" onclick="mascotAction('Wow, six! You are so big! I am only five!', 2)">🗣️ React to Age</button>
+            <div class="reveal-card">
+                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+                <div class="reveal-text" data-text="How old are you?"></div>
             </div>
-
-            <!-- Блок 3: Настроение -->
-            <div style="display: flex; gap: 10px; justify-content: center;">
-                <button class="nav-btn" style="background: #e3f2fd; color: #1565c0; flex: 1;" onclick="mascotAction('How are you today?', 1)">❓ Ask: How are you?</button>
-                <button class="nav-btn" style="background: #e8f5e9; color: #2e7d32; flex: 1;" onclick="mascotAction('Super! I feel happy! Let us play!', 2)">🗣️ React: Happy!</button>
+            <div class="reveal-card">
+                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+                <div class="reveal-text" data-text="How are you today?"></div>
             </div>
+        </div>
 
+        <!-- ОТВЕТЫ: тоже появляются слово за словом со звуком -->
+        <div class="reveal-block">
+            <div class="reveal-card answer" data-audio="">
+                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+                <div class="reveal-text" data-text="My name is Mark"></div>
+            </div>
+            <div class="reveal-card answer" data-audio="">
+                <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+                <div class="reveal-text" data-text="I am six years old"></div>
+            </div>
         </div>
 
         <div style="position: relative; width: 100%; padding-bottom: 56.25%; height: 0; margin: 15px 0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.15);">
@@ -318,6 +394,111 @@
             ? '/English-T/images/character-ask.png'
             : '/English-T/images/character-react.png';
         speak(text);
+    }
+
+    // Настройки скорости анимации вопросов
+    const REVEAL_SPEEDS = {
+        slow:   { rate: 0.65, interval: 550 },
+        normal: { rate: 0.85, interval: 380 },
+        fast:   { rate: 1.15, interval: 230 }
+    };
+    let currentRevealSpeed = 'normal';
+
+    function setRevealSpeed(speed, btn) {
+        currentRevealSpeed = speed;
+        btn.parentElement.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
+
+    // Анимация появления вопроса слово за словом, синхронизированная со звуком
+    function revealQuestion(btn) {
+        const card = btn.closest('.reveal-card');
+        const textEl = card.querySelector('.reveal-text');
+        const fullText = textEl.dataset.text;
+        const customAudioSrc = card.dataset.audio; // впишите путь к своему mp3, например data-audio="sounds/my-name-is-mark.mp3"
+        const words = fullText.split(' ');
+        const speedSettings = REVEAL_SPEEDS[currentRevealSpeed];
+
+        // Рисуем слова заново, все скрытые
+        textEl.innerHTML = words
+            .map(w => `<span class="reveal-word">${w}</span>`)
+            .join(' ');
+        const wordEls = textEl.querySelectorAll('.reveal-word');
+
+        btn.disabled = true;
+
+        // Если в data-audio указан свой mp3 — играем его вместо голоса браузера,
+        // а слова просто проявляются по таймеру с выбранной скоростью
+        if (customAudioSrc) {
+            if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+            const audio = new Audio(customAudioSrc);
+            audio.onended = () => { btn.disabled = false; };
+            audio.onerror = () => {
+                wordEls.forEach(w => w.classList.add('shown'));
+                btn.disabled = false;
+            };
+            audio.play().catch(() => {
+                wordEls.forEach(w => w.classList.add('shown'));
+                btn.disabled = false;
+            });
+            revealByTimer(wordEls, btn, speedSettings.interval, false);
+            return;
+        }
+
+        if (!('speechSynthesis' in window)) {
+            // Если синтез речи недоступен — просто показываем слова по таймеру
+            revealByTimer(wordEls, btn, speedSettings.interval);
+            return;
+        }
+
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(fullText);
+        utter.lang = 'en-US';
+        utter.rate = speedSettings.rate;
+
+        let wordIndex = 0;
+        let boundaryFired = false;
+
+        utter.onboundary = (e) => {
+            if (e.name === 'word' && wordIndex < wordEls.length) {
+                boundaryFired = true;
+                wordEls[wordIndex].classList.add('shown');
+                wordIndex++;
+            }
+        };
+
+        utter.onend = () => {
+            wordEls.forEach(w => w.classList.add('shown'));
+            btn.disabled = false;
+        };
+
+        utter.onerror = () => {
+            wordEls.forEach(w => w.classList.add('shown'));
+            btn.disabled = false;
+        };
+
+        window.speechSynthesis.speak(utter);
+
+        // Запасной вариант: если браузер не поддерживает onboundary
+        // (например, некоторые версии Safari), показываем слова по таймеру
+        setTimeout(() => {
+            if (!boundaryFired) revealByTimer(wordEls, btn, speedSettings.interval);
+        }, 350);
+    }
+
+    // manageButton = false используется, когда кнопку разблокирует не таймер,
+    // а окончание своего аудиофайла (см. customAudioSrc выше)
+    function revealByTimer(wordEls, btn, interval, manageButton = true) {
+        let i = 0;
+        const timer = setInterval(() => {
+            if (i >= wordEls.length) {
+                clearInterval(timer);
+                if (manageButton) btn.disabled = false;
+                return;
+            }
+            wordEls[i].classList.add('shown');
+            i++;
+        }, interval);
     }
 
     function triggerFreeze() {
