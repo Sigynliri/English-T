@@ -419,6 +419,16 @@
         const words = fullText.split(' ');
         const speedSettings = REVEAL_SPEEDS[currentRevealSpeed];
 
+        // Переключаем картинку персонажа: вопрос — "спрашивающая" поза,
+        // ответ (карточка с классом .answer) — "реагирующая" поза
+        const isAnswer = card.classList.contains('answer');
+        const mascotImg = document.getElementById('main-character-img');
+        if (mascotImg) {
+            mascotImg.src = isAnswer
+                ? '/English-T/images/character-react.png'
+                : '/English-T/images/character-ask.png';
+        }
+
         // Рисуем слова заново, все скрытые
         textEl.innerHTML = words
             .map(w => `<span class="reveal-word">${w}</span>`)
