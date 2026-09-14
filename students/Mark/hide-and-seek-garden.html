@@ -451,26 +451,23 @@ function speak(text){
 // Звук "It's here!" — воспроизводится в момент, когда найдено животное.
 // Если в теге <audio id="found-sound"> указан mp3 (через <source src="...">),
 // играет его. Пока mp3 нет — временно озвучивает фразу голосом браузера.
-function playFoundSound(callback){
+function playFoundSound(animal, callback){
   const audioEl = document.getElementById('found-sound');
-  const hasSource = audioEl && audioEl.querySelector('source[src]');
 
-  if(hasSource){
-    audioEl.currentTime = 0;
-    audioEl.onended = callback || null;
-    audioEl.play().catch(() => { if(callback) callback(); });
+  if (!audioEl || !animal.audio) {
+    if (callback) callback();
     return;
   }
 
-  if('speechSynthesis' in window){
-    const utter = new SpeechSynthesisUtterance("It's here!");
-    utter.lang = 'en-US';
-    utter.rate = 0.95;
-    if(callback) utter.onend = callback;
-    window.speechSynthesis.speak(utter);
-  } else if(callback){
-    callback();
-  }
+  audioEl.src = animal.audio;
+  audioEl.currentTime = 0;
+
+  audioEl.onended = callback || null;
+
+  audioEl.play().catch(error => {
+    console.error('Не удалось воспроизвести аудио:', error);
+    if (callback) callback();
+  });
 }
 
 function buildGarden(){
@@ -504,10 +501,10 @@ function buildGarden(){
     const bubble = document.createElement('div');
     bubble.className = 'bubble';
     bubble.innerHTML = `A ${animal.en}! <button title="Слушать">🔊</button>`;
-    bubble.querySelector('button').addEventListener('click', (e) => {
-      e.stopPropagation();
-      speak(animal.en);
-    });
+   bubble.querySelector('button').addEventListener('click', (e) => {
+  e.stopPropagation();
+  playFoundSound(animal);
+});
     spot.appendChild(bubble);
 
     const hiderType = HIDER_TYPES[idx % HIDER_TYPES.length];
@@ -566,7 +563,7 @@ function buildGarden(){
       bush.style.opacity = '0';
       foundCount++;
       scoreCountEl.textContent = foundCount;
-      playFoundSound(() => speak(animal.en));
+      playFoundSound(animal);
       if(foundCount === SPOTS_COUNT){
         setTimeout(() => celebration.classList.add('show'), 500);
       }
