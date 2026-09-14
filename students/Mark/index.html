@@ -26,10 +26,6 @@
             user-select: none;
         }
 
-        /* ================================
-           НАВИГАЦИЯ
-        ================================= */
-
         .navigation {
             display: flex;
             gap: 10px;
@@ -53,10 +49,6 @@
             color: white;
             box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
         }
-
-        /* ================================
-           КОНТЕЙНЕР СЛАЙДОВ
-        ================================= */
 
         .slide-container {
             background: var(--card-bg);
@@ -88,10 +80,6 @@
             color: #7f8c8d;
         }
 
-        /* ================================
-           ПЕРВЫЙ СЛАЙД
-        ================================= */
-
         .hello-content {
             display: flex;
             align-items: center;
@@ -110,10 +98,6 @@
             filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15));
             transition: transform 0.2s, filter 0.2s;
         }
-
-        /* ================================
-           REVEAL BLOCK
-        ================================= */
 
         .reveal-block {
             display: flex;
@@ -185,10 +169,6 @@
             color: #2e7d32;
         }
 
-        /* ================================
-           ЖИВОТНЫЕ
-        ================================= */
-
         .grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -228,10 +208,6 @@
             color: #2c3e50;
         }
 
-        /* ================================
-           КНОПКИ
-        ================================= */
-
         .btn-action {
             background-color: #ff9800;
             color: white;
@@ -249,20 +225,12 @@
             transform: scale(1.05);
         }
 
-        /* ================================
-           HIDE / SHOW
-        ================================= */
-
         .hidden-card {
             opacity: 0;
             transform: scale(0.85);
             visibility: hidden;
             transition: opacity 0.6s ease, transform 0.6s ease, visibility 0s linear 0.6s;
         }
-
-        /* ================================
-           FREEZE
-        ================================= */
 
         .freeze-overlay {
             position: fixed;
@@ -280,10 +248,6 @@
             z-index: 1000;
         }
 
-        /* ================================
-           GAME SLIDES
-        ================================= */
-
         .slide-container.game-slide {
             padding: 0;
             width: 100%;
@@ -298,10 +262,6 @@
             border-radius: 20px;
             display: block;
         }
-
-        /* ================================
-           АДАПТИВНОСТЬ
-        ================================= */
 
         @media (max-width: 900px) {
             .hello-content {
@@ -356,10 +316,6 @@
 
 <body>
 
-    <!-- ================================
-         НАВИГАЦИЯ
-    ================================= -->
-
     <div class="navigation">
         <button class="nav-btn active" onclick="switchSlide(1, this)">
             1. Hello
@@ -387,10 +343,6 @@
     </div>
 
 
-    <!-- ================================
-         СЛАЙД 1: HELLO
-    ================================= -->
-
     <div id="slide1" class="slide-container active">
 
         <h1>Hello! 👋</h1>
@@ -399,17 +351,12 @@
 
         <div class="hello-content">
 
-            <!-- ПЕРСОНАЖ -->
-
             <img
                 src="/English-T/images/character-ask.png"
                 alt="Mascot"
                 id="main-character-img"
                 class="hello-character"
             >
-
-
-            <!-- ВОПРОСЫ И ОТВЕТЫ -->
 
             <div class="reveal-block">
 
@@ -527,10 +474,6 @@
     </div>
 
 
-    <!-- ================================
-         СЛАЙД 2: ANIMALS
-    ================================= -->
-
     <div id="slide2" class="slide-container">
         <h1>Listen and Repeat! 🐾</h1>
         <div class="grid">
@@ -553,10 +496,6 @@
         </div>
     </div>
 
-
-    <!-- ================================
-         СЛАЙД 3: TPR GAME
-    ================================= -->
 
     <div id="slide3" class="slide-container">
 
@@ -590,10 +529,6 @@
 
     </div>
 
-
-    <!-- ================================
-         СЛАЙД 4: WHAT'S MISSING?
-    ================================= -->
 
     <div id="slide4" class="slide-container">
 
@@ -638,10 +573,6 @@
     </div>
 
 
-    <!-- ================================
-         СЛАЙД 5: HIDE AND SEEK
-    ================================= -->
-
     <div id="slide5" class="slide-container game-slide">
 
         <iframe
@@ -653,10 +584,6 @@
     </div>
 
 
-    <!-- ================================
-         СЛАЙД 6: CHAMELEON
-    ================================= -->
-
     <div id="slide6" class="slide-container game-slide">
 
         <iframe
@@ -667,10 +594,6 @@
 
     </div>
 
-
-    <!-- ================================
-         JAVASCRIPT
-    ================================= -->
 
     <script>
 
@@ -699,7 +622,7 @@
 
 
         /* -------------------------------
-           ОЗВУЧКА ЖИВОТНЫХ
+           ОЗВУЧКА (голос браузера)
         -------------------------------- */
 
         function speak(text) {
@@ -714,6 +637,32 @@
             u.rate = 0.9;
 
             window.speechSynthesis.speak(u);
+        }
+
+
+        /* -------------------------------
+           СВОЙ ЗВУК ДЛЯ КАРТОЧЕК ЖИВОТНЫХ
+           (слайд "Listen and Repeat")
+        -------------------------------- */
+
+        function playCardSound(cardEl, fallbackText) {
+
+            const customAudioSrc =
+                cardEl.dataset.audio;
+
+            if (customAudioSrc) {
+
+                const audio =
+                    new Audio(customAudioSrc);
+
+                audio.play().catch(() => {
+                    speak(fallbackText);
+                });
+
+                return;
+            }
+
+            speak(fallbackText);
         }
 
 
@@ -797,8 +746,6 @@
                 REVEAL_SPEEDS[currentRevealSpeed];
 
 
-            /* Меняем персонажа */
-
             const isAnswer =
                 card.classList.contains('answer');
 
@@ -814,8 +761,6 @@
             }
 
 
-            /* Показываем слова по одному */
-
             textEl.innerHTML = words
                 .map(w => `<span class="reveal-word">${w}</span>`)
                 .join(' ');
@@ -825,8 +770,6 @@
 
             btn.disabled = true;
 
-
-            /* Если есть MP3 */
 
             if (customAudioSrc) {
 
@@ -870,8 +813,6 @@
                 return;
             }
 
-
-            /* Если Speech Synthesis недоступен */
 
             if (!('speechSynthesis' in window)) {
 
@@ -939,8 +880,6 @@
 
             window.speechSynthesis.speak(utter);
 
-
-            /* Запасной вариант */
 
             setTimeout(() => {
 
