@@ -502,4 +502,161 @@ footer a {
     pointer-events: none; /* Запрещает наведение и клики после того, как ответ дан */
 }
 
+        :root {
+            --primary: #4CAF50;
+            --primary-dark: #45a049;
+            --light: #f5f9f5;
+            --border: #dfe8df;
+            --text: #333;
+            --muted: #687568;
+            --accent: #fff8e8;
+            --blue-light: #f1f7fb;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 30px 20px 60px;
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: #fafcf9;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        h3 {
+            margin-top: 28px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-bottom: 30px;
+        }
+
+        .goal {
+            background: var(--light);
+            border-left: 5px solid var(--primary);
+            padding: 18px 20px;
+            border-radius: 8px;
+            margin: 25px 0;
+        }
+
+        .task {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+        }
+
+        .idea {
+            background: var(--accent);
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin: 15px 0;
+        }
+
+        .pattern {
+            background: var(--blue-light);
+            border-radius: 8px;
+            padding: 14px 16px;
+            margin: 12px 0;
+        }
+
+        .chunk {
+            display: inline-block;
+            background: #f3f5f3;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 4px 8px;
+            margin: 3px 2px;
+            font-weight: 500;
+        }
+
+        .cascade {
+            text-align: center;
+            background: var(--light);
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            line-height: 2;
+            margin: 20px 0;
+        }
+
+        .choice {
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            margin: 10px 0;
+            background: #fff;
+        }
+
+        .choice strong {
+            color: var(--primary-dark);
+        }
+
+        ol, ul {
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 7px 0;
+        }
+
+        .vocab-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .vocab-table th,
+        .vocab-table td {
+            border: 1px solid var(--border);
+            padding: 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .vocab-table th {
+            background: var(--light);
+        }
+
+        .answer-line {
+            border-bottom: 1px solid #aaa;
+            display: inline-block;
+            min-width: 180px;
+            margin-left: 5px;
+        }
+
+        .final-task {
+            background: #f8faf8;
+            border: 2px solid var(--primary);
+            border-radius: 12px;
+            padding: 22px;
+            margin-top: 25px;
+        }
+
 }
