@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Match the words with the definitions</title>
+<style>
+:root{
+  --ink:#1f2937;
+  --muted:#6b7280;
+  --line:#e5e7eb;
+  --bg:#f7f9fc;
+  --accent:#2f6fed;
+  --accent-soft:#e8f0ff;
+  --good:#16a34a;
+  --good-soft:#eafaf1;
+  --wrong:#dc2626;
+  --wrong-soft:#fdecec;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  padding:28px 18px 60px;
+  font-family:-apple-system,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+}
+.wrap{max-width:1000px;margin:0 auto;}
+
+h1{font-size:23px;margin:0 0 6px;}
+.subtitle{font-size:15px;color:var(--muted);margin:0;}
+
+.toolbar{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:18px 0 16px;
+}
+.score{
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:8px 18px;
+  font-weight:700;
+  font-size:15px;
+}
+.score span{color:var(--accent);}
+button.tool{
+  font-family:inherit;
+  font-size:14px;
+  font-weight:600;
+  border:1px solid var(--line);
+  background:#fff;
+  color:#374151;
+  padding:8px 16px;
+  border-radius:999px;
+  cursor:pointer;
+}
+button.tool:hover{background:#f3f4f6;}
+button.tool.primary{
+  background:var(--accent);
+  border-color:var(--accent);
+  color:#fff;
+}
+button.tool.primary:hover{background:#2560d8;}
+
+.board{position:relative;}
+.columns{display:flex;gap:26px;justify-content:space-between;}
+.column{width:48%;display:flex;flex-direction:column;gap:12px;}
+
+.col-label{
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:var(--muted);
+  margin-bottom:2px;
+}
+
+.item{
+  position:relative;
+  z-index:2;
+  background:#fff;
+  border:2px solid var(--line);
+  border-radius:14px;
+  padding:14px 16px;
+  font-size:15px;
+  cursor:pointer;
+  user-select:none;
+  transition:background .15s ease,border-color .15s ease,transform .1s ease;
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+}
+.item .marker{
+  font-weight:700;
+  color:var(--muted);
+  flex-shrink:0;
+  min-width:20px;
+}
+.item .text{flex:1;}
+.column.left .item .text{font-weight:700;}
+.item:hover{border-color:var(--accent);background:var(--accent-soft);}
+.item.selected{
+  border-color:var(--accent);
+  background:var(--accent-soft);
+  transform:scale(1.02);
+}
+.item.matched{
+  border-color:var(--good);
+  background:var(--good-soft);
+  cursor:default;
+}
+.item.matched:hover{background:var(--good-soft);}
+.item.wrong{
+  animation:shake .35s ease;
+  border-color:var(--wrong);
+  background:var(--wrong-soft);
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-6px);}
+  75%{transform:translateX(6px);}
+}
+
+svg.lines{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:1;
+}
+
+.banner{
+  margin-top:26px;
+  text-align:center;
+  font-size:18px;
+  font-weight:700;
+  color:var(--good);
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.banner.show{opacity:1;}
+
+@media(max-width:640px){
+  .columns{flex-direction:column;gap:16px;}
+  .column{width:100%;}
+  svg.lines{display:none;}
+  h1{font-size:19px;}
+  .item{font-size:14px;}
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>Match the words with the definitions</h1>
+  <p class="subtitle">Нажми на термин слева, затем на его определение справа.</p>
+
+  <div class="toolbar">
+    <div class="score">Найдено: <span id="matched">0</span> / <span id="total">10</span></div>
+    <button class="tool" id="hintBtn">💡 Подсказка</button>
+    <button class="tool primary" id="restartBtn">🔄 Заново</button>
+  </div>
+
+  <div class="board">
+    <svg class="lines" id="linesSvg"></svg>
+    <div class="columns">
+      <div class="column left">
+        <div class="col-label">Terms</div>
+        <div id="leftItems" style="display:flex;flex-direction:column;gap:12px;"></div>
+      </div>
+      <div class="column right">
+        <div class="col-label">Definitions</div>
+        <div id="rightItems" style="display:flex;flex-direction:column;gap:12px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner" id="banner">✅ Отлично! Все пары подобраны верно.</div>
+
+</div>
+
+<script>
+/*
+  ЧТОБЫ ПОМЕНЯТЬ СОДЕРЖАНИЕ — редактируйте этот список.
+  term — слово/выражение, def — его определение.
+*/
+const PAIRS = [
+  { term:"track record",        def:"a person's previous results and achievements" },
+  { term:"assignment",          def:"a task or piece of work that someone is expected to complete" },
+  { term:"accomplishment",      def:"something important that someone has successfully achieved" },
+  { term:"decision-making",     def:"the ability to make decisions effectively" },
+  { term:"work environment",    def:"the conditions and atmosphere in which someone works" },
+  { term:"technical competency",def:"the skills and knowledge needed to perform a particular technical job" },
+  { term:"managerial fit",      def:"how well a manager and employee are likely to work together" },
+  { term:"due diligence",       def:"the process of carefully checking information before making a decision" },
+  { term:"pace",                def:"the speed at which something happens" },
+  { term:"resources",           def:"the things available to help you achieve something" }
+];
+
+const leftItems = document.getElementById('leftItems');
+const rightItems = document.getElementById('rightItems');
+const linesSvg = document.getElementById('linesSvg');
+const matchedEl = document.getElementById('matched');
+const totalEl = document.getElementById('total');
+const banner = document.getElementById('banner');
+
+let selectedLeft = null;
+let matchedCount = 0;
+
+const LETTERS = 'abcdefghijklmnopqrstuvwxyz';
+
+function shuffle(arr){
+  const a = [...arr];
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+
+function build(){
+  leftItems.innerHTML = '';
+  rightItems.innerHTML = '';
+  linesSvg.innerHTML = '';
+  banner.classList.remove('show');
+  selectedLeft = null;
+  matchedCount = 0;
+  matchedEl.textContent = 0;
+  totalEl.textContent = PAIRS.length;
+
+  const indexes = PAIRS.map((_, i) => i);
+  const leftOrder = shuffle(indexes);
+  const rightOrder = shuffle(indexes);
+
+  leftOrder.forEach((idx, pos) => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `<span class="marker">${pos + 1}.</span><span class="text">${PAIRS[idx].term}</span>`;
+    el.dataset.pairId = idx;
+    el.addEventListener('click', () => onLeftClick(el, idx));
+    leftItems.appendChild(el);
+  });
+
+  rightOrder.forEach((idx, pos) => {
+    const el = document.createElement('div');
+    el.className = 'item';
+    el.innerHTML = `<span class="marker">${LETTERS[pos]}.</span><span class="text">${PAIRS[idx].def}</span>`;
+    el.dataset.pairId = idx;
+    el.addEventListener('click', () => onRightClick(el, idx));
+    rightItems.appendChild(el);
+  });
+}
+
+function onLeftClick(el, idx){
+  if(el.classList.contains('matched')) return;
+  leftItems.querySelectorAll('.item').forEach(i => i.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedLeft = { el, idx };
+}
+
+function onRightClick(el, idx){
+  if(el.classList.contains('matched')) return;
+  if(!selectedLeft) return;
+
+  if(selectedLeft.idx === idx){
+    selectedLeft.el.classList.remove('selected');
+    selectedLeft.el.classList.add('matched');
+    el.classList.add('matched');
+    drawLine(selectedLeft.el, el);
+    matchedCount++;
+    matchedEl.textContent = matchedCount;
+    selectedLeft = null;
+
+    if(matchedCount === PAIRS.length){
+      setTimeout(() => banner.classList.add('show'), 250);
+    }
+  } else {
+    const leftEl = selectedLeft.el;
+    el.classList.add('wrong');
+    leftEl.classList.add('wrong');
+    setTimeout(() => {
+      el.classList.remove('wrong');
+      leftEl.classList.remove('wrong', 'selected');
+      selectedLeft = null;
+    }, 400);
+  }
+}
+
+function drawLine(leftEl, rightEl){
+  const boardRect = document.querySelector('.board').getBoundingClientRect();
+  const l = leftEl.getBoundingClientRect();
+  const r = rightEl.getBoundingClientRect();
+
+  const line = document.createElementNS('http://www.w3.org/2000/svg','line');
+  line.setAttribute('x1', l.right - boardRect.left);
+  line.setAttribute('y1', l.top + l.height/2 - boardRect.top);
+  line.setAttribute('x2', r.left - boardRect.left);
+  line.setAttribute('y2', r.top + r.height/2 - boardRect.top);
+  line.setAttribute('stroke', '#16a34a');
+  line.setAttribute('stroke-width', '2.5');
+  line.setAttribute('stroke-linecap', 'round');
+  line.dataset.pairId = leftEl.dataset.pairId;
+  linesSvg.appendChild(line);
+}
+
+// Перерисовываем линии при изменении размера окна
+function redrawLines(){
+  linesSvg.innerHTML = '';
+  leftItems.querySelectorAll('.item.matched').forEach(leftEl => {
+    const idx = leftEl.dataset.pairId;
+    const rightEl = rightItems.querySelector(`.item.matched[data-pair-id="${idx}"]`);
+    if(rightEl) drawLine(leftEl, rightEl);
+  });
+}
+
+// Подсказка: подсвечивает определение для выбранного (или первого свободного) термина
+document.getElementById('hintBtn').addEventListener('click', () => {
+  let target = selectedLeft;
+  if(!target){
+    const firstFree = leftItems.querySelector('.item:not(.matched)');
+    if(!firstFree) return;
+    onLeftClick(firstFree, Number(firstFree.dataset.pairId));
+    target = selectedLeft;
+  }
+  const rightEl = rightItems.querySelector(`.item:not(.matched)[data-pair-id="${target.idx}"]`);
+  if(!rightEl) return;
+  rightEl.classList.add('selected');
+  setTimeout(() => rightEl.classList.remove('selected'), 1200);
+});
+
+document.getElementById('restartBtn').addEventListener('click', build);
+window.addEventListener('resize', redrawLines);
+
+build();
+</script>
+</body>
+</html>
