@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Task B: Register Analysis</title>
+<style>
+  :root{
+    --blue:#5b6ee1;
+    --blue-dark:#4453b8;
+    --header-bg:#eceefb;
+    --ink:#20303a;
+    --card-bg:#ffffff;
+    --page-bg:#f4f6fb;
+    --pill-bg:#eef0f7;
+    --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    --green:#2ecc71;
+    --red:#e74c3c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215;
+      --header-bg:#262c3a; --pill-bg:#2a3140;
+    }
+  }
+  :root[data-theme="dark"]{
+    --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215;
+    --header-bg:#262c3a; --pill-bg:#2a3140;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background: var(--page-bg);
+    font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    color:var(--ink);
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+    min-height:100%;
+  }
+  .wrap{ max-width: 1000px; margin: 0 auto; padding: 20px 16px 40px; }
+  .card{ background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); padding: 22px 22px 26px; }
+
+  .title-row{ display:flex; align-items:center; gap:10px; font-weight:800; font-size:19px; margin-bottom:10px; }
+  .desc{ font-size:14.5px; line-height:1.55; color: color-mix(in srgb, var(--ink) 82%, transparent); margin-bottom:18px; }
+  .desc em{ color: color-mix(in srgb, var(--ink) 62%, transparent); }
+
+  .progress-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .progress-pill{ background: rgba(91,110,225,0.12); color: var(--blue-dark); font-weight:800; font-size:13px;
+    padding:6px 14px; border-radius:999px; }
+  .reset-btn{ border:none; background: rgba(91,110,225,0.12); color: var(--blue-dark); font-weight:800;
+    font-size:13px; padding:8px 16px; border-radius:999px; cursor:pointer; }
+  .reset-btn:active{ transform: scale(0.96); }
+
+  .columns{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  @media (max-width: 720px){ .columns{ grid-template-columns: 1fr; } }
+
+  .column{ border-radius: 14px; overflow:hidden; border: 1.5px solid rgba(91,110,225,0.15); display:flex; flex-direction:column; }
+  .col-header{ background: var(--header-bg); color: var(--blue-dark); font-weight:800; font-size:14px;
+    padding:12px 14px; text-align:center; }
+  .drop-zone{ flex:1 1 auto; min-height: 190px; padding: 12px; display:flex; flex-direction:column; gap:8px;
+    background: var(--card-bg); transition: background .15s ease, box-shadow .15s ease; }
+  .drop-zone.target-hover{ background: rgba(91,110,225,0.08); box-shadow: inset 0 0 0 2px rgba(91,110,225,0.35); }
+  .drop-zone.wrong-flash{ background: rgba(231,76,60,0.10); box-shadow: inset 0 0 0 2px rgba(231,76,60,0.5); }
+  .drop-zone-placeholder{ font-size:12.5px; color: color-mix(in srgb, var(--ink) 45%, transparent);
+    text-align:center; margin-top:8px; }
+
+  .placed-chip{ background: rgba(46,204,113,0.14); border: 1.5px solid rgba(46,204,113,0.4); border-radius:999px;
+    padding:9px 14px; font-size:14px; display:flex; align-items:center; gap:8px; }
+  .placed-chip .tick{ color: var(--green); font-weight:900; flex:0 0 auto; }
+
+  .bank-title{ font-weight:800; font-size:13.5px; margin: 20px 0 10px; color: color-mix(in srgb, var(--ink) 70%, transparent); }
+  .word-bank{ display:flex; flex-wrap:wrap; gap:10px; min-height: 44px; }
+  .chip{ background: var(--pill-bg); border-radius:999px; padding:10px 16px; font-size:14px; cursor:pointer;
+    border: 2px solid transparent; transition: transform .12s ease, border-color .15s ease, background .15s ease; user-select:none; -webkit-tap-highlight-color: transparent; }
+  .chip:hover{ transform: translateY(-1px); }
+  .chip.selected{ border-color: #f0a428; background: rgba(240,164,40,0.16); }
+  .chip.shake{ animation: shake .4s ease; border-color: var(--red); background: rgba(231,76,60,0.12); }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-6px); }
+    40%{ transform: translateX(6px); }
+    60%{ transform: translateX(-4px); }
+    80%{ transform: translateX(4px); }
+  }
+
+  .note{ font-size:13px; font-style:italic; color: color-mix(in srgb, var(--ink) 60%, transparent); margin-top:20px; }
+
+  .extra-label{ font-weight:800; font-size:14.5px; margin: 18px 0 8px; }
+  .extra-box{ width:100%; min-height: 70px; border-radius:14px; border: 1.5px dashed rgba(91,110,225,0.4);
+    background: transparent; padding: 12px 14px; font-size:14px; font-family: inherit; color: var(--ink);
+    resize: vertical; }
+  .extra-box::placeholder{ color: color-mix(in srgb, var(--ink) 40%, transparent); }
+  .extra-box:focus{ outline:none; border-color: var(--blue); }
+
+  .done-msg{ text-align:center; font-weight:800; color: var(--green); font-size:15px; margin-top:16px; opacity:0; transition: opacity .3s ease; }
+  .done-msg.show{ opacity:1; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title-row">📁 Task B: Register Analysis (Official vs. Conversational)</div>
+      <div class="desc">
+        Lou blends formal HR terminology with casual conversational language. Sort the words/phrases below into the correct category.
+        <em>(All expressions appear in the full lesson context; some are from the script, some are typical of Lou's style.)</em>
+      </div>
+
+      <div class="progress-row">
+        <div class="progress-pill" id="progressPill">0 / 15</div>
+        <button class="reset-btn" id="resetBtn">Сбросить</button>
+      </div>
+
+      <div class="columns">
+        <div class="column">
+          <div class="col-header">A · Formal / Professional</div>
+          <div class="drop-zone" id="zone-A" data-cat="A">
+            <div class="drop-zone-placeholder" data-empty-text>Нажмите на слово ниже, затем сюда</div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="col-header">B · Conversational / Idioms</div>
+          <div class="drop-zone" id="zone-B" data-cat="B">
+            <div class="drop-zone-placeholder" data-empty-text>Нажмите на слово ниже, затем сюда</div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="col-header">C · Softening / Filler</div>
+          <div class="drop-zone" id="zone-C" data-cat="C">
+            <div class="drop-zone-placeholder" data-empty-text>Нажмите на слово ниже, затем сюда</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bank-title">Слова и фразы для сортировки</div>
+      <div class="word-bank" id="wordBank"></div>
+
+      <div class="done-msg" id="doneMsg">🎉 Отлично! Все слова распределены верно!</div>
+
+      <div class="note">Note: "cherry-pick" and "hands-on guy" are informal idioms; "retained search" is formal HR jargon.</div>
+
+      <div class="extra-label">Write your own extra examples for each category:</div>
+      <textarea class="extra-box" id="extraBox" placeholder="Example: Category A – … / Category B – … / Category C – …"></textarea>
+    </div>
+  </div>
+
+<script>
+  const words = [
+    {text:"retained search", cat:"A"},
+    {text:"performance-based job descriptions", cat:"A"},
+    {text:"significant accomplishment", cat:"A"},
+    {text:"predictor of success", cat:"A"},
+    {text:"track record", cat:"A"},
+
+    {text:"cherry-pick", cat:"B"},
+    {text:"hands-on guy", cat:"B"},
+    {text:"in your face", cat:"B"},
+    {text:"micromanager", cat:"B"},
+    {text:"coach / delegator", cat:"B"},
+
+    {text:"obviously", cat:"C"},
+    {text:"probably", cat:"C"},
+    {text:"I mean", cat:"C"},
+    {text:"like", cat:"C"},
+    {text:"yeah", cat:"C"}
+  ];
+
+  const wordBank = document.getElementById('wordBank');
+  const progressPill = document.getElementById('progressPill');
+  const doneMsg = document.getElementById('doneMsg');
+  const zones = {
+    A: document.getElementById('zone-A'),
+    B: document.getElementById('zone-B'),
+    C: document.getElementById('zone-C')
+  };
+
+  let selectedChip = null;
+  let placedCount = 0;
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function updateProgress(){
+    progressPill.textContent = placedCount + ' / ' + words.length;
+    if(placedCount === words.length){
+      doneMsg.classList.add('show');
+    } else {
+      doneMsg.classList.remove('show');
+    }
+  }
+
+  function updatePlaceholders(){
+    Object.values(zones).forEach(zone=>{
+      const hasChips = !!zone.querySelector('.placed-chip');
+      const ph = zone.querySelector('[data-empty-text]');
+      if(ph) ph.style.display = hasChips ? 'none' : 'block';
+    });
+  }
+
+  function renderBank(){
+    wordBank.innerHTML = '';
+    shuffle(words).forEach(item=>{
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = item.text;
+      chip.tabIndex = 0;
+      chip.setAttribute('role','button');
+      chip.dataset.text = item.text;
+      chip.dataset.cat = item.cat;
+
+      function select(){
+        if(selectedChip === chip){
+          chip.classList.remove('selected');
+          selectedChip = null;
+          return;
+        }
+        if(selectedChip) selectedChip.classList.remove('selected');
+        selectedChip = chip;
+        chip.classList.add('selected');
+      }
+      chip.addEventListener('click', select);
+      chip.addEventListener('keydown', (e)=>{
+        if(e.key==='Enter' || e.key===' '){ e.preventDefault(); select(); }
+      });
+
+      wordBank.appendChild(chip);
+    });
+  }
+
+  function placeChip(chip, zone){
+    const placed = document.createElement('div');
+    placed.className = 'placed-chip';
+    placed.innerHTML = '<span class="tick">✓</span><span>' + chip.textContent + '</span>';
+    zone.appendChild(placed);
+    chip.remove();
+    placedCount++;
+    updateProgress();
+    updatePlaceholders();
+  }
+
+  function tryPlace(cat){
+    if(!selectedChip) return;
+    const chip = selectedChip;
+    selectedChip = null;
+    chip.classList.remove('selected');
+
+    if(chip.dataset.cat === cat){
+      placeChip(chip, zones[cat]);
+    } else {
+      chip.classList.add('shake');
+      zones[cat].classList.add('wrong-flash');
+      setTimeout(()=>{
+        chip.classList.remove('shake');
+        zones[cat].classList.remove('wrong-flash');
+      }, 500);
+    }
+  }
+
+  Object.entries(zones).forEach(([cat, zone])=>{
+    zone.addEventListener('click', ()=> tryPlace(cat));
+    zone.addEventListener('dragover', (e)=>{ e.preventDefault(); zone.classList.add('target-hover'); });
+    zone.addEventListener('dragleave', ()=> zone.classList.remove('target-hover'));
+    zone.addEventListener('drop', (e)=>{
+      e.preventDefault();
+      zone.classList.remove('target-hover');
+      const text = e.dataTransfer.getData('text/plain');
+      const chip = [...wordBank.children].find(c=> c.dataset.text === text);
+      if(!chip) return;
+      if(chip.dataset.cat === cat){
+        placeChip(chip, zone);
+      } else {
+        chip.classList.add('shake');
+        zone.classList.add('wrong-flash');
+        setTimeout(()=>{
+          chip.classList.remove('shake');
+          zone.classList.remove('wrong-flash');
+        }, 500);
+      }
+    });
+  });
+
+  function resetGame(){
+    placedCount = 0;
+    selectedChip = null;
+    Object.values(zones).forEach(zone=>{
+      zone.querySelectorAll('.placed-chip').forEach(el=> el.remove());
+    });
+    renderBank();
+    updateProgress();
+    updatePlaceholders();
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', resetGame);
+
+  // enable native drag & drop on chips too (desktop convenience)
+  wordBank.addEventListener('dragstart', (e)=>{
+    if(e.target.classList.contains('chip')){
+      e.dataTransfer.setData('text/plain', e.target.dataset.text);
+    }
+  });
+  [...wordBank.querySelectorAll('.chip')].forEach(c=> c.draggable = true);
+
+  renderBank();
+  updateProgress();
+  updatePlaceholders();
+
+  // make future-rendered chips draggable too
+  const observer = new MutationObserver(()=>{
+    wordBank.querySelectorAll('.chip').forEach(c=> c.draggable = true);
+  });
+  observer.observe(wordBank, {childList:true});
+</script>
+</body>
+</html>
