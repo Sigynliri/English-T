@@ -141,25 +141,9 @@
 
       <div class="footer-row">
         <span class="hint">Сначала нажмите на ребёнка, затем на его рюкзак.</span>
-        <div class="footer-btns">
-          <button class="reset-btn ghost" id="soundsBtn">🔊 Свои звуки</button>
-          <button class="reset-btn" id="resetBtn">Сбросить</button>
-        </div>
+        <button class="reset-btn" id="resetBtn">Сбросить</button>
       </div>
       <div class="confetti-msg" id="doneMsg">🎉 Отлично! Все пары найдены верно!</div>
-
-      <div class="sounds-panel" id="soundsPanel">
-        <div class="sounds-panel-head">
-          <div class="sounds-title">Свои звуки для каждого номера и буквы</div>
-          <button class="panel-close" id="soundsClose" aria-label="Закрыть">✕</button>
-        </div>
-        <p class="sounds-desc">Загрузите свою аудиоподсказку для каждого ребёнка (1–4) или для каждого рюкзака (a–d). Она будет проигрываться при нажатии вместо стандартного произношения. Звуки сохраняются в этом браузере.</p>
-        <div class="sounds-group-title">Дети</div>
-        <div class="sounds-list" id="soundsListKids"></div>
-        <div class="sounds-group-title">Рюкзаки</div>
-        <div class="sounds-list" id="soundsListBags"></div>
-        <button class="reset-btn ghost" id="clearAllSounds" style="margin-top:10px;">Удалить все свои звуки</button>
-      </div>
     </div>
   </div>
 
@@ -189,18 +173,25 @@
   const kidEls = {};
   const bagEls = {};
 
-  // ---- custom audio storage ----
-  const STORAGE_KEY = 'lm_custom_audio_v1';
-  let customAudio = {}; // { "kid-1": "data:...", "bag-a": "data:..." }
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) customAudio = JSON.parse(raw);
-  }catch(e){ customAudio = {}; }
-
-  function saveCustomAudio(){
-    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(customAudio)); }
-    catch(e){ /* quota exceeded — session only */ }
-  }
+  // ============================================================
+  // ВСТАВЬТЕ СВОИ ЗВУКИ ЗДЕСЬ
+  // Укажите ссылку (URL) или путь к файлу для детей (1–4)
+  // и/или для рюкзаков (a–d). Можно использовать:
+  //   - ссылку в интернете:      1: 'https://example.com/kid1.mp3',
+  //   - файл рядом с этим html:  1: 'sounds/kid1.mp3',
+  // Если оставить пустую строку '', будет использована
+  // стандартная озвучка браузером (Text-to-Speech).
+  // ============================================================
+  const customAudio = {
+    1: '',
+    2: '',
+    3: '',
+    4: '',
+    a: '',
+    b: '',
+    c: '',
+    d: ''
+  };
 
   function speak(text){
     try{
@@ -220,8 +211,7 @@
 
   function playItem(type, id){
     return new Promise((resolve)=>{
-      const key = type + '-' + id;
-      const src = customAudio[key];
+      const src = customAudio[id];
       const fb = fallbackText(type, id);
       if(src){
         try{
@@ -367,97 +357,11 @@
       kidEls[k.id].classList.add('pulse');
       await playItem('kid', k.id);
       kidEls[k.id].classList.remove('pulse');
-      await new Promise(r=> setTimeout(r, customAudio['kid-'+k.id] ? 150 : 500));
+      await new Promise(r=> setTimeout(r, customAudio[k.id] ? 150 : 500));
     }
   });
 
   updateProgress();
-
-  // ---- settings panel ----
-  const soundsPanel = document.getElementById('soundsPanel');
-  const soundsListKids = document.getElementById('soundsListKids');
-  const soundsListBags = document.getElementById('soundsListBags');
-  const soundsBtn = document.getElementById('soundsBtn');
-  const soundsClose = document.getElementById('soundsClose');
-
-  soundsBtn.addEventListener('click', ()=>{
-    soundsPanel.classList.toggle('open');
-    if(soundsPanel.classList.contains('open')) renderSoundsLists();
-  });
-  soundsClose.addEventListener('click', ()=> soundsPanel.classList.remove('open'));
-
-  function buildSoundRow(type, id, isLetter){
-    const key = type + '-' + id;
-    const row = document.createElement('div');
-    row.className = 'sound-row';
-
-    const num = document.createElement('div');
-    num.className = 'num' + (isLetter ? ' letter' : '');
-    num.textContent = id;
-    row.appendChild(num);
-
-    const status = document.createElement('div');
-    const hasAudio = !!customAudio[key];
-    status.className = 'status' + (hasAudio ? ' has-audio' : '');
-    status.textContent = hasAudio ? 'Свой звук загружен' : 'Стандартное произношение';
-    row.appendChild(status);
-
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'audio/*';
-    fileInput.style.display = 'none';
-    fileInput.addEventListener('change', (e)=>{
-      const file = e.target.files && e.target.files[0];
-      if(!file) return;
-      const reader = new FileReader();
-      reader.onload = ()=>{
-        customAudio[key] = reader.result;
-        saveCustomAudio();
-        renderSoundsLists();
-      };
-      reader.readAsDataURL(file);
-    });
-    row.appendChild(fileInput);
-
-    const uploadBtn = document.createElement('button');
-    uploadBtn.className = 'row-btn';
-    uploadBtn.textContent = hasAudio ? 'Заменить' : 'Загрузить';
-    uploadBtn.addEventListener('click', ()=> fileInput.click());
-    row.appendChild(uploadBtn);
-
-    if(hasAudio){
-      const playBtn = document.createElement('button');
-      playBtn.className = 'row-btn play';
-      playBtn.textContent = '▶';
-      playBtn.addEventListener('click', ()=> playItem(type, id));
-      row.appendChild(playBtn);
-
-      const removeBtn = document.createElement('button');
-      removeBtn.className = 'row-btn remove';
-      removeBtn.textContent = '✕';
-      removeBtn.addEventListener('click', ()=>{
-        delete customAudio[key];
-        saveCustomAudio();
-        renderSoundsLists();
-      });
-      row.appendChild(removeBtn);
-    }
-
-    return row;
-  }
-
-  function renderSoundsLists(){
-    soundsListKids.innerHTML = '';
-    kids.forEach(k=> soundsListKids.appendChild(buildSoundRow('kid', k.id, false)));
-    soundsListBags.innerHTML = '';
-    bags.forEach(b=> soundsListBags.appendChild(buildSoundRow('bag', b.id, true)));
-  }
-
-  document.getElementById('clearAllSounds').addEventListener('click', ()=>{
-    customAudio = {};
-    saveCustomAudio();
-    renderSoundsLists();
-  });
 </script>
 </body>
 </html>
