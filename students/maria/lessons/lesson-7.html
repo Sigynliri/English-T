@@ -262,6 +262,11 @@
             color: #64748b;
             font-size: 0.9rem;
         }
+        iframe[src*="/games/"] {
+  width: 100%;
+  border: none;
+  display: block;
+}
 
         @media print {
             body { background: white; padding: 0.5rem; }
@@ -294,7 +299,7 @@
         <div class="card">
             <h3>🔍 First listen</h3>
             <audio controls>
-    <source src="English-T/sound/0925.MP3" type="audio/mpeg"></audio>
+    <source src="/English-T/sound/0925.MP3" type="audio/mpeg"></audio>
             <p style="margin-bottom: 0.8rem;">Listen to Lou. Answer the questions using only what you hear in the script.</p>
             <ol style="font-weight: 500;">
                 <li>What question does Lou ask candidates three or four times, and what is he trying to understand through it?</li>
@@ -384,7 +389,7 @@
             <h3>🗂️ Task B: Register Analysis (Formal vs. Conversational)</h3>
             <p>All the words below appear in the script. Sort them into the correct category. Some may fit more than one — discuss with a partner.</p>
 
-           <iframe src="/English-T/students/maria/games/interactive_sort_register.html" style="width: 100%; height=100vh; border: none;"></iframe>
+           <iframe src="/English-T/students/maria/games/interactive_sort_register.html"></iframe>
 
             </div>
             <p style="margin-top: 1rem; font-size: 0.95rem; color: #475569;"><em>Note: "in your face" and "micromanager" are informal; "significant accomplishment" and "hiring manager" are formal HR terminology.</em></p>
@@ -450,6 +455,19 @@
 </div>
         </div>
 
-      
+ <script>
+  document.querySelectorAll('iframe[src*="/games/"]').forEach(frame => {
+    function resize(){
+      try {
+        const doc = frame.contentWindow.document;
+        frame.style.height = doc.documentElement.scrollHeight + 'px';
+      } catch(e) { /* сработает только для того же домена — у вас так и есть */ }
+    }
+    frame.addEventListener('load', () => {
+      resize();
+      new ResizeObserver(resize).observe(frame.contentWindow.document.body);
+    });
+  });
+</script>     
 </body>
 </html>
