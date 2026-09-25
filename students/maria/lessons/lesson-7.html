@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Recruitment · Lou’s interview technique</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: #f5f7fb;
+            color: #1e293b;
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .page {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 2rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+            padding: 2.5rem 2rem;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.35rem;
+            flex-wrap: wrap;
+        }
+
+        h1 span {
+            background: #eef2ff;
+            color: #4f46e5;
+            font-size: 1.4rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 60px;
+            font-weight: 500;
+        }
+
+        .subhead {
+            color: #475569;
+            border-left: 4px solid #818cf8;
+            padding-left: 1rem;
+            margin: 0.5rem 0 2rem 0;
+            font-size: 1.05rem;
+        }
+
+        .section { margin-bottom: 2.8rem; }
+
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding-bottom: 0.6rem;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 1.5rem;
+            color: #0f172a;
+        }
+
+        .section h2 .emoji-badge { font-size: 1.8rem; line-height: 1; }
+
+        .card {
+            background: #f8fafc;
+            border-radius: 1.2rem;
+            padding: 1.5rem 1.8rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #e9eef3;
+            transition: box-shadow 0.2s;
+        }
+
+        .card:hover { box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.1); }
+
+        .card h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #1e293b;
+        }
+
+        ul, ol { padding-left: 1.6rem; margin: 0.5rem 0 0.8rem 0; }
+        li { margin-bottom: 0.5rem; }
+
+        .question-list { list-style: none; padding-left: 0; }
+
+        .question-list li {
+            background: white;
+            padding: 0.9rem 1.2rem;
+            border-radius: 1rem;
+            margin-bottom: 0.7rem;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border-left: 4px solid #a5b4fc;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .choice-group { list-style: none; padding-left: 0; margin-top: 0.5rem; margin-bottom: 1rem; }
+
+        .choice-group li {
+            background: white;
+            padding: 0.8rem 1.2rem 0.8rem 3rem;
+            border-radius: 0.9rem;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            font-weight: 450;
+            cursor: pointer;
+            transition: background 0.15s, border-color 0.15s;
+        }
+
+        .choice-group li:hover { background: #f1f5f9; border-color: #c7d2fe; }
+
+        .choice-group input[type="checkbox"] {
+            position: absolute;
+            left: 1rem;
+            top: 0.95rem;
+            width: 1.2rem;
+            height: 1.2rem;
+            accent-color: #4f46e5;
+            cursor: pointer;
+        }
+
+        .choice-group label { cursor: pointer; display: block; }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .table-col {
+            background: white;
+            border-radius: 1rem;
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+        }
+
+        .table-col-header {
+            background: #eef2ff;
+            padding: 0.7rem 1rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #3730a3;
+            text-align: center;
+        }
+
+        .table-col-content { padding: 1rem 1rem 1.2rem; }
+
+        .table-col-content p {
+            margin-bottom: 0.5rem;
+            background: #f1f5f9;
+            padding: 0.4rem 0.8rem;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .upgrade-item {
+            background: white;
+            padding: 1rem 1.2rem;
+            border-radius: 1rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .upgrade-item .basic {
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 0.3rem;
+            display: block;
+        }
+
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+
+        @media (max-width: 700px) {
+            .page { padding: 1.8rem 1.2rem; }
+            h1 { font-size: 1.6rem; }
+            .table-grid { grid-template-columns: 1fr; }
+            .two-col { grid-template-columns: 1fr; }
+        }
+
+        .writing-line {
+            display: block;
+            width: 100%;
+            border: none;
+            border-bottom: 2px dashed #cbd5e1;
+            background: transparent;
+            margin: 0.6rem 0 1rem 0;
+            padding: 0.4rem 0;
+            font-size: 1rem;
+            font-family: inherit;
+            color: #1e293b;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .writing-line:focus { border-bottom-color: #818cf8; }
+
+        .writing-area {
+            width: 100%;
+            border: 2px dashed #cbd5e1;
+            border-radius: 1rem;
+            background: white;
+            padding: 0.8rem 1rem;
+            font-family: inherit;
+            font-size: 1rem;
+            color: #1e293b;
+            resize: vertical;
+            min-height: 5rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .writing-area:focus { border-color: #818cf8; }
+
+        .pdf-button-wrapper {
+            display: flex;
+            justify-content: center;
+            margin: 2.5rem 0 1rem;
+        }
+
+        .pdf-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 0.9rem 2.4rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 60px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            transition: background 0.2s, transform 0.1s, box-shadow 0.2s;
+            box-shadow: 0 6px 16px -4px rgba(79, 70, 229, 0.4);
+        }
+
+        .pdf-btn:hover {
+            background: #4338ca;
+            box-shadow: 0 10px 24px -6px rgba(79, 70, 229, 0.5);
+        }
+
+        .pdf-btn:active { transform: scale(0.97); }
+
+        .footnote {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed #cbd5e1;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        @media print {
+            body { background: white; padding: 0.5rem; }
+            .page { box-shadow: none; border-radius: 0; padding: 1rem; max-width: 100%; }
+            .pdf-button-wrapper { display: none; }
+            .card { break-inside: avoid; border: 1px solid #ddd; }
+            .choice-group li:hover { background: white; }
+            .writing-area { border-color: #999; }
+            .writing-line { border-bottom-color: #999; }
+        }
+    </style>
+</head>
+<body>
+<div class="page">
+
+    <h1>🎧 Advanced Recruitment <span>Listening & Lexis</span></h1>
+    <div class="subhead">Based strictly on the audio script 00:08:49–00:09:59 (Lou, recruitment expert)</div>
+
+    <!-- 1. BEFORE YOU LISTEN -->
+    <section class="section">
+        <h2><span class="emoji-badge">💬</span> 1. Before You Listen</h2>
+        <div class="card">
+            <h3>🗣️ Pair discussion</h3>
+            <ul class="question-list">
+                <li>How did you meet your closest friend? What about your most important professional contact?</li>
+                <li>Do you think it is easier to build deep connections with people in a casual setting or a professional environment? Why?</li>
+                <li><strong>Based on the script:</strong> Lou asks about the role a <em>hiring manager</em> played in a candidate's success. Why do you think that question matters?</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 2. LISTENING FOR GIST -->
+    <section class="section">
+        <h2><span class="emoji-badge">🎯</span> 2. Listening for Gist</h2>
+        <div class="card">
+            <h3>🔍 First listen</h3>
+            <p style="margin-bottom: 0.8rem;">Listen to Lou. Answer the questions using only what you hear in the script.</p>
+            <ol style="font-weight: 500;">
+                <li>What question does Lou ask candidates three or four times, and what is he trying to understand through it?</li>
+                <li>What does Lou want to know about the hiring manager? Name at least two things he asks about.</li>
+                <li>Why does Lou also interview the hiring manager personally?</li>
+            </ol>
+            <div style="margin-top: 1rem;">
+                <label style="font-weight: 600; color: #334155; display: block; margin-bottom: 0.3rem;">Your notes:</label>
+                <textarea class="writing-area" placeholder="Write your answers here…"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. DETAILED UNDERSTANDING — CHECKBOXES -->
+    <section class="section">
+        <h2><span class="emoji-badge">📋</span> 3. Detailed Understanding</h2>
+        <div class="card">
+            <h3>☑️ Multiple choice (tick the correct answer)</h3>
+            <p style="margin-bottom: 1rem; color: #475569;">Listen again and tick the correct answer (a, b, or c). All answers come from the script.</p>
+
+            <p><strong>1. How many times has Lou already asked the "most significant accomplishment" question?</strong></p>
+            <ul class="choice-group">
+                <li><input type="checkbox" id="q1a"><label for="q1a">a) Once.</label></li>
+                <li><input type="checkbox" id="q1b"><label for="q1b">b) Twice.</label></li>
+                <li><input type="checkbox" id="q1c"><label for="q1c">c) Three or four times.</label></li>
+            </ul>
+
+            <p><strong>2. What does Lou want to get a "real sense" of?</strong></p>
+            <ul class="choice-group">
+                <li><input type="checkbox" id="q2a"><label for="q2a">a) The candidate's salary expectations.</label></li>
+                <li><input type="checkbox" id="q2b"><label for="q2b">b) The candidate's work environment, pace, and who they work with.</label></li>
+                <li><input type="checkbox" id="q2c"><label for="q2c">c) The candidate's education and certifications.</label></li>
+            </ul>
+
+            <p><strong>3. According to Lou, what kind of manager "could be a problem"?</strong></p>
+            <ul class="choice-group">
+                <li><input type="checkbox" id="q3a"><label for="q3a">a) A manager who is a coach or a delegator.</label></li>
+                <li><input type="checkbox" id="q3b"><label for="q3b">b) A manager who is dominant, in your face, and direct — or a micromanager.</label></li>
+                <li><input type="checkbox" id="q3c"><label for="q3c">c) A manager who wants less experience.</label></li>
+            </ul>
+
+            <p><strong>4. What does Lou say most managers are?</strong></p>
+            <ul class="choice-group">
+                <li><input type="checkbox" id="q4a"><label for="q4a">a) Micromanagers.</label></li>
+                <li><input type="checkbox" id="q4b"><label for="q4b">b) Coaches and delegators.</label></li>
+                <li><input type="checkbox" id="q4c"><label for="q4c">c) Dominant and direct.</label></li>
+            </ul>
+
+            <p><strong>5. What does Lou ask the hiring manager directly?</strong></p>
+            <ul class="choice-group">
+                <li><input type="checkbox" id="q5a"><label for="q5a">a) "What are your salary expectations?"</label></li>
+                <li><input type="checkbox" id="q5b"><label for="q5b">b) "Tell me about the best people you work for. What kind of people do you like to work for?"</label></li>
+                <li><input type="checkbox" id="q5c"><label for="q5c">c) "How many years of experience do you have?"</label></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 4. LANGUAGE FOCUS -->
+    <section class="section">
+        <h2><span class="emoji-badge">🧩</span> 4. Language Focus: Lexical Nuances & Pragmatics</h2>
+
+        <!-- Task A: words from the script only -->
+        <div class="card">
+            <h3>🔤 Task A: What words does he use?</h3>
+            <p>Listen carefully. Write down the exact words or phrases Lou uses in the script to describe the following.</p>
+            <ol style="margin-top: 0.8rem;">
+                <li><strong>The question Lou keeps asking the candidate</strong> — what is it called?
+                    <input class="writing-line" type="text" placeholder="type here…">
+                </li>
+                <li><strong>What Lou is trying to get a "real sense" of</strong> — name three things.
+                    <input class="writing-line" type="text" placeholder="type here…">
+                </li>
+                <li><strong>Two management styles that "could be a problem"</strong>
+                    <input class="writing-line" type="text" placeholder="type here…">
+                </li>
+                <li><strong>What Lou says most managers are</strong> — two words.
+                    <input class="writing-line" type="text" placeholder="type here…">
+                </li>
+                <li><strong>The question Lou asks the hiring manager directly</strong> — write it out.
+                    <input class="writing-line" type="text" placeholder="type here…">
+                </li>
+            </ol>
+        </div>
+
+        <!-- Task B: Register Analysis — ONLY words from the script -->
+        <div class="card">
+            <h3>🗂️ Task B: Register Analysis (Formal vs. Conversational)</h3>
+            <p>All the words below appear in the script. Sort them into the correct category. Some may fit more than one — discuss with a partner.</p>
+
+            <div class="table-grid" style="margin-top: 1.2rem;">
+                <div class="table-col">
+                    <div class="table-col-header">A · Formal / Professional</div>
+                    <div class="table-col-content">
+                        <p>significant accomplishment</p>
+                        <p>candidate</p>
+                        <p>hiring manager</p>
+                        <p>delegate</p>
+                        <p>coach</p>
+                        <p>search assignment</p>
+                        <p style="opacity:0.8;">… your turn</p>
+                    </div>
+                </div>
+                <div class="table-col">
+                    <div class="table-col-header">B · Conversational / Idioms</div>
+                    <div class="table-col-content">
+                        <p>in your face</p>
+                        <p>micromanager</p>
+                        <p>dominant</p>
+                        <p>direct</p>
+                        <p>pretty major</p>
+                        <p style="opacity:0.8;">… your turn</p>
+                    </div>
+                </div>
+                <div class="table-col">
+                    <div class="table-col-header">C · Softening / Filler</div>
+                    <div class="table-col-content">
+                        <p>so</p>
+                        <p>you know</p>
+                        <p>I mean</p>
+                        <p>like</p>
+                        <p>yeah</p>
+                        <p style="opacity:0.8;">… your turn</p>
+                    </div>
+                </div>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.95rem; color: #475569;"><em>Note: "in your face" and "micromanager" are informal; "significant accomplishment" and "hiring manager" are formal HR terminology.</em></p>
+            <p style="margin-top: 0.5rem; font-weight: 500;">Write your own extra examples for each category:</p>
+            <textarea class="writing-area" placeholder="Example: Category A – … / Category B – … / Category C – …"></textarea>
+        </div>
+
+        <!-- Task C: Vocabulary Upgrade — based on script phrases -->
+        <div class="card">
+            <h3>⬆️ Task C: Vocabulary Upgrade (Paraphrasing)</h3>
+            <p>Upgrade the underlined basic words with the advanced phrases Lou actually uses in the script. Change word forms where necessary.</p>
+
+            <div class="upgrade-item">
+                <span class="basic">1. Lou keeps asking the candidate the <u>main question about their biggest success</u>.</span>
+                <textarea class="writing-area" style="min-height: 3rem;" placeholder="Type your answer…"></textarea>
+            </div>
+            <div class="upgrade-item">
+                <span class="basic">2. He wants to understand the candidate's <u>usual working conditions and speed</u>.</span>
+                <textarea class="writing-area" style="min-height: 3rem;" placeholder="Type your answer…"></textarea>
+            </div>
+            <div class="upgrade-item">
+                <span class="basic">3. Lou also talks to the <u>person who is hiring for the role</u>.</span>
+                <textarea class="writing-area" style="min-height: 3rem;" placeholder="Type your answer…"></textarea>
+            </div>
+            <div class="upgrade-item">
+                <span class="basic">4. A manager who is <u>very aggressive and direct</u> could be a problem.</span>
+                <textarea class="writing-area" style="min-height: 3rem;" placeholder="Type your answer…"></textarea>
+            </div>
+            <div class="upgrade-item">
+                <span class="basic">5. Most managers <u>train and give responsibility to their employees</u>.</span>
+                <textarea class="writing-area" style="min-height: 3rem;" placeholder="Type your answer…"></textarea>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. FREE PRACTICE -->
+    <section class="section">
+        <h2><span class="emoji-badge">🗣️</span> 5. Free Practice: Speaking & Discussion</h2>
+        <div class="two-col">
+            <div class="card" style="margin-bottom: 0;">
+                <h3>💬 Debate</h3>
+                <p>Lou says that a manager who is "dominant and in your face and direct" could be a problem, and so could a "micromanager". Do you agree? What management style helps you do your best work?</p>
+                <p style="margin-top: 0.8rem;"><strong>From the script:</strong> Lou says most managers are "coaches, delegators". Is that true in your experience?</p>
+            </div>
+            <div class="card" style="margin-bottom: 0;">
+                <h3>🧠 Role-play</h3>
+                <p>Work in pairs. One person is Lou, the other is a hiring manager. Lou asks: <em>"Tell me about the best people you work for. What kind of people do you like to work for?"</em> Then swap roles.</p>
+                <p style="margin-top: 0.8rem;">After the role-play, discuss: what did you learn about the other person's preferred management style?</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PDF button -->
+    <div class="pdf-button-wrapper">
+        <button class="pdf-btn" onclick="window.print()">
+            📄 Save as PDF
+        </button>
+    </div>
+
+    <div class="footnote">
+        ⏱️ Audio script excerpt: 00:08:49 – 00:09:59 · Lou, recruitment expert.<br>
+        <span style="opacity: 0.7;">Lesson handout · Advanced Recruitment & Relationships</span>
+    </div>
+
+</div>
+</body>
+</html>
