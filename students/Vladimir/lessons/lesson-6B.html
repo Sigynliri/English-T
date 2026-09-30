@@ -465,18 +465,18 @@
         </div>
 
  <script>
-  document.querySelectorAll('iframe[src*="/tasks/"]').forEach(frame => {
+  document.querySelectorAll('iframe[src*="interactive_"]').forEach(frame => {
     function resize(){
       try {
         const doc = frame.contentWindow.document;
         frame.style.height = doc.documentElement.scrollHeight + 'px';
-      } catch(e) { /* сработает только для того же домена — у вас так и есть */ }
+      } catch(e) {}
     }
     frame.addEventListener('load', () => {
       resize();
       new ResizeObserver(resize).observe(frame.contentWindow.document.body);
     });
   });
-</script>     
+</script>
 </body>
 </html>
