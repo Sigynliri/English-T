@@ -308,8 +308,10 @@
             color: #555;
             font-size: 0.9em;
         }
-        iframe[src*="/games/"] {
+     
+        iframe[src*="interactive_"] {
   width: 100%;
+  min-height: 500px;   /* стартовая высота, пока скрипт не подстроит её точнее */
   border: none;
   display: block;
 }
