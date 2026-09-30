@@ -262,6 +262,52 @@
             color: #64748b;
             font-size: 0.9rem;
         }
+
+                .table-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            overflow-x: auto;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            vertical-align: top;
+        }
+        th {
+            background-color: #2c3e50;
+            color: #ffffff;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9fbfc;
+        }
+        tr:hover {
+            background-color: #eef4f9;
+        }
+        strong {
+            color: #c0392b;
+        }
+        em {
+            color: #666;
+            font-style: italic;
+        }
+        /* Цвет текста примеров теперь черный */
+        .example {
+            color: #000000;
+        }
+        /* Пояснения в скобках оставил серыми для читаемости, но если нужно всё чёрным — уберите color */
+        .meaning {
+            color: #555;
+            font-size: 0.9em;
+        }
         iframe[src*="/games/"] {
   width: 100%;
   border: none;
@@ -341,6 +387,74 @@
            <img src="/English-T/images/DIY.PNG" alt="Описание картинки" width="500">
         </div>
     </section>
+
+    <iframe
+            src="hide-and-seek-garden.html"
+            title="Game"
+            allowfullscreen>
+        </iframe>
+
+      <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Форма</th>
+                    <th>Использование</th>
+                    <th>Пример</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Can</strong></td>
+                    <td>
+                        <strong>Ability, possibility, and permission.</strong><br>
+                        Modal verb. Only has a <strong>present form</strong> (which can be used to talk about the future) and a <strong>past / conditional form</strong> (<em>could</em>).<br><br>
+                        <em>Can you / I...?</em> — to make requests or ask for permission.
+                    </td>
+                    <td class="example">
+                        I <strong>can</strong> swim. <span class="meaning">(ability)</span><br>
+                        I <strong>can</strong> help you tomorrow. <span class="meaning">(possibility / future)</span><br>
+                        <strong>Can</strong> I borrow your pen? <span class="meaning">(permission)</span><br>
+                        <strong>Can</strong> you open the window? <span class="meaning">(request)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>can't</strong></td>
+                    <td>
+                        To say we are sure that something is <strong>impossible / not true</strong> (deduction).<br>
+                        The opposite of <em>can't</em> in this sense is <em>must</em>.
+                    </td>
+                    <td class="example">
+                        It <strong>can't</strong> be broken! I only bought it last week. <span class="meaning">(I'm sure it's not true)</span><br>
+                        They <strong>can't</strong> be back yet. They said they were coming home on Sunday. <span class="meaning">(I'm sure it's impossible)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>couldn't</strong></td>
+                    <td>
+                        To talk about ability on <strong>one specific occasion</strong> in the past.<br>
+                        We use <em>couldn't</em> for negative past ability (but <strong>not</strong> <em>could</em> for positive specific occasions).
+                    </td>
+                    <td class="example">
+                        I <strong>couldn't</strong> finish the test. <span class="meaning">(negative ability on a specific past occasion)</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>be able to</strong></td>
+                    <td>
+                        <strong>1.</strong> For all other tenses and forms (where <em>can</em> cannot be used).<br>
+                        <strong>2.</strong> In the present and past if we want to be more formal.
+                    </td>
+                    <td class="example">
+                        I <strong>will be able to</strong> help you tomorrow. <span class="meaning">(future — all other tenses)</span><br>
+                        I <strong>have been able to</strong> finish the task. <span class="meaning">(present perfect — all other tenses)</span><br>
+                        I <strong>am able to</strong> attend the meeting. <span class="meaning">(formal present)</span><br>
+                        She <strong>was able to</strong> complete the report. <span class="meaning">(formal past)</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
     <!-- PDF button -->
     <div class="pdf-button-wrapper">
