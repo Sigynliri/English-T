@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Grammar: can, could, and be able to</title>
+<style>
+  :root{
+    --teal:#0ea5b5;
+    --teal-dark:#0a7f8c;
+    --ink:#1e2a33;
+    --card-bg:#ffffff;
+    --page-bg:#f5f7f8;
+    --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    --green:#2ecc71;
+    --red:#e74c3c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215; }
+  }
+  :root[data-theme="dark"]{ --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215; }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background: var(--page-bg);
+    font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    color:var(--ink);
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+    min-height:100%;
+  }
+  .wrap{ max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; }
+  .card{ background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); padding: 22px 24px 26px; }
+
+  .title-row{ display:flex; align-items:baseline; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .title-num{ background: var(--teal); color:#fff; font-weight:800; font-size:15px;
+    width:26px;height:26px;border-radius:7px; display:flex;align-items:center;justify-content:center; flex:0 0 auto; }
+  .title-text{ font-weight:800; font-size:20px; }
+  .title-text em{ font-style:italic; font-weight:600; }
+
+  .subtask{ display:flex; gap:10px; margin-bottom:18px; }
+  .subtask-letter{ font-weight:800; color: var(--teal-dark); flex:0 0 auto; }
+  .subtask-text{ font-size:15px; line-height:1.5; }
+
+  .items{ display:flex; flex-direction:column; gap:16px; }
+  .item{ display:flex; gap:10px; font-size:15.5px; line-height:1.65; }
+  .item-num{ font-weight:700; color: color-mix(in srgb, var(--ink) 55%, transparent); flex:0 0 20px; }
+  .item-text{ flex:1 1 auto; }
+
+  select.blank{
+    font: inherit;
+    font-weight:700;
+    font-size: 14.5px;
+    color: var(--teal-dark);
+    background: rgba(14,165,181,0.10);
+    border: 1.5px solid rgba(14,165,181,0.35);
+    border-radius: 8px;
+    padding: 3px 8px;
+    margin: 0 3px;
+    cursor:pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6'><path d='M0 0 L5 6 L10 0 Z' fill='%230a7f8c'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    padding-right: 22px;
+    transition: border-color .15s ease, background-color .15s ease;
+  }
+  select.blank:focus{ outline:none; border-color: var(--teal); }
+  select.blank.empty{ color: color-mix(in srgb, var(--ink) 45%, transparent); font-style:italic; }
+  select.blank.correct{ border-color: var(--green); background-color: rgba(46,204,113,0.14); color: #1f8f4d; }
+  select.blank.wrong{ border-color: var(--red); background-color: rgba(231,76,60,0.12); color: #c0392b; }
+
+  .footer-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-top:22px; flex-wrap:wrap; }
+  .result-pill{ background: rgba(14,165,181,0.12); color: var(--teal-dark); font-weight:800; font-size:13px;
+    padding:7px 14px; border-radius:999px; }
+  .btns{ display:flex; gap:8px; margin-left:auto; }
+  .btn{ border:none; font-weight:800; font-size:13.5px; padding:9px 18px; border-radius:999px; cursor:pointer; }
+  .btn-check{ background: var(--teal); color:#fff; }
+  .btn-reset{ background: rgba(14,165,181,0.12); color: var(--teal-dark); }
+  .btn:active{ transform: scale(0.96); }
+
+  .hint{ font-size:12.5px; color: color-mix(in srgb, var(--ink) 55%, transparent); margin-top:14px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title-row">
+        <div class="title-num">2</div>
+        <div class="title-text">GRAMMAR &nbsp;<em>can, could,</em> and <em>be able to</em></div>
+      </div>
+
+      <div class="subtask">
+        <div class="subtask-letter">a</div>
+        <div class="subtask-text">Complete some more tips with the correct form of <em>can</em> or <em>be able to</em>.</div>
+      </div>
+
+      <div class="items" id="items"></div>
+
+      <div class="footer-row">
+        <div class="result-pill" id="resultPill">0 / 5</div>
+        <div class="btns">
+          <button class="btn btn-reset" id="resetBtn">Сбросить</button>
+          <button class="btn btn-check" id="checkBtn">Проверить</button>
+        </div>
+      </div>
+      <div class="hint">Выберите нужную форму в каждом выпадающем списке и нажмите «Проверить».</div>
+    </div>
+  </div>
+
+<script>
+  // Each blank offers the same set of options; correct answer is per-item.
+  const OPTIONS = ["can", "can't", "be able to", "been able to"];
+
+  const items = [
+    {
+      before: "If you cover your children\u2019s drawings with hairspray, you\u2019ll",
+      after: "keep them for years.",
+      correct: "be able to"
+    },
+    {
+      before: "You",
+      after: "rescue soups or stews which are too salty by putting pieces of apple or potato in them.",
+      correct: "can"
+    },
+    {
+      before: "If you haven\u2019t",
+      after: "remove a water mark on wooden furniture, make a paste with salt and water and rub the mark with it.",
+      correct: "been able to"
+    },
+    {
+      before: "If you want your candles to last longer, you",
+      after: "try putting them in the freezer for two hours before lighting them.",
+      correct: "can"
+    },
+    {
+      before: "If you",
+      after: "find any silver polish at home, rub your silver jewellery with toothpaste.",
+      correct: "can't"
+    }
+  ];
+
+  const itemsEl = document.getElementById('items');
+  const resultPill = document.getElementById('resultPill');
+  const selects = [];
+
+  items.forEach((item, idx)=>{
+    const row = document.createElement('div');
+    row.className = 'item';
+
+    const num = document.createElement('div');
+    num.className = 'item-num';
+    num.textContent = (idx+1);
+    row.appendChild(num);
+
+    const text = document.createElement('div');
+    text.className = 'item-text';
+
+    const select = document.createElement('select');
+    select.className = 'blank empty';
+    select.dataset.correct = item.correct;
+
+    const placeholder = document.createElement('option');
+    placeholder.value = '';
+    placeholder.textContent = '— choose —';
+    placeholder.disabled = true;
+    placeholder.selected = true;
+    select.appendChild(placeholder);
+
+    OPTIONS.forEach(opt=>{
+      const o = document.createElement('option');
+      o.value = opt;
+      o.textContent = opt;
+      select.appendChild(o);
+    });
+
+    select.addEventListener('change', ()=>{
+      select.classList.remove('correct','wrong','empty');
+      if(!select.value) select.classList.add('empty');
+    });
+
+    text.appendChild(document.createTextNode(item.before + ' '));
+    text.appendChild(select);
+    text.appendChild(document.createTextNode(' ' + item.after));
+
+    row.appendChild(text);
+    itemsEl.appendChild(row);
+    selects.push(select);
+  });
+
+  document.getElementById('checkBtn').addEventListener('click', ()=>{
+    let correctCount = 0;
+    selects.forEach(select=>{
+      select.classList.remove('correct','wrong','empty');
+      if(!select.value){
+        select.classList.add('empty');
+        return;
+      }
+      if(select.value === select.dataset.correct){
+        select.classList.add('correct');
+        correctCount++;
+      } else {
+        select.classList.add('wrong');
+      }
+    });
+    resultPill.textContent = correctCount + ' / ' + selects.length;
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=>{
+    selects.forEach(select=>{
+      select.value = '';
+      select.classList.remove('correct','wrong');
+      select.classList.add('empty');
+    });
+    resultPill.textContent = '0 / ' + selects.length;
+  });
+</script>
+</body>
+</html>
