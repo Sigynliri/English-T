@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vocabulary match: expression &amp; definition</title>
+<style>
+  :root{
+    --blue:#5b6ee1;
+    --blue-dark:#4453b8;
+    --ink:#20303a;
+    --card-bg:#ffffff;
+    --page-bg:#f4f6fb;
+    --header-bg:#eceefb;
+    --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    --green:#2ecc71;
+    --red:#e74c3c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215; --header-bg:#262c3a; }
+  }
+  :root[data-theme="dark"]{ --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215; --header-bg:#262c3a; }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background: var(--page-bg);
+    font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    color:var(--ink);
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+    min-height:100%;
+  }
+  .wrap{ max-width: 1000px; margin: 0 auto; padding: 20px 16px 40px; }
+  .card{ background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); padding: 20px 20px 26px; }
+
+  .title-row{ font-weight:800; font-size:19px; margin-bottom:6px; }
+  .desc{ font-size:14px; color: color-mix(in srgb, var(--ink) 70%, transparent); margin-bottom:16px; }
+
+  .progress-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .progress-pill{ background: rgba(91,110,225,0.12); color: var(--blue-dark); font-weight:800; font-size:13px;
+    padding:6px 14px; border-radius:999px; }
+  .reset-btn{ border:none; background: rgba(91,110,225,0.12); color: var(--blue-dark); font-weight:800;
+    font-size:13px; padding:8px 16px; border-radius:999px; cursor:pointer; }
+  .reset-btn:active{ transform: scale(0.96); }
+
+  .cols{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px){ .cols{ grid-template-columns: 1fr; } }
+
+  .col-head{ background: var(--header-bg); color: var(--blue-dark); font-weight:800; font-size:13.5px;
+    padding:9px 12px; border-radius:10px; margin-bottom:8px; text-align:center; }
+
+  .list{ display:flex; flex-direction:column; gap:8px; }
+  .row{
+    background: rgba(91,110,225,0.06);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13.6px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .row:hover{ border-color: rgba(91,110,225,0.35); }
+  .row .badge{ flex:0 0 auto; width:20px; height:20px; border-radius:50%; background: var(--blue);
+    color:#fff; font-weight:800; font-size:11px; display:flex; align-items:center; justify-content:center; }
+  .row.term .badge{ display:flex; }
+  .row.def .badge{ display:none; }
+  .row .txt{ flex:1 1 auto; }
+  .row.selected{ border-color:#f0a428; background: rgba(240,164,40,0.14); }
+  .row.matched{ border-color: var(--green); background: rgba(46,204,113,0.12); cursor:default; }
+  .row.matched .txt{ color: color-mix(in srgb, var(--ink) 75%, transparent); }
+  .row.matched::after{ content:"✓"; color: var(--green); font-weight:900; margin-left:auto; flex:0 0 auto; }
+  .row.wrong{ animation: shake .4s ease; border-color: var(--red); background: rgba(231,76,60,0.12); }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-5px); }
+    40%{ transform: translateX(5px); }
+    60%{ transform: translateX(-3px); }
+    80%{ transform: translateX(3px); }
+  }
+
+  .done-msg{ text-align:center; font-weight:800; color: var(--green); font-size:15px; margin-top:16px; opacity:0; transition: opacity .3s ease; }
+  .done-msg.show{ opacity:1; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <div class="title-row">🧩 Vocabulary match: expression &amp; definition</div>
+      <div class="desc">Сначала нажмите на выражение слева, затем на его определение справа. Правильная пара подсветится зелёным.</div>
+
+      <div class="progress-row">
+        <div class="progress-pill" id="progressPill">0 / 26</div>
+        <button class="reset-btn" id="resetBtn">Сбросить</button>
+      </div>
+
+      <div class="cols">
+        <div>
+          <div class="col-head">Expression</div>
+          <div class="list" id="termList"></div>
+        </div>
+        <div>
+          <div class="col-head">Definition</div>
+          <div class="list" id="defList"></div>
+        </div>
+      </div>
+
+      <div class="done-msg" id="doneMsg">🎉 Отлично! Все 26 пар найдены верно!</div>
+    </div>
+  </div>
+
+<script>
+  const pairs = [
+    {term:"culture fit", def:"How well a person's way of working, values and preferences match the culture of a company."},
+    {term:"an intangible thing", def:"Something important but difficult to define, measure or describe precisely."},
+    {term:"figure out", def:"To understand or discover something by thinking about it or asking questions."},
+    {term:"give a year guarantee", def:"To promise a client that a successful placement will work out for at least a year."},
+    {term:"do this search over again", def:"To repeat the recruitment process because the previous placement did not work out."},
+    {term:"proxies for culture", def:"Things that can be used as indirect signs or indicators of an organization's culture."},
+    {term:"the pace of the organization", def:"How quickly work, decisions and activities happen in a company."},
+    {term:"on the fly", def:"While something is happening, without having much time to plan it in advance."},
+    {term:"ask questions", def:"To get information from someone by asking them about their experience, work or opinions."},
+    {term:"what was the pace like?", def:"A question asking how quickly work was done and how fast things happened in a particular organization."},
+    {term:"what was the intensity like?", def:"A question asking how demanding, pressured or intense the work environment was."},
+    {term:"Walk me through", def:"Tell me about something step by step, explaining what happened and how it happened."},
+    {term:"get a sense of", def:"To develop a general understanding of something from the information you receive."},
+    {term:"mapping it to", def:"Comparing one situation with another to see how well they correspond or match."},
+    {term:"managerial fit", def:"How well a candidate's preferred way of working matches the style of their potential manager."},
+    {term:"day to day", def:"The ordinary, everyday experience of working with someone."},
+    {term:"dominant culture", def:"The strongest influence on a person's everyday work experience; here, the hiring manager's management style."},
+    {term:"most significant accomplishment", def:"The candidate's most important or impressive professional achievement."},
+    {term:"play a role in", def:"To have an influence or be involved in producing a particular result."},
+    {term:"where you excelled", def:"The type of situation or management environment in which you performed particularly well."},
+    {term:"a real sense of", def:"A clear and fairly detailed understanding of something based on several pieces of information."},
+    {term:"work environment", def:"The conditions, people, pace and way of working that surround someone in their job."},
+    {term:"dominant and in your face and direct", def:"A management style that is very forceful, assertive and openly controlling in communication."},
+    {term:"micromanager", def:"A manager who closely controls employees' work and pays excessive attention to how they do their tasks."},
+    {term:"coaches, delegators", def:"Managers who either develop and support employees through coaching or give them responsibility and let them do the work."},
+    {term:"take the search assignment", def:"To accept a recruitment assignment from a client and begin working on finding a suitable candidate."}
+  ];
+
+  const termListEl = document.getElementById('termList');
+  const defListEl = document.getElementById('defList');
+  const progressPill = document.getElementById('progressPill');
+  const doneMsg = document.getElementById('doneMsg');
+
+  const termEls = {};
+  const defEls = {};
+  let selected = null; // {type:'term'|'def', id}
+  let matchedCount = 0;
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function updateProgress(){
+    progressPill.textContent = matchedCount + ' / ' + pairs.length;
+    if(matchedCount === pairs.length) doneMsg.classList.add('show');
+    else doneMsg.classList.remove('show');
+  }
+
+  function makeRow(type, id, text, badgeText){
+    const row = document.createElement('div');
+    row.className = 'row ' + type;
+    row.dataset.id = id;
+    row.tabIndex = 0;
+    row.setAttribute('role','button');
+
+    if(type === 'term'){
+      const badge = document.createElement('div');
+      badge.className = 'badge';
+      badge.textContent = badgeText;
+      row.appendChild(badge);
+    }
+
+    const txt = document.createElement('div');
+    txt.className = 'txt';
+    txt.textContent = text;
+    row.appendChild(txt);
+
+    function activate(){
+      if(row.classList.contains('matched')) return;
+
+      if(!selected){
+        selected = {type, id};
+        row.classList.add('selected');
+        return;
+      }
+      if(selected.type === type){
+        const prevEl = type==='term' ? termEls[selected.id] : defEls[selected.id];
+        if(prevEl) prevEl.classList.remove('selected');
+        if(selected.id === id){ selected = null; return; }
+        selected = {type, id};
+        row.classList.add('selected');
+        return;
+      }
+      // different type -> attempt match
+      const termId = type==='term' ? id : selected.id;
+      const defId  = type==='def'  ? id : selected.id;
+      const termEl = termEls[termId];
+      const defEl  = defEls[defId];
+      termEl.classList.remove('selected');
+      defEl.classList.remove('selected');
+      selected = null;
+
+      if(termId === defId){
+        termEl.classList.add('matched');
+        defEl.classList.add('matched');
+        matchedCount++;
+        updateProgress();
+      } else {
+        termEl.classList.add('wrong');
+        defEl.classList.add('wrong');
+        setTimeout(()=>{
+          termEl.classList.remove('wrong');
+          defEl.classList.remove('wrong');
+        }, 500);
+      }
+    }
+
+    row.addEventListener('click', activate);
+    row.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); activate(); }
+    });
+
+    return row;
+  }
+
+  function render(){
+    termListEl.innerHTML = '';
+    defListEl.innerHTML = '';
+    matchedCount = 0;
+    selected = null;
+
+    pairs.forEach((p, idx)=>{
+      const termRow = makeRow('term', idx, p.term, idx+1);
+      termListEl.appendChild(termRow);
+      termEls[idx] = termRow;
+    });
+
+    const shuffledIdx = shuffle(pairs.map((_,i)=>i));
+    shuffledIdx.forEach(idx=>{
+      const defRow = makeRow('def', idx, pairs[idx].def, '');
+      defListEl.appendChild(defRow);
+      defEls[idx] = defRow;
+    });
+
+    updateProgress();
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', render);
+
+  render();
+</script>
+</body>
+</html>
