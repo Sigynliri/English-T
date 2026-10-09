@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vocabulary match: expression &amp; definition</title>
+<style>
+  :root{
+    --blue:#5b6ee1;
+    --blue-dark:#4453b8;
+    --ink:#20303a;
+    --card-bg:#ffffff;
+    --page-bg:#f4f6fb;
+    --header-bg:#eceefb;
+    --shadow: 0 10px 30px rgba(0,0,0,0.10);
+    --green:#2ecc71;
+    --red:#e74c3c;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){ --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215; --header-bg:#262c3a; }
+  }
+  :root[data-theme="dark"]{ --card-bg:#1c2126; --ink:#eef2f4; --page-bg:#0d1215; --header-bg:#262c3a; }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;padding:0;
+    background: var(--page-bg);
+    font-family: system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+    color:var(--ink);
+    padding-top: env(safe-area-inset-top,0px);
+    padding-bottom: env(safe-area-inset-bottom,0px);
+    min-height:100%;
+  }
+  .wrap{ max-width: 1000px; margin: 0 auto; padding: 20px 16px 40px; }
+  .card{ background: var(--card-bg); border-radius: 20px; box-shadow: var(--shadow); padding: 20px 20px 26px; }
+
+  .title-row{ font-weight:800; font-size:19px; margin-bottom:6px; }
+  .desc{ font-size:14px; color: color-mix(in srgb, var(--ink) 70%, transparent); margin-bottom:16px; }
+
+  .progress-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .progress-pill{ background: rgba(91,110,225,0.12); color: var(--blue-dark); font-weight:800; font-size:13px;
+    padding:6px 14px; border-radius:999px; }
+  .reset-btn{ border:none; background: rgba(91,110,225,0.12); color: var(--blue-dark); font-weight:800;
+    font-size:13px; padding:8px 16px; border-radius:999px; cursor:pointer; }
+  .reset-btn:active{ transform: scale(0.96); }
+
+  .cols{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  @media (max-width: 720px){ .cols{ grid-template-columns: 1fr; } }
+
+  .col-head{ background: var(--header-bg); color: var(--blue-dark); font-weight:800; font-size:13.5px;
+    padding:9px 12px; border-radius:10px; margin-bottom:8px; text-align:center; }
+
+  .list{ display:flex; flex-direction:column; gap:8px; }
+  .row{
+    background: rgba(91,110,225,0.06);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 13.6px;
+    line-height: 1.4;
+    cursor: pointer;
+    transition: border-color .15s ease, background .15s ease, transform .1s ease;
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+  }
+  .row:hover{ border-color: rgba(91,110,225,0.35); }
+  .row .badge{ flex:0 0 auto; width:20px; height:20px; border-radius:50%; background: var(--blue);
+    color:#fff; font-weight:800; font-size:11px; display:flex; align-items:center; justify-content:center; }
+  .row.term .badge{ display:flex; }
+  .row.def .badge{ display:none; }
+  .row .txt{ flex:1 1 auto; }
+  .row.selected{ border-color:#f0a428; background: rgba(240,164,40,0.14); }
+  .row.matched{ border-color: var(--green); background: rgba(46,204,113,0.12); cursor:default; }
+  .row.matched .txt{ color: color-mix(in srgb, var(--ink) 75%, transparent); }
+  .row.matched::after{ content:"✓"; color: var(--green); font-weight:900; margin-left:auto; flex:0 0 auto; }
+  .row.wrong{ animation: shake .4s ease; border-color: var(--red); background: rgba(231,76,60,0.12); }
+  @keyframes shake{
+    0%,100%{ transform: translateX(0); }
+    20%{ transform: translateX(-5px); }
+    40%{ transform: translateX(5px); }
+    60%{ transform: translateX(-3px); }
+    80%{ transform: translateX(3px); }
+  }
+
+  .done-msg{ text-align:center; font-weight:800; color: var(--green); font-size:15px; margin-top:16px; opacity:0; transition: opacity .3s ease; }
+  .done-msg.show{ opacity:1; }
+
+  .lesson-section{margin:0 0 22px;padding:18px;border:1px solid rgba(91,110,225,.2);border-radius:16px;background:var(--card-bg)}
+  .lesson-section h2{font-size:17px;margin:0 0 8px}
+  .lesson-section h3{font-size:14px;margin:18px 0 8px}
+  .lesson-section p,.lesson-section li{font-size:14px;line-height:1.55}
+  .lesson-section .instruction{color:color-mix(in srgb,var(--ink) 72%,transparent);margin:0 0 12px}
+  .lesson-section blockquote{margin:10px 0;padding:10px 14px;border-left:3px solid var(--blue);background:rgba(91,110,225,.07);border-radius:0 8px 8px 0}
+  .lesson-section input[type="text"],.lesson-section textarea,.lesson-section select{width:100%;max-width:100%;padding:9px 10px;margin:5px 0 10px;border:1px solid rgba(91,110,225,.35);border-radius:8px;background:var(--card-bg);color:var(--ink);font:inherit}
+  .lesson-section textarea{min-height:74px;resize:vertical}
+  .lesson-section details{margin-top:10px}
+  .lesson-section summary{cursor:pointer;color:var(--blue-dark);font-weight:700}
+  .check-btn{border:0;border-radius:999px;background:var(--blue);color:white;padding:9px 15px;font-weight:700;cursor:pointer;margin:6px 6px 6px 0}
+  .feedback{font-size:13px;font-weight:700;margin-top:8px}
+  .lesson-section .answer{display:none;margin-top:8px;padding:10px 12px;background:rgba(46,204,113,.1);border-radius:8px}
+  .lesson-section .answer.show{display:block}
+  .task-list{padding-left:20px}
+  .mini-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0}
+  .mini-table th,.mini-table td{border:1px solid rgba(91,110,225,.25);padding:8px;text-align:left;vertical-align:top}
+  .mini-table th{background:var(--header-bg)}
+  .vocab-heading{margin-top:28px}
+
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+
+      <div class="lesson-section">
+        <h2>Lesson menu</h2>
+        <p class="instruction">Complete the activities in order, then practise the vocabulary below.</p>
+        <p><a href="#task1">1. Listening &amp; grammar</a> · <a href="#task2">2. Grammar functions</a> · <a href="#task3">3. Past → present</a> · <a href="#task4">4. Interview answer</a></p>
+        <p><a href="#task5">5. Stress</a> · <a href="#task6">6. Chunking</a> · <a href="#task7">7. Weak forms</a> · <a href="#task8">8. Shadowing</a> · <a href="#task9">9. Professional communication</a></p>
+      </div>
+
+    <section class="lesson-section" id="task1">
+      <h2>Task 1. Listen and notice the grammar</h2>
+      <p class="instruction">Listen to the interview again. Find examples in which Lou asks about a candidate’s past experience and explains his own professional method.</p>
+      <h3>1. Past accomplishment</h3>
+      <p>Write down two questions Lou asks about a completed accomplishment.</p>
+      <textarea placeholder="Example 1...&#10;Example 2..."></textarea>
+      <p>Why does Lou use the Past Simple in these questions?</p>
+      <textarea placeholder="The Past Simple is used because..."></textarea>
+      <h3>2. Articles with abstract nouns</h3>
+      <p>Complete the phrases you hear:</p>
+      <label>the ______ of the organization</label><input type="text" placeholder="Missing noun">
+      <label>the level of ______</label><input type="text" placeholder="Missing noun">
+      <label>the ______ of resources</label><input type="text" placeholder="Missing noun">
+      <p>Why is <em>the</em> used in these phrases, even though the nouns are abstract?</p>
+      <textarea placeholder="The article is used because..."></textarea>
+      <h3>3. Describing a professional process</h3>
+      <p>Complete the examples:</p>
+      <label>“I’m ______ to get a sense of the pace of the organization.”</label><input type="text" placeholder="Missing word">
+      <label>“I’m ______ it to the environment of my client.”</label><input type="text" placeholder="Missing word">
+      <p>What does the Present Continuous communicate here?</p>
+      <textarea placeholder="Lou uses it to describe..."></textarea>
+      <h3>4. If-sentences</h3>
+      <blockquote>“If I know they’re dominant and in your face and direct, that could be a problem.”</blockquote>
+      <p>Underline or write the verb phrase after <em>if</em>, then identify the structure and explain what <em>could</em> means here.</p>
+      <textarea placeholder="Structure: ...&#10;Could means..."></textarea>
+      <details><summary>Check your answers</summary>
+        <div class="answer">
+          <p><strong>Past accomplishment:</strong> “What was the pace like?”, “What was the intensity like?”, “Did you have enough resources?”, “What was the biggest decision you made?”, “How was it made?”, “Were you frustrated by that?”, “Did you like it?”, “What role did that person play in your success?”, “How did they delegate?”</p>
+          <p><strong>Past Simple:</strong> Lou asks about a completed past experience and the actions, decisions and circumstances connected with it.</p>
+          <p><strong>Articles:</strong> the pace of the organization; the level of sophistication; the depth of resources. The article marks a specific, identifiable aspect of the organization or situation. Abstract nouns can take articles.</p>
+          <p><strong>Present Continuous:</strong> “I’m starting to get…”, “I’m mapping…”. Lou describes the actions and thought processes that form part of his professional method—not necessarily something he is learning right now.</p>
+          <p><strong>Conditional:</strong> If + Present Simple, that could + infinitive. This is a real/open conditional describing a possible consequence; <em>could</em> means “might / it is possible that”. It is not a Second Conditional just because it contains <em>could</em>.</p>
+        </div>
+      </details>
+    </section>
+
+    <section class="lesson-section" id="task2">
+      <h2>Task 2. Match the grammar to its function</h2>
+      <p class="instruction">Choose the best explanation for each example.</p>
+      <p><strong>1. “What role did that person play?”</strong></p>
+      <select><option value="">Choose a function…</option><option>Describing an action in progress now</option><option>Asking about a completed past situation</option><option>Describing a general ability</option></select>
+      <p><strong>2. “I’m getting a sense of the pace…”</strong></p>
+      <select><option value="">Choose a function…</option><option>Describing part of a professional process</option><option>Describing a completed past event</option><option>Making a prediction about the future</option></select>
+      <p><strong>3. “I’m mapping it to the environment of my client.”</strong></p>
+      <select><option value="">Choose a function…</option><option>Comparing candidate information with the client’s environment as part of his method</option><option>Describing a habit from childhood</option><option>Reporting a completed decision</option></select>
+      <p><strong>4. “If I know they’re dominant…, that could be a problem.”</strong></p>
+      <select><option value="">Choose a function…</option><option>An impossible past condition</option><option>A possible consequence of a real/open condition</option><option>A command</option></select>
+      <details><summary>Check your answers</summary><div class="answer">
+        <ol><li>Asking about a completed past situation — Past Simple.</li><li>Describing part of a professional process — Present Continuous.</li><li>Comparing candidate information with the client’s environment as part of his method.</li><li>A possible consequence of a real/open condition; <em>could</em> makes the result less definite.</li></ol>
+      </div></details>
+    </section>
+
+    <section class="lesson-section" id="task3">
+      <h2>Task 3. Past achievement → current relevance</h2>
+      <p class="instruction">Rewrite each idea so that it moves from a completed past action to what you do now. Use the Present Continuous in the second sentence.</p>
+      <ol class="task-list">
+        <li>I created personalised materials for my students.<textarea placeholder="Now, I’m..."></textarea></li>
+        <li>I started working with young learners.<textarea placeholder="Now, I’m..."></textarea></li>
+        <li>I developed a system for organising homework.<textarea placeholder="Now, I’m..."></textarea></li>
+        <li>I began using AI tools to prepare materials.<textarea placeholder="Now, I’m..."></textarea></li>
+        <li>I started working with authentic video and audio.<textarea placeholder="Now, I’m..."></textarea></li>
+      </ol>
+      <details><summary>Possible answers</summary><div class="answer">
+        <ol><li>I’m currently using personalised materials to adapt my lessons to individual students’ needs.</li><li>I’m working with young learners and adapting my teaching approach to their age and level.</li><li>I’m using a structured system to organise homework and monitor students’ progress.</li><li>I’m using AI tools to make material preparation more efficient.</li><li>I’m incorporating authentic video and audio into my lessons.</li></ol>
+        <p><strong>Notice:</strong> <em>I developed…</em> = completed past action; <em>I’ve developed…</em> = experience/current result; <em>I’m developing…</em> = activity in progress. In Lou’s interview, <em>I’m looking at / I’m asking / I’m mapping</em> describes his professional method.</p>
+      </div></details>
+    </section>
+
+    <section class="lesson-section" id="task4">
+      <h2>Task 4. Build an interview answer</h2>
+      <p class="instruction">Prepare a short answer using this sequence: <strong>past experience → experience accumulated up to now → current professional activity → relevance</strong>.</p>
+      <ol class="task-list">
+        <li>Past Simple: What did you do or achieve?</li>
+        <li>Present Perfect: What experience have you gained since then?</li>
+        <li>Present Continuous: What are you doing / using in your work now?</li>
+        <li>Relevance: Why does this matter for the role or learner?</li>
+      </ol>
+      <textarea placeholder="Write your answer here..."></textarea>
+      <details><summary>Model answer</summary><div class="answer">
+        I previously worked with individual students and developed personalised materials for them. Since then, I’ve gained more experience in adapting lessons to different learning needs. At the moment, I’m using a more structured approach to lesson planning and incorporating more authentic materials. This is particularly relevant because it allows me to adapt my teaching to different learners and their goals.
+      </div></details>
+    </section>
+
+    <section class="lesson-section" id="task5">
+      <h2>Task 5. Sentence stress</h2>
+      <p class="instruction">Read aloud. The words in bold are examples of likely sentence stress. The exact stress can change with the speaker’s intended contrast or emphasis.</p>
+      <blockquote>I’m <strong>GETTING</strong> a <strong>SENSE</strong> of the <strong>PACE</strong> of the <strong>ORGANIZATION</strong>.</blockquote>
+      <blockquote>I’m <strong>MAPPING</strong> it to the <strong>ENVIRONMENT</strong> of my <strong>CLIENT</strong>.</blockquote>
+      <blockquote>I’m getting a real <strong>SENSE</strong> of your <strong>WORK ENVIRONMENT</strong>.</blockquote>
+      <blockquote>If I know they’re <strong>DOMINANT</strong> and <strong>DIRECT</strong>, that could be a <strong>PROBLEM</strong>.</blockquote>
+      <p>Now choose one sentence and record or repeat it three times, keeping the content words prominent and the grammatical words lighter.</p>
+    </section>
+
+    <section class="lesson-section" id="task6">
+      <h2>Task 6. Chunking</h2>
+      <p class="instruction">Read the sentences in thought groups. Pause briefly at each slash; don’t pronounce every word as a separate unit.</p>
+      <blockquote>I’m getting a sense / of the pace of the organization.</blockquote>
+      <blockquote>I’m mapping it / to the environment of my client.</blockquote>
+      <blockquote>I’m getting a real sense / of your work environment.</blockquote>
+      <blockquote>If I know they’re dominant / and in your face / and direct, / that could be a problem.</blockquote>
+      <p><strong>Transfer:</strong> finish the sentence about your own work, using the same pattern.</p>
+      <blockquote>I’m getting a sense / of the students’ needs, / their level of confidence, / the pace they can work at, / and what kind of support they need.</blockquote>
+      <textarea placeholder="Write your own sentence using I’m + -ing..."></textarea>
+    </section>
+
+    <section class="lesson-section" id="task7">
+      <h2>Task 7. Weak forms</h2>
+      <p class="instruction">Read the phrases aloud. Keep the content words clear, while function words are usually shorter and less prominent in connected speech.</p>
+      <ul class="task-list">
+        <li>a sense of</li>
+        <li>the pace of</li>
+        <li>the environment of</li>
+        <li>a problem</li>
+        <li>what kind of</li>
+        <li>how much did you…?</li>
+      </ul>
+      <p>Focus on: <strong>a, the, of, to, did, you, and</strong>. Don’t make every small grammatical word equally strong.</p>
+    </section>
+
+    <section class="lesson-section" id="task8">
+      <h2>Task 8. Shadowing</h2>
+      <p class="instruction">Listen to a short excerpt and repeat it, trying to reproduce the speaker’s thought groups, sentence stress, weak forms, linking, rhythm and intonation.</p>
+      <ol class="task-list">
+        <li>Listen once without speaking.</li>
+        <li>Listen again and mark the thought groups with slashes.</li>
+        <li>Repeat along with the speaker.</li>
+        <li>Repeat without the audio.</li>
+        <li>Transfer the pattern to a sentence about your own professional work.</li>
+      </ol>
+      <blockquote>I’m getting a sense of… / I’m mapping it to… / I’m looking at… / I’m asking…</blockquote>
+      <p><strong>Goal:</strong> use <em>I’m + -ing</em> to describe a professional action or method—not just imitate the speaker’s voice.</p>
+    </section>
+
+    <section class="lesson-section" id="task9">
+      <h2>Task 9. Professional communication: retrieve the chunk</h2>
+      <p class="instruction">Try to remember the exact expression from the video. Use the clue to retrieve the missing word.</p>
+      <h3>1. How do you professionally respond to unsolicited input?</h3>
+      <blockquote>Thank you for your ______.</blockquote>
+      <p><em>Hint:</em> a suggestion, opinion or piece of information someone offers to help or influence a decision.</p>
+      <input type="text" id="inputInput" placeholder="Missing word">
+      <h3>2. How do you professionally point out that something falls within someone’s responsibility, while offering limited support?</h3>
+      <textarea placeholder="I understand that falls within your..."></textarea>
+      <details><summary>Hints and model answers</summary><div class="answer">
+        <p><strong>1. input</strong> — “Thank you for your input.” This acknowledges the other person’s contribution and may politely close the topic; it does not literally mean “stay out of my business.”</p>
+        <p><strong>2.</strong> “I understand that falls within your scope of responsibility, but I’m happy to support where it makes sense.”</p>
+        <p><strong>Chunks:</strong> <em>scope of responsibility</em> = the area someone is responsible for; <em>where it makes sense</em> = where it is reasonable or appropriate.</p>
+      </div></details>
+    </section>
+
+    <h2 class="vocab-heading">Vocabulary match: expression &amp; definition</h2>
+
+      <div class="title-row">🧩 Vocabulary match: expression &amp; definition</div>
+      <div class="desc">Сначала нажмите на выражение слева, затем на его определение справа. Правильная пара подсветится зелёным.</div>
+
+      <div class="progress-row">
+        <div class="progress-pill" id="progressPill">0 / 26</div>
+        <button class="reset-btn" id="resetBtn">Сбросить</button>
+      </div>
+
+      <div class="cols">
+        <div>
+          <div class="col-head">Expression</div>
+          <div class="list" id="termList"></div>
+        </div>
+        <div>
+          <div class="col-head">Definition</div>
+          <div class="list" id="defList"></div>
+        </div>
+      </div>
+
+      <div class="done-msg" id="doneMsg">🎉 Отлично! Все 26 пар найдены верно!</div>
+    </div>
+  </div>
+
+<script>
+  const pairs = [
+    {term:"culture fit", def:"How well a person's way of working, values and preferences match the culture of a company."},
+    {term:"an intangible thing", def:"Something important but difficult to define, measure or describe precisely."},
+    {term:"figure out", def:"To understand or discover something by thinking about it or asking questions."},
+    {term:"give a year guarantee", def:"To promise a client that a successful placement will work out for at least a year."},
+    {term:"do this search over again", def:"To repeat the recruitment process because the previous placement did not work out."},
+    {term:"proxies for culture", def:"Things that can be used as indirect signs or indicators of an organization's culture."},
+    {term:"the pace of the organization", def:"How quickly work, decisions and activities happen in a company."},
+    {term:"on the fly", def:"While something is happening, without having much time to plan it in advance."},
+    {term:"ask questions", def:"To get information from someone by asking them about their experience, work or opinions."},
+    {term:"what was the pace like?", def:"A question asking how quickly work was done and how fast things happened in a particular organization."},
+    {term:"what was the intensity like?", def:"A question asking how demanding, pressured or intense the work environment was."},
+    {term:"Walk me through", def:"Tell me about something step by step, explaining what happened and how it happened."},
+    {term:"get a sense of", def:"To develop a general understanding of something from the information you receive."},
+    {term:"mapping it to", def:"Comparing one situation with another to see how well they correspond or match."},
+    {term:"managerial fit", def:"How well a candidate's preferred way of working matches the style of their potential manager."},
+    {term:"day to day", def:"The ordinary, everyday experience of working with someone."},
+    {term:"dominant culture", def:"The strongest influence on a person's everyday work experience; here, the hiring manager's management style."},
+    {term:"most significant accomplishment", def:"The candidate's most important or impressive professional achievement."},
+    {term:"play a role in", def:"To have an influence or be involved in producing a particular result."},
+    {term:"where you excelled", def:"The type of situation or management environment in which you performed particularly well."},
+    {term:"a real sense of", def:"A clear and fairly detailed understanding of something based on several pieces of information."},
+    {term:"work environment", def:"The conditions, people, pace and way of working that surround someone in their job."},
+    {term:"dominant and in your face and direct", def:"A management style that is very forceful, assertive and openly controlling in communication."},
+    {term:"micromanager", def:"A manager who closely controls employees' work and pays excessive attention to how they do their tasks."},
+    {term:"coaches, delegators", def:"Managers who either develop and support employees through coaching or give them responsibility and let them do the work."},
+    {term:"take the search assignment", def:"To accept a recruitment assignment from a client and begin working on finding a suitable candidate."}
+  ];
+
+  const termListEl = document.getElementById('termList');
+  const defListEl = document.getElementById('defList');
+  const progressPill = document.getElementById('progressPill');
+  const doneMsg = document.getElementById('doneMsg');
+
+  const termEls = {};
+  const defEls = {};
+  let selected = null; // {type:'term'|'def', id}
+  let matchedCount = 0;
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function updateProgress(){
+    progressPill.textContent = matchedCount + ' / ' + pairs.length;
+    if(matchedCount === pairs.length) doneMsg.classList.add('show');
+    else doneMsg.classList.remove('show');
+  }
+
+  function makeRow(type, id, text, badgeText){
+    const row = document.createElement('div');
+    row.className = 'row ' + type;
+    row.dataset.id = id;
+    row.tabIndex = 0;
+    row.setAttribute('role','button');
+
+    if(type === 'term'){
+      const badge = document.createElement('div');
+      badge.className = 'badge';
+      badge.textContent = badgeText;
+      row.appendChild(badge);
+    }
+
+    const txt = document.createElement('div');
+    txt.className = 'txt';
+    txt.textContent = text;
+    row.appendChild(txt);
+
+    function activate(){
+      if(row.classList.contains('matched')) return;
+
+      if(!selected){
+        selected = {type, id};
+        row.classList.add('selected');
+        return;
+      }
+      if(selected.type === type){
+        const prevEl = type==='term' ? termEls[selected.id] : defEls[selected.id];
+        if(prevEl) prevEl.classList.remove('selected');
+        if(selected.id === id){ selected = null; return; }
+        selected = {type, id};
+        row.classList.add('selected');
+        return;
+      }
+      // different type -> attempt match
+      const termId = type==='term' ? id : selected.id;
+      const defId  = type==='def'  ? id : selected.id;
+      const termEl = termEls[termId];
+      const defEl  = defEls[defId];
+      termEl.classList.remove('selected');
+      defEl.classList.remove('selected');
+      selected = null;
+
+      if(termId === defId){
+        termEl.classList.add('matched');
+        defEl.classList.add('matched');
+        matchedCount++;
+        updateProgress();
+      } else {
+        termEl.classList.add('wrong');
+        defEl.classList.add('wrong');
+        setTimeout(()=>{
+          termEl.classList.remove('wrong');
+          defEl.classList.remove('wrong');
+        }, 500);
+      }
+    }
+
+    row.addEventListener('click', activate);
+    row.addEventListener('keydown', (e)=>{
+      if(e.key==='Enter' || e.key===' '){ e.preventDefault(); activate(); }
+    });
+
+    return row;
+  }
+
+  function render(){
+    termListEl.innerHTML = '';
+    defListEl.innerHTML = '';
+    matchedCount = 0;
+    selected = null;
+
+    pairs.forEach((p, idx)=>{
+      const termRow = makeRow('term', idx, p.term, idx+1);
+      termListEl.appendChild(termRow);
+      termEls[idx] = termRow;
+    });
+
+    const shuffledIdx = shuffle(pairs.map((_,i)=>i));
+    shuffledIdx.forEach(idx=>{
+      const defRow = makeRow('def', idx, pairs[idx].def, '');
+      defListEl.appendChild(defRow);
+      defEls[idx] = defRow;
+    });
+
+    updateProgress();
+  }
+
+  document.getElementById('resetBtn').addEventListener('click', render);
+
+
+  document.querySelectorAll('.lesson-section details').forEach(details => {
+    details.addEventListener('toggle', () => {
+      const answer = details.querySelector('.answer');
+      if(answer) answer.classList.toggle('show', details.open);
+    });
+  });
+
+  render();
+</script>
+</body>
+</html>
