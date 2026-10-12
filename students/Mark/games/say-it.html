@@ -39,7 +39,12 @@ details{margin:12px 0;text-align:left}
 <script>
 // ВСТАВЬТЕ СВОИ КАРТИНКИ СЮДА (порядок: ax, ant, apple, alligator).
 // Можно путь к файлу ('ax.png') или data:image/... base64. Пустая строка = смайлик.
-const IMAGES=['/English-T/students/Mark/games/say-it/Снимок1.PNG','students/Mark/games/say-it/2.PNG','/English-T/students/Mark/games/say-it/Снимок.PNG','/English-T/students/Mark/games/say-it/Снимок.PNG','/English-T/students/Mark/games/say-it/3.PNG'];
+const IMAGES=[
+ '/English-T/students/Mark/games/say-it/Снимок1.PNG',  // ax
+ '/English-T/students/Mark/games/say-it/2.PNG',        // ant
+ '/English-T/students/Mark/games/say-it/Снимок.PNG',   // apple
+ '/English-T/students/Mark/games/say-it/3.PNG'         // alligator
+];
 const W=['ax','ant','apple','alligator'],E=['🪓','🐜','🍎','🐊'],imgs=IMAGES;
 const R=[{n:3,ms:1800,say:1},{n:4,ms:1400,say:1},{n:4,ms:1000},{n:4,ms:700},{n:4,ms:450}];
 let round=0,lives=3,seq=[],prev='',pos=0,busy=false;
