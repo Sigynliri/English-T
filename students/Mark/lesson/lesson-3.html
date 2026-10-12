@@ -196,6 +196,68 @@ footer {
   height: 100%;
   object-fit: contain;
 }
+  
+.mascot-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  max-width: 650px;
+  margin: 0 auto 24px;
+  padding: 20px;
+  background: #fffdf6;
+  border: 1px solid #f0e2c5;
+  border-radius: 24px;
+}
+
+.mascot-picture {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.mascot-picture:hover {
+  transform: translateY(-4px) rotate(-3deg);
+}
+
+.mascot-message {
+  padding: 16px 20px;
+  background: #eaf3ff;
+  border-radius: 20px;
+}
+
+.mascot-message h2 {
+  margin: 0 0 6px;
+  color: #29394e;
+}
+
+.mascot-message p {
+  margin: 0;
+  color: #65758b;
+}
+
+@media (max-width: 480px) {
+  .mascot-card {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .mascot-picture {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-picture {
+    transition: none;
+  }
+}
+
 
 @media (max-width: 420px) {
   main { padding: 12px 9px 30px; }
@@ -209,15 +271,17 @@ footer {
 
 <body>
 <main>
-
-  <header class="hero">
-     <img src="/English-T/images/character-ask.png" alt="Mascot" id="main-character-img" class="hello-character">
-    <h1>Meet the Sound of A!</h1>
-    <p class="subtitle">
-      Hi, Mark! Let's listen, look and discover!
-    </p>
-  </header>
-
+<div class="mascot-card">
+  <img
+    src="/English-T/images/character-ask.png"
+    alt="Mark the tiger"
+    class="mascot-picture"
+  >
+<div class="mascot-message">
+    <h2>Hi, Mark! 👋</h2>
+    <p>Let's listen, look and discover!</p>
+  </div>
+</div>
   <div class="video-container">
   <video controls preload="metadata" playsinline>
     <source
