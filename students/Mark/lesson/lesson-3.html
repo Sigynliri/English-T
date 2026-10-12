@@ -123,6 +123,22 @@ button {
   cursor: pointer;
 }
 
+  
+.illustration {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.lesson-image {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
 button:hover { border-color: var(--accent); }
 
 button:focus-visible {
@@ -173,6 +189,13 @@ footer {
   text-align: center;
   color: var(--muted);
 }
+  
+.video-container video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 
 @media (max-width: 420px) {
   main { padding: 12px 9px 30px; }
@@ -194,6 +217,23 @@ footer {
       Hi, Mark! Let's listen, look and discover!
     </p>
   </header>
+
+<div class="illustration">
+  <img
+    src="/English-T/images/vowels and consonants.png"
+    alt="A snake with English vowel letters"
+    class="lesson-image"
+  >
+</div>
+
+  <div class="video-container">
+  <video controls preload="metadata" playsinline>
+    <source
+      src="/English-T/students/Mark/videos/SM2ed Animated song video L1 U0_converted.mp4"
+      type="video/mp4"
+    >
+    Your browser does not support video playback.
+  </video>
 
   <!-- ACTIVITY 1 -->
   <section class="lesson" id="closed">
