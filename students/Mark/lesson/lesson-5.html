@@ -167,6 +167,57 @@ button:hover { border-color: var(--accent); }
 button:focus-visible { outline: 3px solid #9bc5f4; outline-offset: 2px; }
 button:disabled { opacity: .65; cursor: wait; }
 footer { text-align: center; color: var(--muted); padding: 8px 0 0; }
+  .song-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.song-mascot {
+  width: 150px;
+  height: 170px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.song-player {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.song-player h2 {
+  margin-top: 0;
+}
+
+.player-hint {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.stop-media {
+  background: #314c6e;
+  color: white;
+  border-color: #314c6e;
+}
+
+@media (max-width: 480px) {
+  .song-stage {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .song-mascot {
+    width: 112px;
+    height: 112px;
+  }
+
+  .song-player {
+    width: 100%;
+  }
+}
 @media (max-width: 480px) {
   main { padding: 12px 9px 30px; }
   .mascot-card { flex-direction: column; gap: 10px; text-align: center; padding: 16px; }
@@ -239,21 +290,14 @@ footer { text-align: center; color: var(--muted); padding: 8px 0 0; }
       loading="lazy">
     </iframe>
   </section>
-
-  <section class="lesson" id="whats-this">
-    <div class="character-question">
-      <img src="/English-T/images/character-ask.png" alt="Mark the tiger asking a question"
-           id="main-character-img" class="hello-character">
-      <div class="question-title">What's this?</div>
-    </div>
-    <div class="reveal-block">
-      <div class="reveal-card" data-audio="/English-T/sound/SM2ed Student's Book L1 Track 12.mp3">
-        <button class="reveal-play-btn" type="button" onclick="revealQuestion(this)"
-                aria-label="Play What's this?">▶️</button>
-        <div class="reveal-text" data-text="What's this?" aria-live="polite"></div>
-      </div>
+<section class="lesson">
+    <h2>What's this?</h2>
+  <h2>Is it...?</h2>
+    <div class="word-card">
+      <img src="/English-T/images/character-ask.png" alt="A banana" class="lesson-image">
     </div>
   </section>
+
 
   <section class="lesson" id="school-words">
     <h2>Look and say</h2>
