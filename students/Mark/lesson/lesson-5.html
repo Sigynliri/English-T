@@ -1,1 +1,537 @@
-students/Mark/lesson/lesson-3.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet the Sound of A!</title>
+
+<style>
+:root {
+  --ink: #29394e;
+  --muted: #65758b;
+  --blue: #eaf3ff;
+  --yellow: #fff2ca;
+  --green: #e6f5e9;
+  --border: #dce5ef;
+  --accent: #547caf;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  color: var(--ink);
+  background: #f3f6fb;
+  line-height: 1.5;
+}
+
+main {
+  max-width: 850px;
+  margin: auto;
+  padding: 20px 14px 40px;
+}
+
+.hero, .lesson {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 22px;
+  margin-bottom: 18px;
+}
+
+.hero {
+  text-align: center;
+  background: #fffdf6;
+}
+
+.tiger { font-size: 64px; }
+
+h1 {
+  font-size: clamp(26px, 5vw, 38px);
+  margin: 6px 0;
+}
+
+h2 { margin: 4px 0 10px; }
+
+.subtitle, .muted { color: var(--muted); }
+
+.step {
+  display: inline-block;
+  background: var(--blue);
+  color: #315783;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.words {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+
+.word-card {
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 14px 8px;
+  text-align: center;
+  background: #fff;
+}
+
+.picture {
+  font-size: 52px;
+  line-height: 1.4;
+}
+
+.word {
+  display: block;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.sound {
+  display: block;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.prompt {
+  font-weight: bold;
+  margin-top: 18px;
+}
+
+.answers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+button {
+  font: inherit;
+  font-size: 16px;
+  padding: 11px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  cursor: pointer;
+}
+
+  
+.illustration {
+  margin: 20px 0;
+  text-align: center;
+}
+
+.lesson-image {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 16px;
+  object-fit: contain;
+}
+
+button:hover { border-color: var(--accent); }
+
+button:focus-visible {
+  outline: 3px solid #9bc5f4;
+  outline-offset: 2px;
+}
+
+button.correct {
+  background: var(--green);
+  border-color: #66ad7b;
+}
+
+button.incorrect {
+  background: #fff0f0;
+  border-color: #d98585;
+}
+
+.feedback {
+  min-height: 28px;
+  margin-top: 12px;
+  font-weight: bold;
+}
+
+.feedback.good { color: #217346; }
+.feedback.bad { color: #b54747; }
+
+.teacher {
+  background: #f6f8fc;
+  border-left: 4px solid #a8bfd9;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.compare .word-card:first-child { background: var(--yellow); }
+.compare .word-card:last-child { background: var(--green); }
+
+.reset {
+  display: block;
+  margin: 24px auto;
+  background: #314c6e;
+  color: white;
+  border-color: #314c6e;
+}
+
+footer {
+  text-align: center;
+  color: var(--muted);
+}
+  
+.video-container video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+  
+.mascot-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  max-width: 650px;
+  margin: 0 auto 24px;
+  padding: 20px;
+  background: #fffdf6;
+  border: 1px solid #f0e2c5;
+  border-radius: 24px;
+}
+
+.mascot-picture {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+
+.mascot-picture:hover {
+  transform: translateY(-4px) rotate(-3deg);
+}
+
+.mascot-message {
+  padding: 16px 20px;
+  background: #eaf3ff;
+  border-radius: 20px;
+}
+
+.mascot-message h2 {
+  margin: 0 0 6px;
+  color: #29394e;
+}
+
+.mascot-message p {
+  margin: 0;
+  color: #65758b;
+}
+
+@media (max-width: 480px) {
+  .mascot-card {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .mascot-picture {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mascot-picture {
+    transition: none;
+  }
+}
+
+
+@media (max-width: 420px) {
+  main { padding: 12px 9px 30px; }
+  .hero, .lesson { padding: 16px; }
+  .picture { font-size: 42px; }
+  .word { font-size: 22px; }
+  button { padding: 10px 12px; }
+}
+</style>
+</head>
+
+<body>
+<main>
+<div class="mascot-card">
+  <img
+    src="/English-T/images/character-ask.png"
+    alt="Mark the tiger"
+    class="mascot-picture"
+  >
+<div class="mascot-message">
+    <h2>Hi, Mark! 👋</h2>
+    <p>Let's listen, look and discover!</p>
+  </div>
+</div>
+  <div class="video-container">
+  <video controls preload="metadata" playsinline>
+    <source
+      src="/English-T/students/Mark/videos/SM2ed Animated song video L1 U0_converted.mp4"
+      type="video/mp4"
+    >
+    Your browser does not support video playback.
+  </video>
+
+    <div class="illustration">
+  <img
+    src="/English-T/images/vowels and consonants.png"
+    alt="A snake with English vowel letters"
+    class="lesson-image"
+  >
+</div>
+  <section class="lesson" id="closed">
+
+    <div class="words">
+      <div class="word-card">
+       <img
+    src="/English-T/images/cards/cacke-card.jfif"
+    alt="A snake with English vowel letters"
+    class="lesson-image"
+  >
+      </div>
+
+      <div class="word-card">
+       <img
+    src="/English-T/images/cards/cat-card.jfif"
+    alt="A snake with English vowel letters"
+    class="lesson-image"
+  >
+      </div>
+    </div>
+  </section>
+    
+  <!-- ACTIVITY 1 -->
+  <section class="lesson" id="closed">
+    <span class="step">1 · Closed syllable</span>
+    <h2>A says /æ/</h2>
+
+    <p>
+      A syllable can end with a consonant.
+      In many short words, A makes the sound /æ/.
+    </p>
+
+    <div class="words">
+      <div class="word-card">
+        <div class="picture" aria-hidden="true">🐱</div>
+        <span class="word">cat</span>
+        <span class="sound">/kæt/</span>
+      </div>
+
+      <div class="word-card">
+        <div class="picture" aria-hidden="true">🐶</div>
+        <span class="word">dog</span>
+        <span class="sound">/dɒɡ/</span>
+      </div>
+    </div>
+
+    <p class="prompt">
+      Listen! Which word has the /æ/ sound?
+    </p>
+
+    <div class="answers">
+      <button data-group="closed" data-answer="cat">
+        🐱 cat
+      </button>
+      <button data-group="closed" data-answer="dog">
+        🐶 dog
+      </button>
+    </div>
+
+    <div class="feedback" id="closed-feedback"
+         aria-live="polite"></div>
+
+    <div class="teacher">
+      <strong>Teacher's note:</strong>
+      Say “cat” and “dog” aloud. Ask Mark to listen,
+      then choose. He does not need to read the words himself.
+    </div>
+  </section>
+
+  <!-- ACTIVITY 2 -->
+  <section class="lesson" id="open">
+    <span class="step">2 · Open syllable</span>
+    <h2>A says its name: /eɪ/</h2>
+
+    <p>
+      Look at <strong>ba-by</strong>.
+      The first syllable ends with A.
+      A often says its name in an open syllable.
+    </p>
+
+    <div class="words">
+      <div class="word-card">
+        <div class="picture" aria-hidden="true">👶</div>
+        <span class="word">ba-by</span>
+        <span class="sound">First syllable: /beɪ/</span>
+      </div>
+
+      <div class="word-card">
+        <div class="picture" aria-hidden="true">🎂</div>
+        <span class="word">cake</span>
+        <span class="sound">A = /eɪ/</span>
+      </div>
+    </div>
+
+    <p class="prompt">
+      Which word has the same vowel sound as baby?
+    </p>
+
+    <div class="answers">
+      <button data-group="open" data-answer="cake">
+        🎂 cake
+      </button>
+      <button data-group="open" data-answer="map">
+        🗺️ map
+      </button>
+    </div>
+
+    <div class="feedback" id="open-feedback"
+         aria-live="polite"></div>
+
+    <div class="teacher">
+      <strong>Teacher's note:</strong>
+      Say “baby”, “cake” and “map”. Ask Mark to find
+      the word with the same vowel sound as the first
+      syllable of “baby”. Explain that cake uses the
+      a_e pattern, not an open syllable.
+    </div>
+  </section>
+
+  <!-- ACTIVITY 3 -->
+  <section class="lesson" id="magic">
+    <span class="step">3 · Magic E</span>
+    <h2>What happens when we add E?</h2>
+
+    <p>
+      Compare <strong>cap</strong> and <strong>cape</strong>.
+      The final E is usually silent, but it changes
+      the sound of A.
+    </p>
+
+    <div class="words compare">
+      <div class="word-card">
+        <div class="picture" aria-hidden="true">🧢</div>
+        <span class="word">cap</span>
+        <span class="sound">A = /æ/</span>
+      </div>
+
+      <div class="word-card">
+        <div class="picture" aria-hidden="true">🦸</div>
+        <span class="word">cape</span>
+        <span class="sound">A = /eɪ/</span>
+      </div>
+    </div>
+
+    <p class="prompt">
+      What happens when we add E?
+    </p>
+
+    <div class="answers">
+      <button data-group="magic" data-answer="same">
+        The sound stays the same.
+      </button>
+      <button data-group="magic" data-answer="different">
+        The sound changes!
+      </button>
+    </div>
+
+    <div class="feedback" id="magic-feedback"
+         aria-live="polite"></div>
+
+    <div class="teacher">
+      <strong>Teacher's note:</strong>
+      Say “cap” and “cape”. Point to A in each word,
+      then reveal the final E. Let Mark hear the difference
+      before explaining the pattern.
+    </div>
+  </section>
+
+  <button class="reset" id="reset">
+    ⭐ Let's try again!
+  </button>
+
+  <footer>
+    Great listening, Mark! See you next time! 👋
+  </footer>
+
+</main>
+
+<script>
+const feedback = {
+  closed: {
+    answer: "cat",
+    correct: "Yes! Cat has the /æ/ sound. Great listening!",
+    incorrect: "Listen again: cat, dog. Which one has /æ/?"
+  },
+  open: {
+    answer: "cake",
+    correct: "That's right! Baby and cake have the /eɪ/ sound.",
+    incorrect: "Listen again: baby, cake, map. Which vowel sound matches baby?"
+  },
+  magic: {
+    answer: "different",
+    correct: "Exactly! Cap has /æ/, but cape has /eɪ/.",
+    incorrect: "Listen again: cap, cape. The A sound changes!"
+  }
+};
+
+document.querySelectorAll("[data-group]").forEach(button => {
+  button.addEventListener("click", () => {
+    const group = button.dataset.group;
+    const selected = button.dataset.answer;
+    const activity = feedback[group];
+    const correct = selected === activity.answer;
+
+    document.querySelectorAll(
+      `[data-group="${group}"]`
+    ).forEach(item => {
+      item.classList.remove("correct", "incorrect");
+    });
+
+    button.classList.add(correct ? "correct" : "incorrect");
+
+    const message = document.getElementById(
+      `${group}-feedback`
+    );
+
+    message.textContent = correct
+      ? activity.correct
+      : activity.incorrect;
+
+    message.className = "feedback " +
+      (correct ? "good" : "bad");
+  });
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  document.querySelectorAll("[data-group]").forEach(button => {
+    button.classList.remove("correct", "incorrect");
+  });
+
+  document.querySelectorAll(".feedback").forEach(message => {
+    message.textContent = "";
+    message.className = "feedback";
+  });
+});
+</script>
+</body>
+</html>
