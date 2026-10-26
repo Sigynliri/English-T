@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Игра: разложи по корзинам</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#fffaf0;--fg:#2b2118;--card:#fff;--line:#e3d3b8;--b1:#b86b86;--b2:#eeb23f;--ok:#2e9d57;--bad:#d64545;--basket:#b5773a;--basket2:#8a5424}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1d1812;--fg:#f3e9d9;--card:#2a231b;--line:#4a3d2e}}
+:root[data-theme="dark"]{--bg:#1d1812;--fg:#f3e9d9;--card:#2a231b;--line:#4a3d2e}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:"Trebuchet MS","Segoe UI",system-ui,sans-serif;touch-action:manipulation}
+main{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:0 0 4px}
+.hint{opacity:.75;margin:0 0 12px;font-size:.95rem}
+#pool{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;min-height:130px;padding:12px;border:2px dashed var(--line);border-radius:16px}
+.card{width:104px;height:116px;background:var(--card);border:2px solid var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:grab;user-select:none;touch-action:none;font-size:.95rem}
+.card.sel{outline:4px solid var(--b2)}
+.card.drag{position:fixed;z-index:50;pointer-events:none;box-shadow:0 8px 20px #0005;transform:scale(1.08)}
+.card.shake{animation:sh .4s;border-color:var(--bad)}
+@keyframes sh{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.pic{font-size:52px;line-height:1;height:60px;display:flex;align-items:center}
+.pic img{max-width:68px;max-height:60px;object-fit:contain}
+#baskets{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.basket{position:relative;min-height:230px;border-radius:12px 12px 90px 90px;background:repeating-linear-gradient(0deg,var(--basket) 0 26px,var(--basket2) 26px 30px);border:3px solid var(--basket2);display:flex;flex-direction:column;align-items:center;padding-top:10px}
+.basket.over{outline:4px solid var(--ok)}
+.label{width:112px;border-radius:8px;padding:6px;text-align:center;color:#fff;font-weight:700;box-shadow:0 3px 8px #0004}
+.label b{font-size:2rem;display:block;line-height:1.1}
+.label span{font-size:.85rem;font-weight:400;display:block}
+.label .pic{font-size:34px;height:40px;justify-content:center}
+.label .pic img{max-height:40px}
+.in{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px;padding:0 8px}
+.chip{background:var(--card);border-radius:10px;padding:2px 6px;font-size:.75rem;text-align:center}
+.chip .pic{font-size:26px;height:30px}.chip .pic img{max-height:28px;max-width:34px}
+#msg{text-align:center;font-size:1.3rem;min-height:2em;margin:10px 0;font-weight:700}
+button,select,input{font:inherit;color:var(--fg)}
+button{background:var(--card);border:2px solid var(--line);border-radius:10px;padding:6px 12px;cursor:pointer}
+button.main{background:var(--ok);color:#fff;border-color:var(--ok)}
+details{margin-top:20px;border:2px solid var(--line);border-radius:14px;padding:10px 14px;background:var(--card)}
+summary{cursor:pointer;font-weight:700}
+.row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.row input,.row select{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:5px 8px;min-width:0}
+.row input.s{width:64px;text-align:center}.row input.w{width:120px}
+.thumb{width:34px;height:34px;object-fit:contain}
+.bk{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.bk>div{border:1px solid var(--line);border-radius:10px;padding:8px}
+@media(max-width:520px){.card{width:92px;height:106px}#baskets{gap:10px}}
+</style>
+</head>
+<body>
+<main>
+<h1>Разложи слова по корзинам</h1>
+<p class="hint">Перетащи картинку в корзину с нужным звуком (или нажми на картинку, потом на корзину).</p>
+<div id="pool"></div>
+<div id="msg"></div>
+<div id="baskets"></div>
+<div style="text-align:center;margin-top:10px"><button id="again">Начать заново</button></div>
+
+<details>
+<summary>Настройки: буквы и картинки</summary>
+<h3>Корзины</h3>
+<div class="bk" id="bkEdit"></div>
+<h3>Картинки</h3>
+<p class="hint">В поле «Картинка» впиши эмодзи или нажми «Фото» и загрузи свою картинку. Выбери, в какую корзину она должна попасть.</p>
+<div id="itemEdit"></div>
+<button id="add">+ Добавить картинку</button>
+<button id="reset">Вернуть исходные</button>
+</details>
+</main>
+<script>
+const DEF={bk:[{l:"B",e:"⚽",w:"ball",img:"",c:"#b86b86"},{l:"P",e:"🐷",w:"pig",img:"",c:"#eeb23f"}],
+items:[["🐻","bear",0],["🐦","bird",0],["🍌","banana",0],["🛏️","bed",0],["🍑","peach",1],["🍍","pineapple",1],["🐼","panda",1],["🖊️","pen",1]].map(a=>({e:a[0],w:a[1],b:a[2],img:""}))};
+let S=load()||JSON.parse(JSON.stringify(DEF)),placed=new Set(),sel=null;
+function load(){try{return JSON.parse(localStorage.getItem("sortgame"))}catch(e){return null}}
+function save(){try{localStorage.setItem("sortgame",JSON.stringify(S))}catch(e){}}
+const $=id=>document.getElementById(id);
+const pic=o=>`<div class="pic">${o.img?`<img src="${o.img}" alt="">`:esc(o.e)}</div>`;
+function esc(s){return String(s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+function renderGame(){
+  $("pool").innerHTML=S.items.map((o,i)=>placed.has(i)?"":`<div class="card${sel===i?" sel":""}" data-i="${i}">${pic(o)}<span>${esc(o.w)}</span></div>`).join("");
+  $("baskets").innerHTML=S.bk.map((b,k)=>`<div class="basket" data-k="${k}"><div class="label" style="background:${b.c}"><b>${esc(b.l)}${esc(b.l.toLowerCase())}</b>${pic(b)}<span>${esc(b.w)}</span></div><div class="in">${S.items.map((o,i)=>placed.has(i)&&o.b===k?`<div class="chip">${pic(o)}${esc(o.w)}</div>`:"").join("")}</div></div>`).join("");
+  const left=S.items.length-placed.size;
+  $("msg").textContent=S.items.length&&!left?"🎉 Молодец! Всё разложено правильно!":"";
+  document.querySelectorAll(".card").forEach(c=>{c.addEventListener("pointerdown",down)});
+  document.querySelectorAll(".basket").forEach(b=>b.addEventListener("click",()=>{if(sel!==null){drop(sel,+b.dataset.k,null);}}));
+}
+function drop(i,k,el){
+  if(S.items[i].b===k){placed.delete(i);placed.add(i);sel=null;renderGame();}
+  else{sel=null;if(el){el.classList.remove("drag");el.style.cssText="";}const c=document.querySelector(`.card[data-i="${i}"]`);if(c){c.classList.remove("sel");c.classList.add("shake");setTimeout(()=>c.classList.remove("shake"),450);}$("msg").textContent="Попробуй ещё раз 🙂";setTimeout(()=>{if($("msg").textContent.startsWith("Поп"))$("msg").textContent=""},1200);}
+}
+function down(e){
+  const el=e.currentTarget,i=+el.dataset.i,r=el.getBoundingClientRect(),dx=e.clientX-r.left,dy=e.clientY-r.top,sx=e.clientX,sy=e.clientY;let moved=false;
+  el.setPointerCapture(e.pointerId);
+  const mv=ev=>{if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)<6)return;moved=true;el.classList.add("drag");el.style.left=ev.clientX-dx+"px";el.style.top=ev.clientY-dy+"px";
+    const t=document.elementFromPoint(ev.clientX,ev.clientY),b=t&&t.closest(".basket");document.querySelectorAll(".basket").forEach(x=>x.classList.toggle("over",x===b));};
+  const up=ev=>{el.removeEventListener("pointermove",mv);el.removeEventListener("pointerup",up);document.querySelectorAll(".basket").forEach(x=>x.classList.remove("over"));
+    if(!moved){sel=sel===i?null:i;renderGame();return;}
+    const t=document.elementFromPoint(ev.clientX,ev.clientY),b=t&&t.closest(".basket");
+    if(b)drop(i,+b.dataset.k,el);else{el.classList.remove("drag");el.style.cssText="";}};
+  el.addEventListener("pointermove",mv);el.addEventListener("pointerup",up);
+}
+
+function renderEdit(){
+  $("bkEdit").innerHTML=S.bk.map((b,k)=>`<div><b>Корзина ${k+1}</b><div class="row" style="border:0"><input class="s" data-bk="${k}" data-f="l" value="${esc(b.l)}" maxlength="2" title="Буква"><input class="s" data-bk="${k}" data-f="e" value="${esc(b.e)}" title="Эмодзи"><input class="w" data-bk="${k}" data-f="w" value="${esc(b.w)}" title="Слово на карточке"><input type="color" data-bk="${k}" data-f="c" value="${b.c}"></div><div class="row" style="border:0">${b.img?`<img class="thumb" src="${b.img}" alt="">`:""}<button data-up="b${k}">Фото</button>${b.img?`<button data-clr="b${k}">Убрать фото</button>`:""}</div></div>`).join("");
+  $("itemEdit").innerHTML=S.items.map((o,i)=>`<div class="row">${o.img?`<img class="thumb" src="${o.img}" alt="">`:""}<input class="s" data-it="${i}" data-f="e" value="${esc(o.e)}" title="Эмодзи"><button data-up="i${i}">Фото</button>${o.img?`<button data-clr="i${i}">✕</button>`:""}<input class="w" data-it="${i}" data-f="w" value="${esc(o.w)}" title="Слово"><select data-it="${i}" data-f="b">${S.bk.map((b,k)=>`<option value="${k}"${o.b===k?" selected":""}>→ ${esc(b.l)||"Корзина "+(k+1)}</option>`).join("")}</select><button data-del="${i}">Удалить</button></div>`).join("");
+}
+document.addEventListener("input",e=>{const t=e.target,f=t.dataset.f;if(!f)return;
+  if(t.dataset.bk!==undefined)S.bk[+t.dataset.bk][f]=t.value;
+  else if(t.dataset.it!==undefined)S.items[+t.dataset.it][f]=f==="b"?+t.value:t.value;
+  save();renderGame();if(f==="b"||f==="l")placed.clear();});
+document.addEventListener("click",e=>{const t=e.target;
+  if(t.dataset.del!==undefined){S.items.splice(+t.dataset.del,1);placed.clear();save();renderEdit();renderGame();}
+  if(t.dataset.clr){const x=t.dataset.clr;(x[0]==="b"?S.bk[+x.slice(1)]:S.items[+x.slice(1)]).img="";save();renderEdit();renderGame();}
+  if(t.dataset.up){const x=t.dataset.up,inp=document.createElement("input");inp.type="file";inp.accept="image/*";inp.onchange=()=>{const f=inp.files[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const im=new Image();im.onload=()=>{const s=Math.min(1,160/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=im.width*s;c.height=im.height*s;c.getContext("2d").drawImage(im,0,0,c.width,c.height);(x[0]==="b"?S.bk[+x.slice(1)]:S.items[+x.slice(1)]).img=c.toDataURL("image/png");save();renderEdit();renderGame();};im.src=rd.result;};rd.readAsDataURL(f);};inp.click();}
+});
+$("add").onclick=()=>{S.items.push({e:"⭐",w:"word",b:0,img:""});save();renderEdit();renderGame();};
+$("reset").onclick=()=>{S=JSON.parse(JSON.stringify(DEF));placed.clear();save();renderEdit();renderGame();};
+$("again").onclick=()=>{placed.clear();sel=null;renderGame();};
+renderEdit();renderGame();
+</script>
+</body>
+</html>
