@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meet the Sound of A!</title>
+<style>
+:root {
+  --ink: #29394e;
+  --muted: #65758b;
+  --blue: #eaf3ff;
+  --yellow: #fff2ca;
+  --green: #e6f5e9;
+  --border: #dce5ef;
+  --accent: #547caf;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: "Trebuchet MS", Arial, sans-serif;
+  color: var(--ink);
+  background: #f3f6fb;
+  line-height: 1.5;
+}
+main {
+  width: min(100%, 880px);
+  margin: 0 auto;
+  padding: 20px 14px 40px;
+}
+.mascot-card, .lesson, .media-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 20px;
+  margin: 0 0 20px;
+}
+.mascot-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  max-width: 650px;
+  margin: 0 auto 24px;
+  background: #fffdf6;
+  border-color: #f0e2c5;
+}
+.mascot-picture {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: contain;
+  flex: 0 0 auto;
+  transition: transform .25s ease;
+}
+.mascot-picture:hover { transform: translateY(-4px) rotate(-3deg); }
+.mascot-message {
+  padding: 16px 20px;
+  background: var(--blue);
+  border-radius: 20px;
+}
+.mascot-message h2 { margin: 0 0 6px; }
+.mascot-message p { margin: 0; color: var(--muted); }
+h1 { font-size: clamp(26px, 5vw, 38px); margin: 6px 0; }
+h2 { margin: 4px 0 10px; }
+.muted { color: var(--muted); }
+.video-container {
+  width: 100%;
+  margin: 0 auto 20px;
+  padding: 12px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+}
+.video-container video {
+  display: block;
+  width: 100%;
+  max-height: 520px;
+  height: auto;
+  object-fit: contain;
+  border-radius: 10px;
+}
+.illustration { margin: 20px 0; text-align: center; }
+.lesson-image {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  height: auto;
+  margin: 0 auto;
+  border-radius: 16px;
+  object-fit: contain;
+}
+.word-card {
+  min-width: 0;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  padding: 14px;
+  text-align: center;
+  background: #fff;
+  margin: 0 auto 20px;
+}
+.word-card img { max-width: 100%; }
+.words {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  margin: 18px 0;
+}
+iframe {
+  display: block;
+  width: 100%;
+  min-height: 480px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: white;
+  margin: 20px 0;
+}
+.character-question {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin: 24px 0 12px;
+}
+.hello-character {
+  display: block;
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+.question-title { font-size: 1.5rem; font-weight: bold; }
+.reveal-block { margin: 12px 0 24px; }
+.reveal-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: #fffdf6;
+}
+.reveal-play-btn {
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 50%;
+  background: #314c6e;
+  color: white;
+  border-color: #314c6e;
+}
+.reveal-text { display: flex; flex-wrap: wrap; gap: 6px; font-size: 1.2rem; font-weight: bold; }
+.reveal-word {
+  opacity: .15;
+  transform: translateY(3px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+.reveal-word.shown { opacity: 1; transform: translateY(0); }
+button {
+  font: inherit;
+  font-size: 16px;
+  padding: 11px 16px;
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  background: white;
+  color: var(--ink);
+  cursor: pointer;
+}
+button:hover { border-color: var(--accent); }
+button:focus-visible { outline: 3px solid #9bc5f4; outline-offset: 2px; }
+button:disabled { opacity: .65; cursor: wait; }
+footer { text-align: center; color: var(--muted); padding: 8px 0 0; }
+  .song-stage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.song-mascot {
+  width: 150px;
+  height: 170px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.song-player {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.song-player h2 {
+  margin-top: 0;
+}
+
+.player-hint {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.stop-media {
+  background: #314c6e;
+  color: white;
+  border-color: #314c6e;
+}
+
+@media (max-width: 480px) {
+  .song-stage {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .song-mascot {
+    width: 112px;
+    height: 112px;
+  }
+
+  .song-player {
+    width: 100%;
+  }
+}
+@media (max-width: 480px) {
+  main { padding: 12px 9px 30px; }
+  .mascot-card { flex-direction: column; gap: 10px; text-align: center; padding: 16px; }
+  .mascot-picture { width: 120px; height: 120px; }
+  .mascot-message { padding: 14px; }
+  .media-card, .lesson { padding: 14px; }
+  iframe { min-height: 420px; }
+  .character-question { align-items: flex-start; gap: 10px; }
+  .hello-character { width: 82px; height: 82px; }
+  .reveal-card { align-items: flex-start; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; scroll-behavior: auto !important; }
+}
+</style>
+</head>
+<body>
+<main>
+  <header class="mascot-card">
+    <img src="/English-T/images/character-ask.png" alt="Mark the tiger" class="mascot-picture">
+    <div class="mascot-message">
+      <h2>Hi, Mark! 👋</h2>
+      <p>Let's listen, look and discover!</p>
+    </div>
+  </header>
+
+  <section class="illustration">
+    <img src="/English-T/images/vowels and consonants.png"
+         alt="A snake with English vowel and consonant letters" class="lesson-image">
+  </section>
+
+  <section class="lesson" id="banana">
+    <h2>Let's look!</h2>
+    <div class="word-card">
+      <img src="/English-T/images/banana.jfif" alt="A banana" class="lesson-image">
+    </div>
+  </section>
+
+  <section class="lesson" id="letter-b">
+    <h2>Meet the letter B</h2>
+    <div class="word-card">
+      <img src="/English-T/images/Bold B on Red Envelope.png"
+           alt="The letter B on a red envelope" class="lesson-image">
+    </div>
+  </section>
+
+  <section class="lesson" id="sound-p">
+    <h2>Listen to the sound /p/</h2>
+    <div class="video-container">
+      <video controls preload="metadata" playsinline>
+        <source src="/English-T/students/Mark/videos/P.mp4" type="video/mp4">
+        Your browser does not support video playback.
+      </video>
+    </div>
+    <div class="word-card">
+      <img src="/English-T/images/B-P.jfif"
+           alt="The letters B and P for sound comparison" class="lesson-image">
+    </div>
+    <h2>Sort the words: B or P</h2>
+    <iframe
+      src="/English-T/students/Mark/games/Игра_ разложи слова по корзинам B и P.html"
+      title="Game: sort words into B and P baskets"
+      loading="lazy">
+    </iframe>
+  </section>
+<section class="lesson">
+    <h2>What's this?</h2>
+  <h2>Is it...?</h2>
+    <div class="word-card">
+      <img src="/English-T/images/character-ask.png" alt="A banana" class="lesson-image">
+    </div>
+  </section>
+
+
+  <section class="lesson" id="school-words">
+    <h2>Look and say</h2>
+    <div class="word-card">
+      <img src="/English-T/images/words_school.PNG" alt="School vocabulary picture" class="lesson-image">
+    </div>
+  </section>
+
+  <section class="lesson" id="is-it">
+    <h2>Ask and answer</h2>
+    <div class="word-card">
+      <img src="/English-T/images/Is-it.PNG" alt="Picture prompt for asking Is it...?" class="lesson-image">
+    </div>
+  </section>
+
+  <footer>Great listening, Mark! See you next time! 👋</footer>
+</main>
+
+<script>
+const REVEAL_SPEEDS = {
+  slow: { rate: 0.65, interval: 650 },
+  normal: { rate: 0.85, interval: 420 },
+  fast: { rate: 1.05, interval: 260 }
+};
+let currentRevealSpeed = "normal";
+let revealTimer = null;
+
+function revealByTimer(wordEls, button, interval) {
+  if (revealTimer) window.clearInterval(revealTimer);
+  let index = 0;
+  revealTimer = window.setInterval(() => {
+    if (index < wordEls.length) {
+      wordEls[index].classList.add("shown");
+      index++;
+    } else {
+      window.clearInterval(revealTimer);
+      revealTimer = null;
+      button.disabled = false;
+    }
+  }, interval);
+}
+
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = "en-US";
+  utterance.rate = REVEAL_SPEEDS[currentRevealSpeed].rate;
+  window.speechSynthesis.speak(utterance);
+}
+
+function revealQuestion(button) {
+  const card = button.closest(".reveal-card");
+  if (!card) return;
+
+  const textEl = card.querySelector(".reveal-text");
+  if (!textEl) return;
+
+  const fullText = textEl.dataset.text || "What's this?";
+  const audioSrc = card.dataset.audio;
+  const settings = REVEAL_SPEEDS[currentRevealSpeed] || REVEAL_SPEEDS.normal;
+
+  if (revealTimer) {
+    window.clearInterval(revealTimer);
+    revealTimer = null;
+  }
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+
+  const mascot = document.getElementById("main-character-img");
+  if (mascot) mascot.src = "/English-T/images/character-ask.png";
+
+  textEl.replaceChildren();
+  const words = fullText.split(/\s+/);
+  words.forEach((word, index) => {
+    const span = document.createElement("span");
+    span.className = "reveal-word";
+    span.textContent = word;
+    textEl.appendChild(span);
+    if (index < words.length - 1) textEl.appendChild(document.createTextNode(" "));
+  });
+  const wordEls = textEl.querySelectorAll(".reveal-word");
+  button.disabled = true;
+
+  if (audioSrc) {
+    const audio = new Audio(audioSrc);
+    let finished = false;
+    const finishReveal = () => {
+      if (finished) return;
+      finished = true;
+      if (revealTimer) {
+        window.clearInterval(revealTimer);
+        revealTimer = null;
+      }
+      wordEls.forEach(word => word.classList.add("shown"));
+      button.disabled = false;
+    };
+    audio.addEventListener("ended", finishReveal, { once: true });
+    audio.addEventListener("error", () => {
+      // If the audio file cannot load, fall back to browser speech.
+      if ("speechSynthesis" in window) {
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = "en-US";
+        utterance.rate = settings.rate;
+        utterance.onend = finishReveal;
+        utterance.onerror = finishReveal;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        revealByTimer(wordEls, button, settings.interval);
+      }
+    }, { once: true });
+
+    revealByTimer(wordEls, button, settings.interval);
+    audio.play().catch(() => {
+      if ("speechSynthesis" in window) {
+        if (revealTimer) {
+          window.clearInterval(revealTimer);
+          revealTimer = null;
+        }
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = "en-US";
+        utterance.rate = settings.rate;
+        utterance.onend = finishReveal;
+        utterance.onerror = finishReveal;
+        window.speechSynthesis.speak(utterance);
+      } else {
+        finishReveal();
+      }
+    });
+    return;
+  }
+
+  if ("speechSynthesis" in window) {
+    const utterance = new SpeechSynthesisUtterance(fullText);
+    utterance.lang = "en-US";
+    utterance.rate = settings.rate;
+    let index = 0;
+    utterance.onboundary = event => {
+      if (event.name === "word" && index < wordEls.length) {
+        wordEls[index++].classList.add("shown");
+      }
+    };
+    utterance.onend = () => {
+      wordEls.forEach(word => word.classList.add("shown"));
+      button.disabled = false;
+    };
+    utterance.onerror = () => {
+      wordEls.forEach(word => word.classList.add("shown"));
+      button.disabled = false;
+    };
+    window.speechSynthesis.speak(utterance);
+  } else {
+    revealByTimer(wordEls, button, settings.interval);
+  }
+}
+</script>
+</body>
+</html>
