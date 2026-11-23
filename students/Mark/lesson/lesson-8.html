@@ -1,959 +1,187 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Trial Lesson for Kids</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English Trial Lesson for Kids</title>
+<style>
+:root{--primary:#4CAF50;--bg-color:#f0f8ff;--card-bg:#fff;--text-color:#333}
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;background:var(--bg-color);color:var(--text-color);margin:0;padding:20px;display:flex;flex-direction:column;align-items:center;user-select:none}
 
-    <style>
-        :root {
-            --primary: #4CAF50;
-            --primary-dark: #45a049;
-            --bg-color: #f0f8ff;
-            --card-bg: #ffffff;
-            --text-color: #333;
-        }
+/* Tabs */
+.navigation{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;justify-content:center}
+.nav-btn{background:#ddd;border:none;padding:10px 20px;border-radius:20px;cursor:pointer;font-weight:bold;font-size:1rem;transition:all .3s ease}
+.nav-btn.active{background:var(--primary);color:#fff;box-shadow:0 4px 10px rgba(76,175,80,.3)}
+.nav-btn:focus-visible{outline:3px solid #ff9800;outline-offset:2px}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            user-select: none;
-        }
+/* Slides */
+.slide-container{background:var(--card-bg);border-radius:20px;box-shadow:0 10px 25px rgba(0,0,0,.1);padding:30px;width:90%;max-width:800px;min-height:450px;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.slide-container.active{display:flex}
+h1{font-size:2.5rem;margin-top:0;color:#2c3e50}
+p{font-size:1.5rem;color:#7f8c8d}
 
-        .navigation {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
+/* Slide with picture + players */
+.hello-content{display:flex;align-items:center;justify-content:center;gap:35px;width:100%}
+.hello-character{width:420px;height:420px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 5px 10px rgba(0,0,0,.15))}
+.lesson-img{display:block;width:100%;height:auto;border-radius:12px}
+.reveal-block{display:flex;flex-direction:column;gap:12px;width:100%;max-width:500px}
+.reveal-card{display:flex;align-items:center;gap:12px;background:#e3f2fd;border-radius:16px;padding:14px 18px;width:100%}
+.reveal-play-btn{flex-shrink:0;width:46px;height:46px;border-radius:50%;border:none;background:#1565c0;color:#fff;font-size:1.2rem;cursor:pointer;transition:transform .15s ease}
+.reveal-play-btn:active{transform:scale(.9)}
+.reveal-play-btn:disabled{opacity:.6;cursor:default}
+.reveal-text{flex:1;font-size:1.4rem;font-weight:bold;color:#1565c0;text-align:left;min-height:1.8em}
+.reveal-word{display:inline-block;opacity:0;transform:translateY(8px);transition:opacity .35s ease,transform .35s ease}
+.reveal-word.shown{opacity:1;transform:none}
+.reveal-card.answer{background:#e8f5e9}
+.reveal-card.answer .reveal-play-btn{background:#2e7d32}
+.reveal-card.answer .reveal-text{color:#2e7d32}
 
-        .nav-btn {
-            background-color: #ddd;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
+/* Game slide: full width of the container */
+.slide-container.game-slide{padding:0;width:100%;max-width:100%;min-height:0;background:transparent;box-shadow:none}
+.game-frame{display:block;width:100%;height:clamp(450px,85vh,850px);border:0;border-radius:20px;background:#fff}
 
-        .nav-btn.active {
-            background-color: var(--primary);
-            color: white;
-            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
-        }
-
-        .slide-container {
-            background: var(--card-bg);
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            padding: 30px;
-            width: 90%;
-            max-width: 800px;
-            min-height: 450px;
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .slide-container.active {
-            display: flex;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-top: 0;
-            color: #2c3e50;
-        }
-
-        p {
-            font-size: 1.5rem;
-            color: #7f8c8d;
-        }
-
-        .hello-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 35px;
-            width: 100%;
-            margin-top: 10px;
-        }
-
-        .hello-character {
-            width: 420px;
-            height: 420px;
-            object-fit: contain;
-            margin: 0;
-            flex-shrink: 0;
-            filter: drop-shadow(0px 5px 10px rgba(0,0,0,0.15));
-            transition: transform 0.2s, filter 0.2s;
-        }
-
-        .reveal-block {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            width: 100%;
-            max-width: 500px;
-            margin: 0;
-        }
-
-        .reveal-card {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #e3f2fd;
-            border-radius: 16px;
-            padding: 14px 18px;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        .reveal-play-btn {
-            flex-shrink: 0;
-            width: 46px;
-            height: 46px;
-            border-radius: 50%;
-            border: none;
-            background: #1565c0;
-            color: white;
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: transform 0.15s ease;
-        }
-
-        .reveal-play-btn:active {
-            transform: scale(0.9);
-        }
-
-        .reveal-text {
-            flex: 1;
-            font-size: 1.4rem;
-            font-weight: bold;
-            color: #1565c0;
-            text-align: left;
-            min-height: 1.8em;
-        }
-
-        .reveal-word {
-            display: inline-block;
-            opacity: 0;
-            transform: translateY(8px);
-            transition: opacity 0.35s ease, transform 0.35s ease;
-        }
-
-        .reveal-word.shown {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .reveal-card.answer {
-            background: #e8f5e9;
-        }
-
-        .reveal-card.answer .reveal-play-btn {
-            background: #2e7d32;
-        }
-
-        .reveal-card.answer .reveal-text {
-            color: #2e7d32;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-            width: 100%;
-        }
-
-        .card {
-            background: #f9f9f9;
-            border: 4px solid #e0e0e0;
-            border-radius: 15px;
-            padding: 20px;
-            cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s, opacity 0.6s ease, visibility 0.6s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .card:hover {
-            transform: scale(1.03);
-            border-color: var(--primary);
-        }
-
-        .card img {
-            width: 100%;
-            max-width: 200px;
-            height: auto;
-            object-fit: contain;
-        }
-
-        .card .word {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-top: 10px;
-            color: #2c3e50;
-        }
-
-        .btn-action {
-            background-color: #ff9800;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            font-size: 1.5rem;
-            border-radius: 30px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.4);
-            font-weight: bold;
-            transition: transform 0.2s;
-        }
-
-        .btn-action:hover {
-            transform: scale(1.05);
-        }
-
-        .hidden-card {
-            opacity: 0;
-            transform: scale(0.85);
-            visibility: hidden;
-            transition: opacity 0.6s ease, transform 0.6s ease, visibility 0s linear 0.6s;
-        }
-
-        .freeze-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 188, 212, 0.8);
-            color: white;
-            display: none;
-            justify-content: center;
-            align-items: center;
-            font-size: 5rem;
-            font-weight: bold;
-            z-index: 1000;
-        }
-
-        .slide-container.game-slide {
-            padding: 0;
-            width: 100%;
-            max-width: 100%;
-            min-height: 85vh;
-        }
-
-        
-/* Embedded games */
-.game-frame {
-    display: block;
-    width: 100%;
-    height: clamp(450px, 75vh, 750px);
-    border: none;
-    border-radius: 16px;
-    overflow: hidden;
-    background: #fff;
+@media (max-width:900px){
+  .hello-content{flex-direction:column;gap:20px}
+  .hello-character{width:320px;height:320px}
+  .reveal-block{max-width:600px}
 }
-
-/* Full-screen game slides */
-.slide-container.game-slide {
-    padding: 0;
-    width: 100%;
-    max-width: 100%;
-    min-height: 85vh;
+@media (max-width:600px){
+  body{padding:10px}
+  .slide-container{width:95%;padding:20px}
+  .slide-container.game-slide{width:100%;padding:0}
+  .game-frame{height:80vh;min-height:400px;border-radius:12px}
+  .hello-character{width:260px;height:260px}
+  h1{font-size:2rem}
+  p{font-size:1.2rem}
+  .reveal-text{font-size:1.1rem}
+  .reveal-play-btn{width:42px;height:42px}
 }
-
-.game-slide iframe {
-    display: block;
-    width: 100%;
-    height: 85vh;
-    border: none;
-    border-radius: 20px;
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-    .game-frame {
-        height: 70vh;
-        min-height: 400px;
-    }
-
-    .game-slide iframe {
-        height: 75vh;
-        border-radius: 12px;
-    }
-}
-
-
-        @media (max-width: 900px) {
-            .hello-content {
-                flex-direction: column;
-                gap: 20px;
-            }
-
-            .hello-character {
-                width: 320px;
-                height: 320px;
-            }
-
-            .reveal-block {
-                max-width: 600px;
-            }
-
-            .game-frame {
-  display: block;
-  width: 100%;
-  height: 90vh;      /* или нужная вам высота */
-  border: 0;
-}
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            .slide-container {
-                width: 95%;
-                padding: 20px;
-            }
-
-            .hello-character {
-                width: 260px;
-                height: 260px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            p {
-                font-size: 1.2rem;
-            }
-
-            .reveal-text {
-                font-size: 1.1rem;
-            }
-
-            .reveal-play-btn {
-                width: 42px;
-                height: 42px;
-            }
-        }
-    </style>
+</style>
 </head>
-
 <body>
 
-    <div class="navigation">
-        <button class="nav-btn active" onclick="switchSlide(1, this)">
-            1. Listen and Stick
-        </button>
+<div class="navigation" role="tablist">
+  <button class="nav-btn active" role="tab" aria-selected="true" onclick="switchSlide(1,this)">1. Listen and Stick</button>
+  <button class="nav-btn" role="tab" aria-selected="false" onclick="switchSlide(2,this)">2. Repeat after me</button>
+  <button class="nav-btn" role="tab" aria-selected="false" onclick="switchSlide(3,this)">3. TPR Game</button>
+</div>
 
-        <button class="nav-btn" onclick="switchSlide(2, this)">
-            2. Repeat after me
-        </button>
+<!-- Slide 1 -->
+<div id="slide1" class="slide-container active">
+  <div class="hello-content">
+    <img class="lesson-img" src="/English-T/images/Снимок.PNG" alt="Listen and stick">
+  </div>
+</div>
 
-        <button class="nav-btn" onclick="switchSlide(3, this)">
-            3. TPR Game
-        </button>
+<!-- Slide 2 -->
+<div id="slide2" class="slide-container">
+  <div class="hello-content">
+    <img src="/English-T/images/character-ask.png" alt="Mascot" id="main-character-img" class="hello-character">
 
+    <div class="reveal-block">
+      <div class="reveal-card" data-audio="/English-T/sound/please/Pass me a notebook.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Pass me a notebook"></div>
+      </div>
+      <div class="reveal-card answer" data-audio="/English-T/sound/please/Pass me a notebook, please.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Pass me a notebook, please"></div>
+      </div>
+      <div class="reveal-card" data-audio="/English-T/sound/please/Pass me a pen.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Pass me a pen"></div>
+      </div>
+      <div class="reveal-card answer" data-audio="/English-T/sound/please/Pass me a pen please.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Pass me a pen, please"></div>
+      </div>
+      <div class="reveal-card" data-audio="/English-T/sound/please/Pass me a pencil.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Pass me a pencil"></div>
+      </div>
+      <div class="reveal-card answer" data-audio="/English-T/sound/please/Pass me a pencil, please.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Pass me a pencil, please"></div>
+      </div>
+      <div class="reveal-card" data-audio="/English-T/sound/please/sit at your desk.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Sit at your desk"></div>
+      </div>
+      <div class="reveal-card answer" data-audio="/English-T/sound/please/Sit at your desk, please.mp3">
+        <button class="reveal-play-btn" onclick="revealQuestion(this)">▶️</button>
+        <div class="reveal-text" data-text="Sit at your desk, please"></div>
+      </div>
     </div>
+  </div>
+</div>
 
+<!-- Slide 3 -->
+<div id="slide3" class="slide-container game-slide">
+  <iframe class="game-frame" src="/English-T/students/Mark/games/Listen and stick_ classroom words.html" title="Game" allowfullscreen></iframe>
+</div>
 
-    <div id="slide1" class="slide-container active">
-        <div class="hello-content">
-
-              <img
-                src="/English-T/images/Снимок.PNG"
-            >
-
-          
-            </div>
-
-        </div>
-
-    </div>
-
-
-    <div id="slide2" class="slide-container">
-  <img
-                src="/English-T/images/character-ask.png"
-                alt="Mascot"
-                id="main-character-img"
-                class="hello-character"
-            >
-        
-            <div class="reveal-block">
-
-                <div
-                    class="reveal-card"
-                    data-audio="/English-T/sound/please/Pass me a notebook.mp3 "
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Pass me a notebook"
-                    ></div>
-                </div>
-
-
-                <div
-                    class="reveal-card answer"
-                    data-audio="/English-T/sound/please/Pass me a notebook, please.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Pass me a notebook, please"
-                    ></div>
-                </div>
-
-
-                <div
-                    class="reveal-card"
-                    data-audio="/English-T/sound/please/Pass me a pen.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Pass me a pen"
-                    ></div>
-                </div>
-
-
-                <div
-                    class="reveal-card answer"
-                    data-audio="/English-T/sound/please/Pass me a pen please.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Pass me a pen, please"
-                    ></div>
-                </div>
-
-
-                <div
-                    class="reveal-card"
-                    data-audio="/English-T/sound/please/Pass me a pencil.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Pass me a pencil"
-                    ></div>
-                </div>
-
-            <div
-                    class="reveal-card answer"
-                    data-audio="/English-T/sound/please/Pass me a pencil, please.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-                <div
-                 <div
-                        class="reveal-text"
-                        data-text="Pass me a pencil, please"
-                    ></div>
-            </div>
-
-                     <div
-                    class="reveal-card"
-                    data-audio="/English-T/sound/please/sit at your desk.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Sit at your desk"
-                    ></div>
-                </div>
-                   <div
-                    class="reveal-card answer"
-                    data-audio="/English-T/sound/please/Sit at your desk, please.mp3"
-                >
-                    <button
-                        class="reveal-play-btn"
-                        onclick="revealQuestion(this)"
-                    >
-                        ▶️
-                    </button>
-
-                    <div
-                        class="reveal-text"
-                        data-text="Sit at your desk, please"
-                    ></div>
-                </div>
-
-        </div>
-<div id="slide3" class="slide-container">
-
-      <iframe  class="game-frame"
-            src="/English-T/students/Mark/games/Listen and stick_ classroom words.html"
-            title="Game"
-            allowfullscreen>
-        </iframe>
-  
-    </div>
 <script>
-
-        /* -------------------------------
-           ПЕРЕКЛЮЧЕНИЕ СЛАЙДОВ
-        -------------------------------- */
-
-        function switchSlide(num, btn) {
-
-            document
-                .querySelectorAll('.slide-container')
-                .forEach(s => s.classList.remove('active'));
-
-            document
-                .querySelectorAll('.nav-btn')
-                .forEach(b => b.classList.remove('active'));
-
-            document
-                .getElementById('slide' + num)
-                .classList.add('active');
-
-            if (btn) {
-                btn.classList.add('active');
-            }
-        }
-
-
-        /* -------------------------------
-           ОЗВУЧКА (голос браузера)
-        -------------------------------- */
-
-        function speak(text) {
-
-            if (!('speechSynthesis' in window)) return;
-
-            window.speechSynthesis.cancel();
-
-            const u = new SpeechSynthesisUtterance(text);
-
-            u.lang = 'en-US';
-            u.rate = 0.9;
-
-            window.speechSynthesis.speak(u);
-        }
-
-
-        /* -------------------------------
-           СВОЙ ЗВУК ДЛЯ КАРТОЧЕК ЖИВОТНЫХ
-           (слайд "Listen and Repeat")
-        -------------------------------- */
-
-        function playCardSound(cardEl, fallbackText) {
-
-            const customAudioSrc =
-                cardEl.dataset.audio;
-
-            if (customAudioSrc) {
-
-                const audio =
-                    new Audio(customAudioSrc);
-
-                audio.play().catch(() => {
-                    speak(fallbackText);
-                });
-
-                return;
-            }
-
-            speak(fallbackText);
-        }
-
-
-        /* -------------------------------
-           ПЕРСОНАЖ
-        -------------------------------- */
-
-        function mascotAction(text, type) {
-
-            const img =
-                document.getElementById('main-character-img');
-
-            img.src = type === 1
-                ? '/English-T/images/character-ask.png'
-                : '/English-T/images/character-react.png';
-
-            speak(text);
-        }
-
-
-        /* -------------------------------
-           СКОРОСТЬ REVEAL
-        -------------------------------- */
-
-        const REVEAL_SPEEDS = {
-
-            slow: {
-                rate: 0.65,
-                interval: 550
-            },
-
-            normal: {
-                rate: 0.85,
-                interval: 380
-            },
-
-            fast: {
-                rate: 1.15,
-                interval: 230
-            }
-
-        };
-
-        let currentRevealSpeed = 'normal';
-
-
-        function setRevealSpeed(speed, btn) {
-
-            currentRevealSpeed = speed;
-
-            btn.parentElement
-                .querySelectorAll('.nav-btn')
-                .forEach(b => b.classList.remove('active'));
-
-            btn.classList.add('active');
-        }
-
-
-        /* -------------------------------
-           REVEAL QUESTION
-        -------------------------------- */
-
-        function revealQuestion(btn) {
-
-            const card =
-                btn.closest('.reveal-card');
-
-            const textEl =
-                card.querySelector('.reveal-text');
-
-            const fullText =
-                textEl.dataset.text;
-
-            const customAudioSrc =
-                card.dataset.audio;
-
-            const words =
-                fullText.split(' ');
-
-            const speedSettings =
-                REVEAL_SPEEDS[currentRevealSpeed];
-
-
-            const isAnswer =
-                card.classList.contains('answer');
-
-            const mascotImg =
-                document.getElementById('main-character-img');
-
-            if (mascotImg) {
-
-                mascotImg.src = isAnswer
-                    ? '/English-T/images/character-react.png'
-                    : '/English-T/images/character-ask.png';
-
-            }
-
-
-            textEl.innerHTML = words
-                .map(w => `<span class="reveal-word">${w}</span>`)
-                .join(' ');
-
-            const wordEls =
-                textEl.querySelectorAll('.reveal-word');
-
-            btn.disabled = true;
-
-
-            if (customAudioSrc) {
-
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                }
-
-                const audio =
-                    new Audio(customAudioSrc);
-
-                audio.onended = () => {
-                    btn.disabled = false;
-                };
-
-                audio.onerror = () => {
-
-                    wordEls.forEach(w =>
-                        w.classList.add('shown')
-                    );
-
-                    btn.disabled = false;
-                };
-
-                audio.play().catch(() => {
-
-                    wordEls.forEach(w =>
-                        w.classList.add('shown')
-                    );
-
-                    btn.disabled = false;
-
-                });
-
-                revealByTimer(
-                    wordEls,
-                    btn,
-                    speedSettings.interval,
-                    false
-                );
-
-                return;
-            }
-
-
-            if (!('speechSynthesis' in window)) {
-
-                revealByTimer(
-                    wordEls,
-                    btn,
-                    speedSettings.interval
-                );
-
-                return;
-            }
-
-
-            window.speechSynthesis.cancel();
-
-            const utter =
-                new SpeechSynthesisUtterance(fullText);
-
-            utter.lang = 'en-US';
-            utter.rate = speedSettings.rate;
-
-            let wordIndex = 0;
-            let boundaryFired = false;
-
-
-            utter.onboundary = (e) => {
-
-                if (
-                    e.name === 'word' &&
-                    wordIndex < wordEls.length
-                ) {
-
-                    boundaryFired = true;
-
-                    wordEls[wordIndex]
-                        .classList.add('shown');
-
-                    wordIndex++;
-                }
-
-            };
-
-
-            utter.onend = () => {
-
-                wordEls.forEach(w =>
-                    w.classList.add('shown')
-                );
-
-                btn.disabled = false;
-
-            };
-
-
-            utter.onerror = () => {
-
-                wordEls.forEach(w =>
-                    w.classList.add('shown')
-                );
-
-                btn.disabled = false;
-
-            };
-
-
-            window.speechSynthesis.speak(utter);
-
-
-            setTimeout(() => {
-
-                if (!boundaryFired) {
-
-                    revealByTimer(
-                        wordEls,
-                        btn,
-                        speedSettings.interval
-                    );
-
-                }
-
-            }, 350);
-
-        }
-
-
-        /* -------------------------------
-           REVEAL BY TIMER
-        -------------------------------- */
-
-        function revealByTimer(
-            wordEls,
-            btn,
-            interval,
-            manageButton = true
-        ) {
-
-            let i = 0;
-
-            const timer =
-                setInterval(() => {
-
-                    if (i >= wordEls.length) {
-
-                        clearInterval(timer);
-
-                        if (manageButton) {
-                            btn.disabled = false;
-                        }
-
-                        return;
-                    }
-
-                    wordEls[i]
-                        .classList.add('shown');
-
-                    i++;
-
-                }, interval);
-
-        }
-
-
-        /* -------------------------------
-           FREEZE
-        -------------------------------- */
-
-        function triggerFreeze() {
-
-            let overlay =
-                document.getElementById('freeze-overlay');
-
-            if (!overlay) {
-
-                overlay =
-                    document.createElement('div');
-
-                overlay.id =
-                    'freeze-overlay';
-
-                overlay.className =
-                    'freeze-overlay';
-
-                overlay.textContent =
-                    'FREEZE! ❄️';
-
-                document.body.appendChild(overlay);
-            }
-
-            overlay.style.display = 'flex';
-
-            speak('Freeze!');
-
-            setTimeout(() => {
-
-                overlay.style.display = 'none';
-
-            }, 2000);
-        }
-
-
-        /* -------------------------------
-           WHAT'S MISSING
-        -------------------------------- */
-
-        function hideRandomCard() {
-
-            const cards =
-                document.querySelectorAll(
-                    '#missing-grid .game-card'
-                );
-
-            cards.forEach(c =>
-                c.classList.remove('hidden-card')
-            );
-
-            const visible =
-                Array.from(cards);
-
-            const target =
-                visible[
-                    Math.floor(
-                        Math.random() * visible.length
-                    )
-                ];
-
-            target.classList.add('hidden-card');
-        }
-
-    </script>
-
+/* Tabs */
+function switchSlide(num, btn) {
+  if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+  document.querySelectorAll('.slide-container').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-selected', 'false'); });
+  document.getElementById('slide' + num).classList.add('active');
+  if (btn) { btn.classList.add('active'); btn.setAttribute('aria-selected', 'true'); }
+}
+
+/* Reveal speed */
+const REVEAL_SPEEDS = { slow:{rate:0.65,interval:550}, normal:{rate:0.85,interval:380}, fast:{rate:1.15,interval:230} };
+let currentRevealSpeed = 'normal';
+
+function revealQuestion(btn) {
+  const card = btn.closest('.reveal-card');
+  const textEl = card.querySelector('.reveal-text');
+  const fullText = textEl.dataset.text;
+  const audioSrc = (card.dataset.audio || '').trim();
+  const speed = REVEAL_SPEEDS[currentRevealSpeed];
+  const mascot = document.getElementById('main-character-img');
+  if (mascot) mascot.src = card.classList.contains('answer')
+    ? '/English-T/images/character-react.png' : '/English-T/images/character-ask.png';
+
+  textEl.innerHTML = fullText.split(' ').map(w => `<span class="reveal-word">${w}</span>`).join(' ');
+  const wordEls = textEl.querySelectorAll('.reveal-word');
+  const showAll = () => { wordEls.forEach(w => w.classList.add('shown')); btn.disabled = false; };
+  btn.disabled = true;
+
+  if (audioSrc) {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    const audio = new Audio(audioSrc);
+    audio.onended = () => { btn.disabled = false; };
+    audio.onerror = showAll;
+    audio.play().catch(showAll);
+    revealByTimer(wordEls, btn, speed.interval, false);
+    return;
+  }
+
+  if (!('speechSynthesis' in window)) { revealByTimer(wordEls, btn, speed.interval); return; }
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(fullText);
+  utter.lang = 'en-US';
+  utter.rate = speed.rate;
+  let i = 0, boundary = false;
+  utter.onboundary = e => {
+    if (e.name === 'word' && i < wordEls.length) { boundary = true; wordEls[i++].classList.add('shown'); }
+  };
+  utter.onend = showAll;
+  utter.onerror = showAll;
+  window.speechSynthesis.speak(utter);
+  setTimeout(() => { if (!boundary) revealByTimer(wordEls, btn, speed.interval); }, 350);
+}
+
+function revealByTimer(wordEls, btn, interval, manageButton = true) {
+  let i = 0;
+  const timer = setInterval(() => {
+    if (i >= wordEls.length) { clearInterval(timer); if (manageButton) btn.disabled = false; return; }
+    wordEls[i++].classList.add('shown');
+  }, interval);
+}
+</script>
 </body>
 </html>
